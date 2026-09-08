@@ -1,8 +1,10 @@
 # Third-party notices
 
-The project source is MIT licensed. It is an unofficial learning and research implementation; the stated purpose adds no restriction to the MIT grant. No warranty is provided.
+Copyright (c) 2026 shiyori.
 
-The Microsoft OneOCR model resources in `models/` are third-party materials. The project MIT license does not relicense those weights, dictionaries or original configuration. Their original rights and applicable terms remain with their owners; no separate model redistribution license was supplied with the original input. See the model directory's notices and checksums.
+The project source is licensed under GNU Affero General Public License version 3 only (SPDX: AGPL-3.0-only). No warranty is provided.
+
+The Microsoft OneOCR model resources in `models/` are third-party materials. The project AGPL-3.0-only license does not relicense those weights, dictionaries or original configuration. Their original rights and applicable terms remain with their owners; no separate model redistribution license was supplied with the original input. See the model directory's notices and checksums.
 
 Native SDK distributions carry the upstream ONNX Runtime MIT license and ThirdPartyNotices, onnxruntime_go MIT license, and golang.org/x/text BSD license and patent grant in `licenses/` (AAR: `META-INF/oneocr/licenses/`).
 

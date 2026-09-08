@@ -235,26 +235,7 @@ func (r *recognizer) run(ctx context.Context, crop raster) (string, error) {
 	}
 	sequence := int32(data.shape[3] / int64(r.config.PixelsPerFrame))
 	var text string
-	e = r.model.runBorrowed(ctx, data, nil, &sequence, r.alphabet.tokenMask(), func(outputs []ort.Value) error {
-		if ids, compact := outputs[0].(*ort.Tensor[int64]); compact {
-			if len(outputs) != 2 {
-				return fmt.Errorf("invalid compact output count")
-			}
-			shape := ids.GetShape()
-			if len(shape) != 2 || shape[1] != 1 || shape[0] != int64(len(ids.GetData())) {
-				return fmt.Errorf("invalid compact token shape")
-			}
-			invalid, ok := outputs[1].(*ort.Tensor[int32])
-			if !ok || len(invalid.GetData()) != 1 {
-				return fmt.Errorf("invalid compact finite guard")
-			}
-			if invalid.GetData()[0] != 0 {
-				return fmt.Errorf("nonfinite recognizer output")
-			}
-			var err error
-			text, err = r.alphabet.decodeIDs(ids.GetData(), r.config.Script)
-			return err
-		}
+	e = r.model.runBorrowed(ctx, data, nil, &sequence, func(outputs []ort.Value) error {
 		tensor, ok := outputs[0].(*ort.Tensor[float32])
 		if !ok {
 			return fmt.Errorf("invalid recognizer output type")

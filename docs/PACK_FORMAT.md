@@ -2,14 +2,9 @@
 
 `.ocrpack` 是自定义、未压缩的资源容器，SDK 按索引直接读取模型字节交给 ONNX Runtime。它不需要解压目录，也不是合并权重后的单个 ONNX。原始 OneModel 仅作为打包输入；当前 SDK 的 `ModelPath` 接收 `.ocrpack`。
 
-## 两种配置
+## 默认配置
 
-| profile | 文字体系 | 模型／数据资源数 | 原始资源字节数 |
-| --- | --- | ---: | ---: |
-| `cjk-en`（默认） | CJK、Latin | 11 | 31,909,834（30.43 MiB） |
-| `extended` | CJK、Latin、Cyrillic、Arabic | 20 | 41,986,365（40.04 MiB） |
-
-两者都包含通用检测器和方向／文字体系分类器。资源数不计原始 `config.pb`、`pipeline.spec.json` 及索引。关联字表、字符映射、复合字符表和 rnn.info 保留；非目标识别器、当前未使用的拒识／校准／布局模型不进入默认分发包。完整版原始资源仍可通过 `oneocr export` 导出为标准目录。
+`cjk-en` 包含 CJK、Latin 的识别资源，以及通用检测器和方向／文字体系分类器。共有 11 个模型／数据资源，原始资源共 31,909,834 字节；数量不计原始配置、pipeline 和容器索引。
 
 ## 二进制布局
 
@@ -49,7 +44,6 @@ JSON 索引结构：
 
 ```bash
 oneocr pack --model /absolute/path/oneocr.onemodel --profile cjk-en --output oneocr-cjk-en.ocrpack
-oneocr pack --bundle /absolute/path/standard-bundle --profile extended --output oneocr-extended.ocrpack
 oneocr inspect --model oneocr-cjk-en.ocrpack
 oneocr unpack --model oneocr-cjk-en.ocrpack --directory editable-bundle
 # 修改 editable-bundle 中资源／pipeline，更新相应 bytes、sha256 与 ONNX 接口描述
@@ -60,8 +54,8 @@ oneocr pack --bundle editable-bundle --profile cjk-en --output customized.ocrpac
 
 ## 加载与生命周期
 
-`Open(Config{ModelPath: path})` 保持一个只读文件描述符，启动时用有限大小缓冲区校验所有数据，加载模型时只读取当前资源，并再次校验其摘要。识别器按需创建，模型原始字节在 ORT session 创建后可回收；不会把完整包常驻为一个大字节数组。`Close` 等待识别结束，销毁 session 并关闭描述符。使用期间不要原地改写模型文件；更新部署使用另一个文件或原子替换。
+`Open(Config{})` 保持一个只读文件描述符，启动时用有限大小缓冲区校验所有数据，加载模型时只读取当前资源，并再次校验其摘要。识别器按需创建，模型原始字节在 ORT session 创建后可回收；不会把完整包常驻为一个大字节数组。`Close` 等待识别结束，销毁 session 并关闭描述符。使用期间不要原地改写模型文件；更新部署使用另一个文件或原子替换。
 
-旧目录入口 `Config.BundleDir` 保持兼容，两者只能指定一个。自动分类到包外脚本时跳过对应行并在 `warnings` 中记录数量；显式指定包外 `Options.Script` 返回错误。CJK／Latin 路由、CTC、阅读顺序及置信度／词框为空的既有行为保留。
+开发目录可通过 `Config.BundleDir` 指定，与显式 `ModelPath` 互斥。自动分类到包外脚本时跳过对应行并在 `warnings` 中记录数量；显式指定包外 `Options.Script` 返回错误。CJK／Latin 路由、CTC、阅读顺序及置信度／词框为空的既有行为保留。
 
 SDK 的二进制、Android AAR 与模型文件分开分发。SDK 可以包含平台 ORT，容器本身不含任何平台代码。

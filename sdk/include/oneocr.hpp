@@ -33,8 +33,7 @@ class Engine {
         OneOCRFree(error);
     }
 public:
-    // JSON follows the Go Config schema. Existing path constructors keep CPU
-    // defaults; this factory opts into backend/device/fallback configuration.
+    // JSON follows the Go Config schema; omitted model paths use the default.
     static Engine fromOptions(const std::string &optionsJson) {
         char *error = nullptr;
         uint64_t handle = OneOCROpenWithOptions(optionsJson.c_str(), &error);
@@ -42,7 +41,7 @@ public:
         OneOCRFree(error);
         return Engine(handle, AdoptHandle{});
     }
-    explicit Engine(const std::string &model, const std::string &runtime = "", int32_t threads = 2) {
+    explicit Engine(const std::string &model = "", const std::string &runtime = "", int32_t threads = 2) {
         char *error = nullptr;
         handle_ = OneOCROpen(model.c_str(), runtime.empty() ? nullptr : runtime.c_str(), threads, &error);
         if (!handle_) fail(error);

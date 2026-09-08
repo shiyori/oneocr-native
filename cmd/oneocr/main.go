@@ -26,6 +26,13 @@ func emit(value any) error {
 	encoder.SetIndent("", "  ")
 	return encoder.Encode(value)
 }
+func defaultConfig(home string) (oneocr.Config, error) {
+	if home == "" {
+		return oneocr.DefaultConfig()
+	}
+	installed, err := oneocr.LoadInstallation(home)
+	return installed.Config(), err
+}
 func run(args []string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("usage: oneocr install|pack|unpack|export|inspect|recognize|detect|recognize-line (run a command with -h for flags)")
@@ -34,16 +41,13 @@ func run(args []string) error {
 	fs := flag.NewFlagSet(command, flag.ContinueOnError)
 	switch command {
 	case "install":
-		model := fs.String("model", "", "model .ocrpack or original oneocr.onemodel")
+		model := fs.String("model", "", "optional model path; uses the default model when omitted")
 		library := fs.String("runtime", "", "platform ONNX Runtime 1.29 shared library")
 		home := fs.String("home", "", "installation root (default ONEOCR_HOME or OS user config)")
 		bundle := fs.String("bundle-dir", "", "legacy expanded directory for original OneModel input")
-		profile := fs.String("profile", "", "original OneModel conversion: cjk-en (default) or extended")
+		profile := fs.String("profile", "", "development conversion profile (default cjk-en)")
 		if e := fs.Parse(args[1:]); e != nil {
 			return e
-		}
-		if *model == "" {
-			return fmt.Errorf("--model is required")
 		}
 		installed, e := oneocr.Install(oneocr.InstallOptions{ModelPath: *model, RuntimeLibrary: *library, Home: *home, BundleDir: *bundle, Profile: *profile})
 		if e != nil {
@@ -73,7 +77,7 @@ func run(args []string) error {
 	case "pack":
 		model := fs.String("model", "", "original oneocr.onemodel")
 		bundle := fs.String("bundle", "", "standard resource directory, alternative to --model")
-		profile := fs.String("profile", "cjk-en", "cjk-en or extended")
+		profile := fs.String("profile", "cjk-en", "development conversion profile")
 		output := fs.String("output", "", "new .ocrpack destination")
 		if err := fs.Parse(args[1:]); err != nil {
 			return err
@@ -108,11 +112,11 @@ func run(args []string) error {
 			return fmt.Errorf("--model and --bundle are mutually exclusive")
 		}
 		if *model == "" && *bundle == "" {
-			installed, err := oneocr.LoadInstallation(*home)
+			defaults, err := defaultConfig(*home)
 			if err != nil {
 				return err
 			}
-			*model, *bundle = installed.ModelPath, installed.BundleDir
+			*model, *bundle = defaults.ModelPath, defaults.BundleDir
 		}
 		if *model != "" {
 			info, err := oneocr.ReadPackage(*model)
@@ -134,18 +138,9 @@ func run(args []string) error {
 		format := fs.String("format", "text", "text or json")
 		script := fs.String("script", "", "optional script override, e.g. CJK")
 		threads := fs.Int("threads", 2, "CPU threads per Engine")
-		backend := fs.String("backend", "cpu", "cpu or cuda; legacy coreml/directml restore CPU with default fallback")
-		device := fs.Int("device", 0, "CUDA device index")
-		fallback := fs.String("fallback", "cpu", "cpu or error; controls whole-session fallback")
-		adaptation := fs.String("adaptation-dir", "", "source-verified experimental model set")
-		cache := fs.String("cache-dir", "", "legacy CoreML cache setting (unused)")
-		compute := fs.String("coreml-compute-units", "ALL", "legacy CoreML compute setting (unused)")
-		cpuStages := fs.String("cpu-stages", "", "comma-separated stages to keep on CPU, e.g. detector,recognizer/CJK")
 		classes := fs.String("characters", "", "comma-separated han,kana,hangul,latin,digits; default all")
-		profile := fs.String("profile-dir", "", "optional ORT kernel profiles; finalized after recognition")
 		diagnostics := fs.String("diagnostics", "", "optional diagnostics JSON output file")
 		warmup := fs.Bool("warmup", false, "load and warm all included recognizers first")
-		shapeCache := fs.Int("shape-cache", 0, "accelerated sessions cached per input shape, 0 disables, maximum 4")
 		maxSide := fs.Int("max-side", 1600, "maximum detection image side")
 		timeout := fs.Duration("timeout", 0, "optional timeout, e.g. 30s")
 		if e := fs.Parse(args[1:]); e != nil {
@@ -161,22 +156,16 @@ func run(args []string) error {
 			return fmt.Errorf("--model and --bundle are mutually exclusive")
 		}
 		if *model == "" && *bundle == "" {
-			installed, e := oneocr.LoadInstallation(*home)
+			defaults, e := defaultConfig(*home)
 			if e != nil {
 				return e
 			}
-			*model, *bundle = installed.ModelPath, installed.BundleDir
-			if *library == "" {
-				*library = installed.RuntimeLibrary
+			*model, *bundle = defaults.ModelPath, defaults.BundleDir
+			if *library == "" && os.Getenv("ONEOCR_RUNTIME") == "" {
+				*library = defaults.RuntimeLibrary
 			}
 		}
-		config := oneocr.Config{ModelPath: *model, BundleDir: *bundle, RuntimeLibrary: *library, Threads: *threads, MaxSide: *maxSide, Backend: oneocr.Backend(*backend), DeviceID: *device, Fallback: oneocr.FallbackPolicy(*fallback), AdaptationDir: *adaptation, CacheDir: *cache, CoreMLComputeUnits: *compute, ProfilingDir: *profile, ShapeCacheSize: *shapeCache}
-		if *cpuStages != "" {
-			config.StageBackends = map[string]oneocr.Backend{}
-			for _, stage := range strings.Split(*cpuStages, ",") {
-				config.StageBackends[strings.TrimSpace(stage)] = oneocr.BackendCPU
-			}
-		}
+		config := oneocr.Config{ModelPath: *model, BundleDir: *bundle, RuntimeLibrary: *library, Threads: *threads, MaxSide: *maxSide}
 		if *classes != "" {
 			for _, class := range strings.Split(*classes, ",") {
 				config.CharacterClasses = append(config.CharacterClasses, oneocr.CharacterClass(strings.TrimSpace(class)))

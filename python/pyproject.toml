@@ -5,10 +5,10 @@ build-backend = "hatchling.build"
 [project]
 name = "oneocr-native"
 version = "0.1.0"
-license = "MIT"
+license = "AGPL-3.0-only"
 license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 readme = "README.md"
-description = "Experimental offline OneOCR container reader and native CPU OCR"
+description = "Offline OneOCR for Chinese, Japanese, Korean and English"
 requires-python = ">=3.11,<3.14"
 dependencies = [
   "filelock>=3.18,<4",

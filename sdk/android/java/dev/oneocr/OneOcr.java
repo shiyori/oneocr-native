@@ -16,8 +16,19 @@ import java.security.NoSuchAlgorithmException;
 
 /** Offline, synchronous OCR SDK. Reuse an instance on a background executor. */
 public final class OneOcr implements AutoCloseable {
+    public static final String DEFAULT_MODEL = "oneocr-cjk-en.ocrpack";
     static { System.loadLibrary("oneocr_jni"); }
     private long handle;
+
+    /** Opens the default model from app/src/main/assets with two CPU threads. */
+    public static OneOcr fromAsset(Context context) throws IOException {
+        return fromAsset(context, DEFAULT_MODEL, 2);
+    }
+
+    /** Opens the default asset with the requested CPU thread count. */
+    public static OneOcr fromAsset(Context context, int threads) throws IOException {
+        return fromAsset(context, DEFAULT_MODEL, threads);
+    }
 
     /** Uses the ONNX Runtime included in the AAR; model is an .ocrpack or legacy directory. */
     public OneOcr(String model, int threads) { this(model, "", threads); }

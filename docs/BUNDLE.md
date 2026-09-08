@@ -60,7 +60,7 @@ oneocr-bundle/
 `bundle.json` 包含：
 
 - `schema`：固定 `oneocr.bundle.v1`；`source_sha256` 表示原 OneModel 的来源，不代表自定义权重集合的新摘要。
-- `runtime`：已验证 ORT 1.29.0、CPU provider、需要 contrib ops。
+- `runtime`：ORT 1.29.0、CPU provider、需要 contrib ops。
 - `config`：原始配置的相对路径、字节数与 SHA-256。
 - `resources[]`：唯一 ID、相对路径、原名、类型、字节数、SHA-256；模型还含 `interface.inputs/outputs` 的名称、dtype、shape，以及 `opsets` 和 `operators`。
 - `pipeline`：检测／分类模型相对路径、脚本模型及字表／映射／先验路径、帧步长、检测阈值。
@@ -86,5 +86,3 @@ shape 中整数为固定维，字符串为动态维名，`null` 为未命名动�
 7. greedy CTC 合并相邻重复并去 blank，展开复合字符映射，处理视觉到逻辑 RTL 顺序及 NFC；最后按页面方向与列间空白排序。
 
 细节以 [Go 实现](../) 和每个模型实际接口为准。拒识／置信度模型虽然可以在 ORT 中执行，其原版输入特征不等同于识别 logits；资源齐全不表示完整 DLL 行为已经还原。
-
-全部 34 个 ONNX 已在 macOS ARM64 的 Python/ORT CPU 环境单独执行。参考 [官方移动部署说明](https://onnxruntime.ai/docs/tutorials/mobile/) 选择完整 ORT 包；模型存在 `com.microsoft` contrib 算子，不能直接假定 NNAPI、CoreML、ORT Web 或任意精简 mobile runtime 都支持它们。

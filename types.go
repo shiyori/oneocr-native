@@ -1,6 +1,3 @@
-// Package oneocr provides an experimental, in-process OneOCR engine.
-// It consumes a portable bundle and a platform ONNX Runtime shared library.
-// No Python process, Windows OneOCR DLL, or OpenCV installation is required.
 package oneocr
 
 import "errors"
@@ -33,7 +30,7 @@ type Result struct {
 }
 
 type Config struct {
-	ModelPath      string `json:"model_path,omitempty"` // single .ocrpack; mutually exclusive with BundleDir
+	ModelPath      string `json:"model_path,omitempty"` // optional; defaults to oneocr-cjk-en.ocrpack; exclusive with BundleDir
 	BundleDir      string `json:"bundle_dir,omitempty"`
 	RuntimeLibrary string `json:"runtime_library,omitempty"`
 	Threads        int    `json:"threads,omitempty"`  // default 2, range 1..16, per Engine
@@ -41,29 +38,6 @@ type Config struct {
 	// UseExistingORT shares an environment initialized by the application via
 	// onnxruntime_go. The application must keep it alive until all Engines close.
 	UseExistingORT bool `json:"use_existing_ort,omitempty"`
-	// Backend defaults to CPU. StageBackends may override detector, classifier,
-	// or recognizer/<script>, e.g. recognizer/CJK. CPU fallback remains available
-	// inside an accelerated graph; Fallback controls whole-session fallback.
-	// CoreML and DirectML are retired compatibility aliases; their default
-	// fallback restores original-model CPU execution.
-	Backend       Backend            `json:"backend,omitempty"`
-	StageBackends map[string]Backend `json:"stage_backends,omitempty"`
-	DeviceID      int                `json:"device_id,omitempty"`
-	Fallback      FallbackPolicy     `json:"fallback,omitempty"`
-	// CacheDir and CoreMLComputeUnits are retained for configuration compatibility.
-	// The retired CoreML backend no longer compiles models or writes this cache.
-	CacheDir           string `json:"cache_dir,omitempty"`
-	CoreMLComputeUnits string `json:"coreml_compute_units,omitempty"` // ALL (default), CPUAndGPU, CPUAndNeuralEngine, CPUOnly
-	// AdaptationDir is an explicitly selected, source-hash-checked experimental
-	// model set produced by oneocr-native adapt. Original CPU models are retained.
-	AdaptationDir string `json:"adaptation_dir,omitempty"`
-	// ProfilingDir enables ORT kernel profiling. Profiles and measured provider
-	// totals are finalized on Close; leave empty for sustained production runs.
-	ProfilingDir string `json:"profiling_dir,omitempty"`
-	// ShapeCacheSize optionally specializes accelerated sessions for recurring
-	// input dimensions. 0 disables it; 1..4 bounds each stage's LRU session cache.
-	// Every miss may compile a device model. Prefer it for stable screenshot sizes.
-	ShapeCacheSize int `json:"shape_cache_size,omitempty"`
 	// CharacterClasses restricts CJK/Latin decoding, not language identification.
 	// Empty selects han,kana,hangul,latin,digits. Spaces and punctuation remain.
 	CharacterClasses []CharacterClass `json:"character_classes,omitempty"`
@@ -84,7 +58,7 @@ type PackageFile struct {
 type PackOptions struct {
 	ModelPath string // original .onemodel input
 	BundleDir string // alternative standard resource directory
-	Profile   string // cjk-en (default) or extended
+	Profile   string // defaults to cjk-en; other profiles are reserved for development
 	Output    string // new .ocrpack output, never overwritten
 }
 type Options struct {

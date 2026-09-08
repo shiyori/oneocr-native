@@ -99,7 +99,7 @@ class OneOcrEngine:
 
     def __init__(
         self,
-        model_path: str | Path,
+        model_path: str | Path | None = None,
         *,
         cache_dir: str | Path | None = None,
         max_side: int = 1600,
@@ -110,9 +110,10 @@ class OneOcrEngine:
         if not 1 <= threads <= 16:
             raise ValueError("threads must be between 1 and 16")
         from .bundle import load_bundle
+        from .defaults import default_model_path
         from .ocrpack import MAGIC, PackageSource
 
-        path = Path(model_path)
+        path = default_model_path() if model_path is None else Path(model_path)
         if path.is_dir():
             self.prepared = load_bundle(path)
         else:

@@ -3,133 +3,149 @@
 [简体中文](README.md) · [English](README.en.md) · [日本語](README.ja.md)
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/shiyori/oneocr-native.svg)](https://pkg.go.dev/github.com/shiyori/oneocr-native)
-[![Go Report Card](https://goreportcard.com/badge/github.com/shiyori/oneocr-native)](https://goreportcard.com/report/github.com/shiyori/oneocr-native)
 [![Stars](https://img.shields.io/github/stars/shiyori/oneocr-native)](https://github.com/shiyori/oneocr-native/stargazers)
 [![Downloads](https://img.shields.io/github/downloads/shiyori/oneocr-native/total)](https://github.com/shiyori/oneocr-native/releases)
 [![Release](https://img.shields.io/github/v/release/shiyori/oneocr-native)](https://github.com/shiyori/oneocr-native/releases)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-AGPL--3.0--only-blue.svg)](LICENSE)
 
-Offline OneOCR with a root Go module, Android AAR, C++ SDK and independent Python SDK. One `.ocrpack` travels across platforms; inference reads resources individually without extraction. Go/C++/Android need no Python. Python runs its own complete OCR pipeline directly through ORT and does not load this project's Go library.
+Offline OCR for Chinese, Japanese, Korean, English and digits, with Go, Android, C++ and independent Python SDKs. All use one default model; no model selection or per-call model path is needed.
 
-An unofficial experimental implementation for learning and research. This purpose statement adds no restrictions to MIT. Third-party model rights remain unchanged.
+## Setup
 
-## Models
+```bash
+git clone https://github.com/shiyori/oneocr-native.git
+cd oneocr-native
+```
 
-| Model | Scripts | Size |
-|---|---|---:|
-| [oneocr-cjk-en.ocrpack](models/oneocr-cjk-en.ocrpack) | Default: Chinese, Japanese, Korean and English (CJK + Latin) | 30.46 MiB |
-| [oneocr-extended.ocrpack](models/oneocr-extended.ocrpack) | Adds Cyrillic and Arabic | 40.07 MiB |
+The default [oneocr-cjk-en.ocrpack](models/oneocr-cjk-en.ocrpack) is in `models/`. Commands run from the repository root find it automatically. For another project, place this file in `models/` under the working directory or next to the executable. Android uses assets as shown below. The model is separate from the SDK; inference works offline.
 
-[Model origin / rights / checksums](models/README.md). Models are separate from SDKs and excluded from the root Go module ZIP by a nested data-only module.
+## Go / CLI
 
-## Install and integrate four SDKs
-
-Build from source using the instructions below. Local `dist/` artifacts are excluded from Git; no version tag or release has been published. After a root-module release, `go install github.com/shiyori/oneocr-native/cmd/oneocr@<tag>` becomes available. Dependency installation may need the network; inference is offline.
-
-### Go / CLI
-
-Go ≥1.24 + CGO + ONNX Runtime 1.29:
+Requires Go ≥1.24, CGO and ONNX Runtime 1.29 CPU. Supply the runtime once when installing from source. Desktop SDKs include it, so `oneocr install` needs no arguments.
 
 ```bash
 go install ./cmd/oneocr
-oneocr install --model models/oneocr-cjk-en.ocrpack --runtime /path/to/libonnxruntime.dylib
+oneocr install --runtime /path/to/libonnxruntime.dylib
 oneocr recognize image.png
+oneocr recognize --format json image.png
 ```
 
 ```go
-import oneocr "github.com/shiyori/oneocr-native"
+package main
 
-engine, err := oneocr.Open(oneocr.Config{ModelPath: "models/oneocr-cjk-en.ocrpack"})
-if err != nil { return err }
-defer engine.Close()
-result, err := engine.RecognizeFile(ctx, "image.png", oneocr.Options{})
-```
+import (
+    "context"
+    "fmt"
+    "log"
 
-ORT: `ONEOCR_RUNTIME`, `Config.RuntimeLibrary`, SDK `lib/`. Local external module:
+    oneocr "github.com/shiyori/oneocr-native"
+)
 
-```bash
-go mod edit -replace github.com/shiyori/oneocr-native=/path/to/oneocr-native
-go get github.com/shiyori/oneocr-native
-```
+func main() {
+    engine, err := oneocr.Open(oneocr.Config{})
+    if err != nil { log.Fatal(err) }
+    defer engine.Close()
 
-### Android
-
-`dist/oneocr-android-0.1.0.aar` → `app/libs/`; `.ocrpack` → `app/src/main/assets/`:
-
-```kotlin
-android { defaultConfig { minSdk = 26 } }
-dependencies { implementation(files("libs/oneocr-android-0.1.0.aar")) }
-```
-
-```java
-// Run on a background thread. Reuse the engine.
-try (dev.oneocr.OneOcr ocr = dev.oneocr.OneOcr.fromAsset(
-        context, "oneocr-cjk-en.ocrpack", 2)) {
-    String json = ocr.recognize(pngOrJpegBytes);
+    result, err := engine.RecognizeFile(context.Background(), "image.png", oneocr.Options{})
+    if err != nil { log.Fatal(err) }
+    fmt.Println(result.Text)
 }
 ```
 
-AAR: Java + JNI + Go native + ORT. `fromAsset` copies one file to private storage; no resource extraction.
+After installation, run from any directory. `ONEOCR_RUNTIME` can also select the runtime: `onnxruntime.dll` on Windows, `libonnxruntime.dylib` on macOS, or `libonnxruntime.so` on Linux. See the [Go guide](docs/GO.md) for external projects, memory inputs and timeouts.
 
-### C++17
+## Android
 
-```cmake
-find_package(OneOCR CONFIG REQUIRED)
-add_executable(example main.cpp)
-target_link_libraries(example PRIVATE OneOCR::oneocr)
+Put the AAR in `app/libs/` and the default model in `app/src/main/assets/oneocr-cjk-en.ocrpack`. Add this to the application module's `build.gradle.kts`:
+
+```kotlin
+android {
+    defaultConfig {
+        minSdk = 26
+        ndk { abiFilters += listOf("arm64-v8a", "x86_64") }
+    }
+}
+dependencies {
+    implementation(files("libs/oneocr-android-0.1.0.aar"))
+}
 ```
 
-`-DCMAKE_PREFIX_PATH=/path/to/oneocr-sdk-darwin-arm64`:
+```java
+import dev.oneocr.OneOcr;
+import org.json.JSONObject;
+
+// Execute on a background thread; the caller handles IOException / JSONException.
+try (OneOcr engine = OneOcr.fromAsset(context)) {
+    String json = engine.recognize(bitmap);
+    String text = new JSONObject(json).getString("text");
+    // engine.recognize(pngOrJpegBytes) is also available.
+}
+```
+
+The AAR includes JNI, Go native and ONNX Runtime; do not add a second ORT dependency. `fromAsset(context)` streams the default asset into private app storage. Reuse the engine for multiple images and close it when finished. See the [SDK guide](sdk/SDK.md) for building and integrating the AAR.
+
+## C++17
+
+Extract the desktop SDK and preserve `include/`, `lib/` and `lib/cmake/OneOCR/`. Link it from your application's `CMakeLists.txt`:
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(ocr_example LANGUAGES CXX)
+find_package(OneOCR CONFIG REQUIRED)
+add_executable(ocr_example main.cpp)
+target_link_libraries(ocr_example PRIVATE OneOCR::oneocr)
+```
 
 ```cpp
 #include <oneocr.hpp>
 #include <iostream>
+
 int main() {
-    oneocr::Engine engine("oneocr-cjk-en.ocrpack");
-    std::cout << engine.recognizeFile("image.png") << '\n';
+    try {
+        oneocr::Engine engine;
+        std::cout << engine.recognizeFile("image.png") << '\n';
+    } catch (const std::exception& error) {
+        std::cerr << error.what() << '\n';
+        return 1;
+    }
 }
 ```
 
-### Python 3.11–3.13
+```bash
+cmake -S . -B build -DCMAKE_PREFIX_PATH=/absolute/path/to/oneocr-sdk
+cmake --build build --config Release
+```
+
+Place the default model in `models/` under the application's working directory. Runtime libraries are included in the SDK. Results are UTF-8 JSON; the engine owns its resources and also accepts encoded bytes and RGB buffers. See the [SDK guide](sdk/SDK.md) for the C API and deployment.
+
+## Python 3.11–3.13
+
+Install from the repository root; pip installs the runtime dependencies. A built wheel can be installed with `python -m pip install oneocr_native-0.1.0-py3-none-any.whl`.
 
 ```bash
 python -m pip install ./python
-# Or: python -m pip install dist/oneocr_native-0.1.0-py3-none-any.whl
-oneocr-native recognize --model models/oneocr-cjk-en.ocrpack image.png
+oneocr-native recognize image.png
+oneocr-native recognize --format json image.png
 ```
 
 ```python
 from oneocr_native import OneOcrEngine
 
-with OneOcrEngine("models/oneocr-cjk-en.ocrpack") as engine:
-    print(engine.recognize("image.png").text)  # PIL.Image.Image also accepted
+with OneOcrEngine() as engine:
+    result = engine.recognize("image.png")
+    print(result.text)
+    for line in result.lines:
+        print(line.text, line.quad)
 ```
 
-## Validation and limits
-
-| Platform | Go / C++ | Independent Python | Android |
-|---|---|---|---|
-| macOS ARM64 | OCR, C++/external Go and relocated SDK tested | OCR and isolated wheel installation tested | Cross-build host |
-| Android arm64-v8a / x86_64, API 26+ | Go native + JNI built | No Android Python distribution | AAR/consumer compilation and ELF checks; see emulator compatibility issue below |
-| Windows x64 | CPU OCR/C++ validated; CUDA ran with the result differences below | CPU OCR, independent stages and package tests validated | N/A |
-| Linux desktop | Basic CI passed; no manual host validation | CI passed; no manual host validation | N/A |
-
-This is not full parity with the original DLL. Automatic mode skips unavailable scripts with warnings; explicit unavailable scripts fail. Results include text, line quads, scripts and warnings; `confidence` and `words` are null. Grouping and reading order remain experimental; handwriting and natural vertical CJK are unvalidated. Complex inverse RTL is ambiguous: Python uses ICU on macOS and a portable approximation elsewhere, as does Go.
-
-Go/C++/Android use full ONNX Runtime 1.29 CPU with contrib ops. Desktop SDKs and AAR include it; Go source alone requires a separate runtime. Python installs ORT through pip. Compilation does not establish runtime compatibility on every platform.
-
-Android compatibility: an ARM64 emulator hit SIGILL in the ORT 1.29 default KleidiAI path. A standalone detector probe ran with that path disabled, but this SDK does not yet apply the workaround; full Android OCR remains unvalidated.
+Pillow images are accepted too. Python runs its own OCR pipeline without the Go shared library. When running elsewhere, place the default model as described in Setup. See the [Python guide](python/README.md) for image inputs, detection and cropped-line recognition.
 
 ## Documentation
 
-[Go](docs/GO.md) · [Python](python/README.md) · [SDK](sdk/SDK.md) · [Build](docs/BUILD.md) · [OCRPACK](docs/PACK_FORMAT.md) · [Resources](docs/BUNDLE.md) · [OneModel](docs/FORMAT.md) · [Validation](validation/migration.json)
+[Go](docs/GO.md) · [Python](python/README.md) · [Android / C++ / C](sdk/SDK.md) · [Build](docs/BUILD.md) · [Detection and cropped-line recognition](docs/STAGES.md)
 
-Source: [MIT](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md).
+## License and notice
 
-## Frequent calls and experimental acceleration
+Source is licensed under **AGPL-3.0-only**, GNU AGPL version 3 only; see [LICENSE](LICENSE). Third-party models and dependencies retain their own rights and licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
 
-Go/C/C++ keep CPU as the default and allow explicit CoreML, CUDA and DirectML selection, device/stage fallback settings, and character-class restrictions. Reuse Engines, call `Warmup`, and use a small number of independent Engines for occasional concurrency. Recognition avoids an extra copy of the probability matrix.
-
-The offline `oneocr-native adapt` tool creates source-verified experimental model variants; originals remain available. Provider registration is not proof of GPU execution or a speedup. CoreML and Windows CUDA have executed, but adapted models change results. A compatible DirectML runtime has not yet been validated. See the [acceleration guide](docs/ACCELERATION.md).
-
-Independent detection and cropped-line recognition: [API guide](docs/STAGES.md). Go, CLI, C/C++ and Python expose separate entry points.
+This unofficial implementation is shared for learning and discussion. It does not represent an original vendor product or service and is provided without warranty.

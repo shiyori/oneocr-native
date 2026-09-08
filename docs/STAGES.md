@@ -25,14 +25,14 @@ line, err := engine.RecognizeLine(ctx, lineCrop, oneocr.Options{Script: "CJK"})
 CLI：
 
 ```sh
-oneocr detect --model models/oneocr-cjk-en.ocrpack page.png
-oneocr recognize-line --model models/oneocr-cjk-en.ocrpack --script CJK --format json crop.png
+oneocr detect page.png
+oneocr recognize-line --script CJK --format json crop.png
 ```
 
-`detect` 始终输出 JSON。两个命令共用后端、设备、回退、字符类别和诊断参数；每次启动 CLI 都会重新打开 Engine。
+`detect` 始终输出 JSON。两个命令共用线程数、字符类别和诊断参数；每次启动 CLI 都会重新打开 Engine。
 
 C ABI 提供 `OneOCRDetectEncoded`、`OneOCRDetectRGB`、`OneOCRRecognizeLineEncoded`、`OneOCRRecognizeLineRGB`，均带 `timeout_ms`（0 表示无期限）。参数与结果所有权见 `sdk/include/oneocr.h`；返回的 JSON/error 由 `OneOCRFree` 释放。C++ 封装对应 `detect`、`detectRGB`、`recognizeLine`、`recognizeLineRGB` 方法，输入为缓冲区。
 
-Python CPU API 提供 `engine.detect(image)` 与 `engine.recognize_line(crop, script="CJK")`，输入为路径或 PIL 图片，返回 dataclass，支持 `to_dict()`。Python CLI 同样提供 `detect`、`recognize-line`。Python 的加速转换工具是离线工具；推理 API 仍使用 CPU。
+Python CPU API 提供 `engine.detect(image)` 与 `engine.recognize_line(crop, script="CJK")`，输入为路径或 PIL 图片，返回 dataclass，支持 `to_dict()`。Python CLI 同样提供 `detect`、`recognize-line`。
 
-Android Java 封装提供 `detect(byte[])`、`recognizeLine(byte[])` 和 `recognizeLine(byte[], String script)`，返回 UTF-8 JSON。JNI 对接相同 C ABI；Android 仍使用 CPU，新增入口需在目标设备验证。
+Android Java 封装提供 `detect(byte[])`、`recognizeLine(byte[])` 和 `recognizeLine(byte[], String script)`，返回 UTF-8 JSON。JNI 对接相同 C ABI；在后台线程调用。

@@ -33,6 +33,8 @@ def run(*args, cwd=None, env=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--android-ndk", type=Path)
+    parser.add_argument("--dist", type=Path, default=ROOT / "dist")
+    parser.add_argument("--report", type=Path, default=ROOT / "validation/distributions.json")
     args = parser.parse_args()
     report = {
         "schema": "oneocr.distribution.validation.v1",
@@ -40,7 +42,7 @@ def main():
         "checks": {},
     }
     checks = report["checks"]
-    dist = ROOT / "dist"
+    dist = args.dist
     with tempfile.TemporaryDirectory(prefix="oneocr-consumer-") as temporary:
         temp = Path(temporary)
         with zipfile.ZipFile(dist / "oneocr-sdk-darwin-arm64-0.1.0.zip") as archive:
@@ -62,7 +64,7 @@ def main():
         ):
             environment.pop(key, None)
         actual = json.loads(
-            run(sdk / "bin/oneocr-cpp", model, image, cwd=temp, env=environment)
+            run(sdk / "bin/oneocr-cpp", image, cwd=temp, env=environment)
         )
         assert actual["text"] == expected
         checks["relocated_cpp_binary"] = "passed"
@@ -72,12 +74,12 @@ def main():
         run("cmake", "-S", consumer, "-B", build, f"-DCMAKE_PREFIX_PATH={sdk}")
         run("cmake", "--build", build, "--parallel", "2")
         actual = json.loads(
-            run(build / "oneocr-example", model, image, cwd=temp, env=environment)
+            run(build / "oneocr-example", image, cwd=temp, env=environment)
         )
         assert actual["text"] == expected
         checks["external_cmake_target"] = "passed"
         environment["ONEOCR_HOME"] = str(temp / "installation")
-        run(sdk / "bin/oneocr", "install", "--model", model, cwd=temp, env=environment)
+        run(sdk / "bin/oneocr", "install", cwd=temp, env=environment)
         output = run(sdk / "bin/oneocr", "recognize", image, cwd=temp, env=environment)
         assert expected in output
         checks["relocated_cli_install_and_recognize"] = "passed"
@@ -94,7 +96,7 @@ def main():
         run("go", "get", "github.com/shiyori/oneocr-native", cwd=go)
         (go / "main.go").write_text("""package main
 import ("context"; "fmt"; "os"; oneocr "github.com/shiyori/oneocr-native")
-func main(){ e,err:=oneocr.OpenInstalled("");if err!=nil{panic(err)};defer e.Close()
+func main(){ e,err:=oneocr.Open(oneocr.Config{});if err!=nil{panic(err)};defer e.Close()
 r,err:=e.RecognizeFile(context.Background(),os.Args[1],oneocr.Options{});if err!=nil{panic(err)};fmt.Println(r.Text)}
 """)
         assert expected in run("go", "run", ".", image, cwd=go, env=environment)
@@ -114,7 +116,7 @@ r,err:=e.RecognizeFile(context.Background(),os.Args[1],oneocr.Options{});if err!
 from oneocr_native import OneOcrEngine
 assert '.venv' in oneocr_native.__file__
 assert not list(pathlib.Path('.').rglob('liboneocr.*'))
-with OneOcrEngine('oneocr-cjk-en.ocrpack') as e:
+with OneOcrEngine() as e:
  print(e.recognize('image.png').text)
 assert e.prepared._file.closed
 """
@@ -200,8 +202,8 @@ assert e.prepared._file.closed
         "Android native/AAR/consumer compile only; no device OCR",
         "Windows/Linux desktop not executed on this host",
     ]
-    output = ROOT / "validation/distributions.json"
-    output.parent.mkdir(exist_ok=True)
+    output = args.report
+    output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     print(json.dumps({"checks": list(checks), "artifacts": len(inspected)}))
 

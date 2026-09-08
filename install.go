@@ -123,6 +123,16 @@ func isPackageFile(filename string) (bool, error) {
 // requests the legacy expanded-directory installation for original inputs.
 func Install(options InstallOptions) (Installation, error) {
 	result := Installation{Schema: "oneocr.install.v2", Platform: runtime.GOOS + "-" + runtime.GOARCH}
+	if options.ModelPath == "" {
+		defaults, err := DefaultConfig()
+		if err != nil {
+			return result, err
+		}
+		options.ModelPath = defaults.ModelPath
+		if options.RuntimeLibrary == "" && os.Getenv("ONEOCR_RUNTIME") == "" {
+			options.RuntimeLibrary = defaults.RuntimeLibrary
+		}
+	}
 	home, err := installationHome(options.Home)
 	if err != nil {
 		return result, err
@@ -243,7 +253,7 @@ func LoadInstallation(home string) (Installation, error) {
 	}
 	f, err := os.Open(filepath.Join(home, "config.json"))
 	if err != nil {
-		return result, fmt.Errorf("oneocr: not installed; run oneocr install --model ... --runtime ...: %w", err)
+		return result, fmt.Errorf("oneocr: not installed; run oneocr install --runtime ...: %w", err)
 	}
 	data, err := readLimited(f, 1024*1024)
 	f.Close()

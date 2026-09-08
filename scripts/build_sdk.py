@@ -92,14 +92,14 @@ def copy_go(destination: Path) -> None:
     copy(ROOT / "docs/GO.md", destination / "README.md")
     readme = destination / "README.md"
     readme.write_text(readme.read_text(encoding="utf-8").replace(
-        "](ACCELERATION.md)", "](docs/ACCELERATION.md)"
-    ).replace(
         "](STAGES.md)", "](docs/STAGES.md)"
+    ).replace(
+        "](../LICENSE)", "](LICENSE)"
     ).replace(
         "](../examples/stream/main.go)", "](examples/stream/main.go)"
     ), encoding="utf-8")
     copy(ROOT / "sdk/SDK.md", destination / "sdk/SDK.md")
-    for name in ("PACK_FORMAT.md", "BUNDLE.md", "GO.md", "ACCELERATION.md", "STAGES.md"):
+    for name in ("PACK_FORMAT.md", "BUNDLE.md", "GO.md", "STAGES.md"):
         copy(ROOT / "docs" / name, destination / "docs" / name)
 
 

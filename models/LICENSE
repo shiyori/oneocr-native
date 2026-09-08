@@ -1,4 +1,4 @@
-Third-party model resources — not covered by the repository's MIT source license.
+Third-party model resources — not covered by the repository's AGPL-3.0-only source license.
 
 The model weights, dictionaries and original configuration were extracted from
 a user-supplied Microsoft OneOCR oneocr.onemodel file. Their copyright and other
@@ -6,5 +6,5 @@ rights remain with their original owners. No separate model redistribution
 license was supplied with the input. This repository grants no additional rights
 to these resources. Consult the original applicable terms for your use.
 
-The project's container format and loader implementation are MIT-licensed;
+The project's container format and loader implementation are AGPL-3.0-only-licensed;
 that license does not extend to the model payload.

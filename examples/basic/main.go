@@ -12,13 +12,13 @@ import (
 
 func main() {
 	if len(os.Args) < 2 || len(os.Args) > 4 {
-		fmt.Fprintln(os.Stderr, "usage: basic [MODEL [RUNTIME]] IMAGE")
+		fmt.Fprintln(os.Stderr, "usage: basic IMAGE")
 		os.Exit(2)
 	}
 	var engine *oneocr.Engine
 	var err error
 	if len(os.Args) == 2 {
-		engine, err = oneocr.OpenInstalled("")
+		engine, err = oneocr.Open(oneocr.Config{})
 	} else {
 		config := oneocr.Config{Threads: 2}
 		if stat, e := os.Stat(os.Args[1]); e == nil && stat.IsDir() {

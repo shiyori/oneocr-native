@@ -10,3 +10,6 @@ __pycache__/
 /build/
 /python/dist/
 /python/.venv/
+/docs/FORMAT.md
+/docs/ACCELERATION.md
+/validation/

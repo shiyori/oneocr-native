@@ -3,133 +3,149 @@
 [简体中文](README.md) · [English](README.en.md) · [日本語](README.ja.md)
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/shiyori/oneocr-native.svg)](https://pkg.go.dev/github.com/shiyori/oneocr-native)
-[![Go Report Card](https://goreportcard.com/badge/github.com/shiyori/oneocr-native)](https://goreportcard.com/report/github.com/shiyori/oneocr-native)
 [![Stars](https://img.shields.io/github/stars/shiyori/oneocr-native)](https://github.com/shiyori/oneocr-native/stargazers)
 [![Downloads](https://img.shields.io/github/downloads/shiyori/oneocr-native/total)](https://github.com/shiyori/oneocr-native/releases)
 [![Release](https://img.shields.io/github/v/release/shiyori/oneocr-native)](https://github.com/shiyori/oneocr-native/releases)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-AGPL--3.0--only-blue.svg)](LICENSE)
 
-オフライン OneOCR エンジン。ルート Go モジュール、Android AAR、C++ SDK、独立した Python SDK を提供します。共通の `.ocrpack` をリソース単位で読み込み、推論時に展開しません。Go/C++/Android は Python 不要です。Python は独自の OCR パイプラインで ORT を直接使用し、本プロジェクトの Go 動的ライブラリに依存しません。
+中国語・日本語・韓国語・英語・数字に対応するオフライン OCR。Go、Android、C++、独立した Python SDK を提供します。共通の既定モデルを使うため、モデルの選択や呼び出しごとのパス指定は不要です。
 
-交流・学習・研究を目的とした非公式の実験的実装です。この目的表記は MIT の用途を制限しません。第三者モデルの権利は変更されません。
+## 準備
 
-## モデル
+```bash
+git clone https://github.com/shiyori/oneocr-native.git
+cd oneocr-native
+```
 
-| Model | Scripts | Size |
-|---|---|---:|
-| [oneocr-cjk-en.ocrpack](models/oneocr-cjk-en.ocrpack) | 標準：中国語・日本語・韓国語・英語（CJK + Latin） | 30.46 MiB |
-| [oneocr-extended.ocrpack](models/oneocr-extended.ocrpack) | キリル文字とアラビア文字を追加 | 40.07 MiB |
+既定の [oneocr-cjk-en.ocrpack](models/oneocr-cjk-en.ocrpack) は `models/` にあります。リポジトリのルートで実行すれば自動的に見つかります。別のプロジェクトでは、作業ディレクトリまたは実行ファイルの隣の `models/` に置いてください。Android は下記の assets を使います。モデルと SDK は分離されており、推論時の通信は不要です。
 
-[Model origin / rights / checksums](models/README.md). Models are separate from SDKs and excluded from the root Go module ZIP by a nested data-only module.
+## Go / CLI
 
-## インストールと 4 SDK の利用
-
-以下はソースからの導入手順です。`dist/` のローカル成果物は Git に含まれません。バージョンタグと Release は未公開です。ルートモジュール公開後は `go install github.com/shiyori/oneocr-native/cmd/oneocr@<tag>` を利用できます。依存関係の導入には通信が必要な場合がありますが、推論はオフラインです。
-
-### Go / CLI
-
-Go ≥1.24 + CGO + ONNX Runtime 1.29:
+Go ≥1.24、CGO、ONNX Runtime 1.29 CPU が必要です。ソースからの導入時はランタイムを一度指定します。デスクトップ SDK にはランタイムが含まれるため、`oneocr install` だけで導入できます。
 
 ```bash
 go install ./cmd/oneocr
-oneocr install --model models/oneocr-cjk-en.ocrpack --runtime /path/to/libonnxruntime.dylib
+oneocr install --runtime /path/to/libonnxruntime.dylib
 oneocr recognize image.png
+oneocr recognize --format json image.png
 ```
 
 ```go
-import oneocr "github.com/shiyori/oneocr-native"
+package main
 
-engine, err := oneocr.Open(oneocr.Config{ModelPath: "models/oneocr-cjk-en.ocrpack"})
-if err != nil { return err }
-defer engine.Close()
-result, err := engine.RecognizeFile(ctx, "image.png", oneocr.Options{})
-```
+import (
+    "context"
+    "fmt"
+    "log"
 
-ORT: `ONEOCR_RUNTIME`, `Config.RuntimeLibrary`, SDK `lib/`. Local external module:
+    oneocr "github.com/shiyori/oneocr-native"
+)
 
-```bash
-go mod edit -replace github.com/shiyori/oneocr-native=/path/to/oneocr-native
-go get github.com/shiyori/oneocr-native
-```
+func main() {
+    engine, err := oneocr.Open(oneocr.Config{})
+    if err != nil { log.Fatal(err) }
+    defer engine.Close()
 
-### Android
-
-`dist/oneocr-android-0.1.0.aar` → `app/libs/`; `.ocrpack` → `app/src/main/assets/`:
-
-```kotlin
-android { defaultConfig { minSdk = 26 } }
-dependencies { implementation(files("libs/oneocr-android-0.1.0.aar")) }
-```
-
-```java
-// Run on a background thread. Reuse the engine.
-try (dev.oneocr.OneOcr ocr = dev.oneocr.OneOcr.fromAsset(
-        context, "oneocr-cjk-en.ocrpack", 2)) {
-    String json = ocr.recognize(pngOrJpegBytes);
+    result, err := engine.RecognizeFile(context.Background(), "image.png", oneocr.Options{})
+    if err != nil { log.Fatal(err) }
+    fmt.Println(result.Text)
 }
 ```
 
-AAR: Java + JNI + Go native + ORT. `fromAsset` copies one file to private storage; no resource extraction.
+導入後は別のディレクトリからも呼び出せます。`ONEOCR_RUNTIME` でも指定でき、Windows は `onnxruntime.dll`、macOS は `libonnxruntime.dylib`、Linux は `libonnxruntime.so` を使用します。外部プロジェクトへの組み込み、メモリ上の画像、タイムアウトは [Go ガイド](docs/GO.md)を参照してください。
 
-### C++17
+## Android
 
-```cmake
-find_package(OneOCR CONFIG REQUIRED)
-add_executable(example main.cpp)
-target_link_libraries(example PRIVATE OneOCR::oneocr)
+AAR を `app/libs/`、既定モデルを `app/src/main/assets/oneocr-cjk-en.ocrpack` に置き、アプリモジュールの `build.gradle.kts` に追加します。
+
+```kotlin
+android {
+    defaultConfig {
+        minSdk = 26
+        ndk { abiFilters += listOf("arm64-v8a", "x86_64") }
+    }
+}
+dependencies {
+    implementation(files("libs/oneocr-android-0.1.0.aar"))
+}
 ```
 
-`-DCMAKE_PREFIX_PATH=/path/to/oneocr-sdk-darwin-arm64`:
+```java
+import dev.oneocr.OneOcr;
+import org.json.JSONObject;
+
+// Execute on a background thread; the caller handles IOException / JSONException.
+try (OneOcr engine = OneOcr.fromAsset(context)) {
+    String json = engine.recognize(bitmap);
+    String text = new JSONObject(json).getString("text");
+    // engine.recognize(pngOrJpegBytes) is also available.
+}
+```
+
+AAR には JNI、Go native、ONNX Runtime が含まれるため、ORT の追加依存は不要です。`fromAsset(context)` はモデルをアプリ専用領域へストリーム保存します。複数画像ではエンジンを再利用し、終了時に閉じてください。AAR のビルドと導入は [SDK ガイド](sdk/SDK.md)を参照してください。
+
+## C++17
+
+デスクトップ SDK を展開し、`include/`、`lib/`、`lib/cmake/OneOCR/` の構成を維持します。アプリの `CMakeLists.txt` からリンクします。
+
+```cmake
+cmake_minimum_required(VERSION 3.22)
+project(ocr_example LANGUAGES CXX)
+find_package(OneOCR CONFIG REQUIRED)
+add_executable(ocr_example main.cpp)
+target_link_libraries(ocr_example PRIVATE OneOCR::oneocr)
+```
 
 ```cpp
 #include <oneocr.hpp>
 #include <iostream>
+
 int main() {
-    oneocr::Engine engine("oneocr-cjk-en.ocrpack");
-    std::cout << engine.recognizeFile("image.png") << '\n';
+    try {
+        oneocr::Engine engine;
+        std::cout << engine.recognizeFile("image.png") << '\n';
+    } catch (const std::exception& error) {
+        std::cerr << error.what() << '\n';
+        return 1;
+    }
 }
 ```
 
-### Python 3.11–3.13
+```bash
+cmake -S . -B build -DCMAKE_PREFIX_PATH=/absolute/path/to/oneocr-sdk
+cmake --build build --config Release
+```
+
+既定モデルはアプリの作業ディレクトリの `models/` に置きます。ランタイムは SDK に含まれます。結果は UTF-8 JSON で、リソースは自動解放されます。エンコード済みバイト列や RGB 入力にも対応しています。C API と配置方法は [SDK ガイド](sdk/SDK.md)を参照してください。
+
+## Python 3.11–3.13
+
+リポジトリのルートでインストールします。依存関係は pip が導入します。ビルド済み wheel は `python -m pip install oneocr_native-0.1.0-py3-none-any.whl` で導入できます。
 
 ```bash
 python -m pip install ./python
-# Or: python -m pip install dist/oneocr_native-0.1.0-py3-none-any.whl
-oneocr-native recognize --model models/oneocr-cjk-en.ocrpack image.png
+oneocr-native recognize image.png
+oneocr-native recognize --format json image.png
 ```
 
 ```python
 from oneocr_native import OneOcrEngine
 
-with OneOcrEngine("models/oneocr-cjk-en.ocrpack") as engine:
-    print(engine.recognize("image.png").text)  # PIL.Image.Image also accepted
+with OneOcrEngine() as engine:
+    result = engine.recognize("image.png")
+    print(result.text)
+    for line in result.lines:
+        print(line.text, line.quad)
 ```
 
-## 検証状況と制限
+Pillow の画像も利用できます。Python SDK は独自の OCR パイプラインを実行し、Go 共有ライブラリを必要としません。別のディレクトリでは「準備」の手順でモデルを配置してください。画像入力、検出、行認識は [Python ガイド](python/README.md)を参照してください。
 
-| プラットフォーム | Go / C++ | 独立 Python | Android |
-|---|---|---|---|
-| macOS ARM64 | OCR・C++・外部 Go・移動した SDK で検証 | OCR と wheel 単独インストールを検証 | クロスビルド環境 |
-| Android arm64-v8a / x86_64、API 26+ | Go native + JNI ビルド済み | Android Python 配布なし | AAR・利用側コンパイル・ELF 検査済み、端末 OCR 未検証 |
-| Windows x64 | CPU OCR/C++ を検証済み。CUDA は実行済みだが結果に差異あり | CPU OCR、独立 API、パッケージを検証済み | 対象外 |
-| Linux デスクトップ | CI 基本テスト成功。実機の手動検証は未実施 | CI テスト成功。実機の手動検証は未実施 | 対象外 |
+## ドキュメント
 
-元の DLL と完全に同等ではありません。自動モードでは未収録の文字体系を警告付きでスキップし、明示指定ではエラーにします。結果はテキスト、行の四角形、文字体系、警告を含み、`confidence` と `words` は null です。領域結合と読み順は実験的で、手書きと自然な CJK 縦書きは未検証です。複雑な RTL 混在には曖昧性があります。Python は macOS で ICU、その他では Go と同様の移植可能な近似を使います。
+[Go](docs/GO.md) · [Python](python/README.md) · [Android / C++ / C](sdk/SDK.md) · [ビルド](docs/BUILD.md) · [検出と行認識](docs/STAGES.md)
 
-Go/C++/Android は contrib ops を含む ONNX Runtime 1.29 CPU を使用します。デスクトップ SDK と AAR はランタイムを同梱し、Go ソース単体では別途必要です。Python は pip で ORT を導入します。ビルド成功は全端末での動作保証ではありません。
+## ライセンスと注意事項
 
-Android 互換性：ARM64 エミュレーターで ORT 1.29 の既定 KleidiAI 経路による SIGILL を確認しています。この経路を無効にした単体検出器は動作しましたが、SDK にはまだ回避設定を組み込んでおらず、Android OCR 全体の検証は完了していません。
+ソースコードは **AGPL-3.0-only**（GNU AGPL 第 3 版のみ）で提供します。[LICENSE](LICENSE)を参照してください。第三者のモデルと依存関係には、それぞれの権利とライセンスが適用されます。[第三者に関する表記](THIRD_PARTY_NOTICES.md)も参照してください。
 
-## Documentation
-
-[Go](docs/GO.md) · [Python](python/README.md) · [SDK](sdk/SDK.md) · [Build](docs/BUILD.md) · [OCRPACK](docs/PACK_FORMAT.md) · [Resources](docs/BUNDLE.md) · [OneModel](docs/FORMAT.md) · [Validation](validation/migration.json)
-
-Source: [MIT](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md).
-
-## 高頻度呼び出しと実験的な高速化
-
-Go/C/C++ は CPU を既定とし、CoreML・CUDA・DirectML、デバイス、処理段階ごとのフォールバック、文字種を明示的に設定できます。Engine を再利用し、`Warmup` で初期化してください。同時処理には少数の独立した Engine を使用します。認識結果の確率配列の追加コピーも削減しています。
-
-オフラインの `oneocr-native adapt` ツールは、元モデルのハッシュを検証する実験用モデルを生成します。元モデルは保持されます。Provider の登録成功だけでは GPU 実行や速度向上を証明できません。CoreML と Windows CUDA は実行済みですが、変換モデルには結果の差異があります。DirectML の互換ランタイムではまだ検証できていません。[詳細](docs/ACCELERATION.md)。
-
-Independent detection and cropped-line recognition: [API guide](docs/STAGES.md). Go, CLI, C/C++ and Python expose separate entry points.
+本プロジェクトは交流・学習を目的とする非公式の実装です。元の提供元の製品やサービスを代表するものではなく、いかなる保証もありません。

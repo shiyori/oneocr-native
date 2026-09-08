@@ -55,19 +55,17 @@ func OneOCROpen(bundle, runtime *C.char, threads C.int32_t, errorOut **C.char) (
 		*errorOut = nil
 	}
 	defer guard(errorOut)
-	if bundle == nil || C.GoString(bundle) == "" {
-		setError(errorOut, fmt.Errorf("oneocr: model package or bundle path is required"))
-		return 0
-	}
 	config := oneocr.Config{Threads: int(threads)}
 	if runtime != nil {
 		config.RuntimeLibrary = C.GoString(runtime)
 	}
-	source := C.GoString(bundle)
-	if stat, err := os.Stat(source); err == nil && stat.IsDir() {
-		config.BundleDir = source
-	} else {
-		config.ModelPath = source
+	if bundle != nil && C.GoString(bundle) != "" {
+		source := C.GoString(bundle)
+		if stat, err := os.Stat(source); err == nil && stat.IsDir() {
+			config.BundleDir = source
+		} else {
+			config.ModelPath = source
+		}
 	}
 	e, err := oneocr.Open(config)
 	if err != nil {
@@ -86,7 +84,7 @@ func registerEngine(e *oneocr.Engine) C.uint64_t {
 	return C.uint64_t(id)
 }
 
-// OneOCROpenWithOptions adds backend/device/fallback and character configuration.
+// OneOCROpenWithOptions accepts thread, image-size and character configuration.
 // It consumes a UTF-8 JSON encoding of oneocr.Config; unknown fields are errors.
 //
 //export OneOCROpenWithOptions

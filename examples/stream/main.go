@@ -24,8 +24,6 @@ func main() {
 func run() error {
 	model := flag.String("model", "", ".ocrpack file")
 	library := flag.String("runtime", "", "ORT library")
-	backend := flag.String("backend", "cpu", "cpu/coreml/cuda/directml")
-	adaptation := flag.String("adaptation-dir", "", "optional experimental model set")
 	workers := flag.Int("workers", 1, "long-lived Engines (1..4)")
 	threads := flag.Int("threads", 1, "CPU threads per Engine (1..16)")
 	flag.Parse()
@@ -41,7 +39,7 @@ func run() error {
 		}
 	}()
 	for i := 0; i < *workers; i++ {
-		e, err := oneocr.Open(oneocr.Config{ModelPath: *model, RuntimeLibrary: *library, Threads: *threads, Backend: oneocr.Backend(*backend), AdaptationDir: *adaptation})
+		e, err := oneocr.Open(oneocr.Config{ModelPath: *model, RuntimeLibrary: *library, Threads: *threads})
 		if err != nil {
 			return err
 		}

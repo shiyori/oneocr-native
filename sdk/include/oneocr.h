@@ -13,19 +13,17 @@ extern "C" {
  * must stop submitting new work before closing. Different engines may run
  * concurrently. Errors are optional char** outputs, initialized to NULL.
  */
-/* model is an .ocrpack file or a legacy bundle directory. A NULL/empty
+/* NULL/empty model discovers the default oneocr-cjk-en.ocrpack. An explicit
+ * model is an .ocrpack file or a legacy bundle directory. A NULL/empty
  * runtime uses ONEOCR_RUNTIME, SDK lib/ discovery or the platform loader. */
 uint64_t OneOCROpen(const char *model, const char *runtime, int32_t threads, char **error);
-/* Additive ABI v2. JSON fields match Go Config: model_path or bundle_dir,
- * runtime_library, backend (cpu/coreml/cuda/directml), device_id, fallback
- * (cpu/error), threads, cache_dir, adaptation_dir, profiling_dir,
- * coreml_compute_units, stage_backends, shape_cache_size and character_classes. */
+/* JSON fields match Go Config: optional model_path or bundle_dir,
+ * runtime_library, threads, max_side and character_classes. */
 uint64_t OneOCROpenWithOptions(const char *options_json, char **error);
 /* timeout_ms=0 has no deadline; positive values include time waiting for the
  * engine. Maximum is 86400000. Return 0 on success, -1 on error. */
 int32_t OneOCRWarmup(uint64_t handle, int64_t timeout_ms, char **error);
-/* Registered providers are not proof of actual acceleration. Profiling is
- * finalized when the engine closes. Returned JSON uses OneOCRFree. */
+/* Runtime information and per-stage run counts/timings. Returned JSON uses OneOCRFree. */
 char *OneOCRDiagnostics(uint64_t handle, char **error);
 char *OneOCRRecognizeEncoded(uint64_t handle, const uint8_t *data, size_t length,
                             const char *script, char **error);

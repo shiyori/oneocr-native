@@ -6,7 +6,6 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
-from .adaptation import BACKENDS, adapt_bundle
 from .bundle import export_bundle
 from .cache import prepare
 from .config import PipelineConfig
@@ -16,15 +15,15 @@ from .errors import OneOcrError
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Native offline OneOCR (experimental CPU engine)")
+    parser = argparse.ArgumentParser(description="Offline OCR for Chinese, Japanese, Korean and English")
     commands = parser.add_subparsers(dest="command", required=True)
     for command in ("inspect", "prepare", "recognize", "detect", "recognize-line", "export"):
         sub = commands.add_parser(command)
         sub.add_argument(
             "--model",
             type=Path,
-            required=True,
-            help=".ocrpack, original .onemodel, or bundle directory (recognize)",
+            required=command in ("prepare", "export"),
+            help="optional model path; uses the default model for recognition",
         )
         sub.add_argument("--output", type=Path, help="write result to a file instead of stdout")
         if command != "inspect":
@@ -40,43 +39,13 @@ def main(argv: list[str] | None = None) -> int:
             )
             sub.add_argument("--max-side", type=int, default=1600)
             sub.add_argument("--threads", type=int, default=2)
-    adapter = commands.add_parser(
-        "adapt", help="create an experimental ONNX model set for Go/C/C++"
-    )
-    adapter.add_argument("--bundle", type=Path, required=True)
-    adapter.add_argument("--directory", type=Path, required=True)
-    adapter.add_argument("--backend", choices=BACKENDS, required=True)
-    adapter.add_argument(
-        "--compact-output",
-        action="store_true",
-        help="return masked token IDs with a complete nonfinite guard",
-    )
-    adapter.add_argument(
-        "--quantization",
-        choices=("grid", "relaxed"),
-        default="grid",
-        help="non-detector conversion: grid retains rounding; relaxed retains only clipping",
-    )
-    adapter.add_argument("--output", type=Path)
     args = parser.parse_args(argv)
     try:
-        if args.command == "adapt":
-            directory = adapt_bundle(
-                args.bundle,
-                args.directory,
-                args.backend,
-                compact=args.compact_output,
-                quantization=args.quantization,
-            )
-            content = json.dumps(
-                {
-                    "adaptation": str(directory),
-                    "backend": args.backend,
-                    "status": "experimental; target-device validation required",
-                },
-                ensure_ascii=False,
-            )
-        elif args.command == "inspect":
+        if hasattr(args, "model") and args.model is None:
+            from .defaults import default_model_path
+
+            args.model = default_model_path()
+        if args.command == "inspect":
             from .ocrpack import MAGIC, PackageSource
 
             with args.model.open("rb") as stream:

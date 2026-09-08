@@ -1,10 +1,9 @@
-// Package oneocr provides offline OCR with verified ONEOCRPK model packages.
+// Package oneocr provides offline OCR for Chinese, Japanese, Korean and English.
 //
-// Open accepts Config.ModelPath for a single .ocrpack or Config.BundleDir for
-// a legacy resource directory. The engine uses a separately supplied full ONNX
-// Runtime CPU library, lazily loads recognizers, and owns its sessions and model
-// descriptor until Close. Recognition supports context cancellation.
+// Open(Config{}) discovers the default oneocr-cjk-en.ocrpack model. The engine
+// owns its model descriptor and ONNX Runtime CPU sessions until Close.
+// RecognizeFile accepts an image path; Recognize and RecognizeRGB accept memory
+// inputs. Detect and RecognizeLine are available for separate pipeline stages.
 //
-// This is an independent experimental implementation, not full original DLL
-// parity. Model resources retain their third-party rights; MIT covers source.
+// Source license: AGPL-3.0-only. Third-party resources retain their own rights.
 package oneocr

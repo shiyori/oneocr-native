@@ -22,14 +22,14 @@ type Engine struct {
 	gate                 chan struct{}
 	closed, heldRuntime  bool
 	config               Config
-	adaptation           *AdaptationManifest
 	runtimeVersion       string
 }
 
 // Open validates the complete bundle and initializes native model sessions.
 // One process can have multiple Engines sharing the same ORT environment.
 func Open(config Config) (*Engine, error) {
-	if err := normalizeBackendConfig(&config); err != nil {
+	config.CharacterClasses = append([]CharacterClass(nil), config.CharacterClasses...)
+	if _, err := characterClassSet(config.CharacterClasses); err != nil {
 		return nil, err
 	}
 	if config.Threads == 0 {
@@ -40,6 +40,9 @@ func Open(config Config) (*Engine, error) {
 	}
 	if config.Threads < 1 || config.Threads > 16 || config.MaxSide < 128 || config.MaxSide > 4096 {
 		return nil, fmt.Errorf("oneocr: invalid Threads or MaxSide")
+	}
+	if err := applyDefaultConfig(&config); err != nil {
+		return nil, err
 	}
 	source, err := openSource(config)
 	if err != nil {
@@ -62,10 +65,6 @@ func Open(config Config) (*Engine, error) {
 			e.Close()
 		}
 	}()
-	e.adaptation, err = readAdaptation(config.AdaptationDir, bundle)
-	if err != nil {
-		return nil, err
-	}
 	if e.detector, err = e.openNetwork(bundle.Pipeline.DetectorPath, "detector", []string{"data", "im_info"}, detectorOutputs()); err != nil {
 		return nil, err
 	}

@@ -56,6 +56,10 @@ func resolveRuntimeLibrary(explicit, modelPath, bundleDir string) (string, error
 			}
 		}
 	}
+	// A local default model can share the runtime installed by the CLI.
+	if installed, err := LoadInstallation(""); err == nil {
+		return installed.RuntimeLibrary, nil
+	}
 	if runtime.GOOS == "darwin" {
 		return "@rpath/" + name, nil
 	}
