@@ -58,8 +58,8 @@ func TestShapeKeySeparatesAllInputs(t *testing.T) {
 }
 func TestNativeAcceleratedShapeCache(t *testing.T) {
 	backend := Backend(os.Getenv("ONEOCR_TEST_BACKEND"))
-	if backend != BackendCUDA && backend != BackendDirectML {
-		t.Skip("set ONEOCR_TEST_BACKEND=cuda or directml")
+	if backend != BackendCUDA {
+		t.Skip("set ONEOCR_TEST_BACKEND=cuda")
 	}
 	model, lib, fixtures, adaptation := os.Getenv("ONEOCR_MODEL_PACKAGE"), os.Getenv("ONEOCR_RUNTIME"), os.Getenv("ONEOCR_FIXTURES"), os.Getenv("ONEOCR_ADAPTATION")
 	if model == "" || lib == "" || fixtures == "" {
@@ -93,8 +93,7 @@ func TestNativeAcceleratedShapeCache(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, s := range e.Diagnostics().Stages {
-		provider := map[Backend]string{BackendCUDA: "CUDAExecutionProvider", BackendDirectML: "DmlExecutionProvider"}[backend]
-		if s.Stage == "detector" && (!s.ExecutionMeasured || s.Providers[provider].KernelEvents == 0) {
+		if s.Stage == "detector" && (!s.ExecutionMeasured || s.Providers["CUDAExecutionProvider"].KernelEvents == 0) {
 			t.Fatal(s)
 		}
 	}

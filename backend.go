@@ -23,7 +23,7 @@ const (
 	BackendCPU      Backend = "cpu"
 	BackendCoreML   Backend = "coreml" // Retired; the default fallback restores original-model CPU.
 	BackendCUDA     Backend = "cuda"
-	BackendDirectML Backend = "directml"
+	BackendDirectML Backend = "directml" // Retired; the default fallback restores original-model CPU.
 )
 
 type FallbackPolicy string
@@ -145,13 +145,11 @@ func backendPlatform(b Backend) error {
 	switch b {
 	case BackendCoreML:
 		return fmt.Errorf("CoreML acceleration has been retired after CPU performance validation; use original-model CPU")
+	case BackendDirectML:
+		return fmt.Errorf("DirectML acceleration has been retired after correctness and CPU performance validation; use original-model CPU")
 	case BackendCUDA:
 		if runtime.GOOS != "windows" && runtime.GOOS != "linux" {
 			return fmt.Errorf("CUDA requires a supported NVIDIA runtime on Windows/Linux")
-		}
-	case BackendDirectML:
-		if runtime.GOOS != "windows" {
-			return fmt.Errorf("DirectML requires Windows with a DirectX 12 device")
 		}
 	}
 	return nil
@@ -194,10 +192,6 @@ func sessionOptions(config Config, backend Backend, stage string) (*ort.SessionO
 			if err == nil {
 				err = options.AppendExecutionProviderCUDA(cuda)
 			}
-		}
-	case BackendDirectML:
-		if err = options.SetMemPattern(false); err == nil {
-			err = options.AppendExecutionProviderDirectML(config.DeviceID)
 		}
 	}
 	if err != nil {

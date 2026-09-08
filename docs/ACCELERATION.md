@@ -1,6 +1,6 @@
 # 高频识别与可选加速
 
-默认仍使用原始模型和 ONNX Runtime CPU。Go SDK、CLI、C/C++ 可显式选择 CUDA、DirectML；旧 `coreml` 配置在默认回退策略下恢复原模型 CPU，严格策略明确报错；后端注册成功并不保证主要计算进入 GPU，也不保证更快。加速模型是独立的实验副本，不覆盖 `.ocrpack` 或原资源。
+默认仍使用原始模型和 ONNX Runtime CPU。Go SDK、CLI、C/C++ 可显式选择 CUDA；旧 `coreml`、`directml` 配置在默认回退策略下恢复原模型 CPU，严格策略明确报错；后端注册成功并不保证主要计算进入 GPU，也不保证更快。加速模型是独立的实验副本，不覆盖 `.ocrpack` 或原资源。
 
 ## 配置与回退
 
@@ -23,8 +23,8 @@ result, err := engine.Recognize(ctx, frame, oneocr.Options{})
 
 | 字段 | 默认与含义 |
 |---|---|
-| `Backend` | `cpu`；可选 `cuda`、`directml`；旧 `coreml` 仅作兼容，默认恢复 CPU |
-| `DeviceID` | `0`；CUDA/DirectML 的设备索引 |
+| `Backend` | `cpu`；可选 `cuda`；旧 `coreml`、`directml` 仅作兼容，默认恢复 CPU |
+| `DeviceID` | `0`；CUDA 的设备索引 |
 | `Fallback` | `cpu`：注册、建会话或原生 Run 失败时，允许该阶段改用原模型 CPU 会话；`error` 返回错误 |
 | `StageBackends` | 可单独覆盖 `detector`、`classifier`、`recognizer/CJK`、`recognizer/Latin` 等阶段 |
 | `CoreMLComputeUnits` | 仅保留旧配置兼容；不再启动 CoreML |
@@ -50,7 +50,7 @@ result, err := engine.Recognize(ctx, frame, oneocr.Options{})
 
 容量限制针对存活会话；旧 CoreML 磁盘编译缓存不再使用。尺寸缓存的创建和淘汰成本也必须计入混合尺寸负载；不能从固定尺寸命中结果推断通用加速收益。
 
-DirectML 使用顺序执行并禁用 memory pattern；同一 session 不允许多个 `Run` 同时执行，独立 Engine 使用各自 session。[官方限制](https://onnxruntime.ai/docs/execution-providers/DirectML-ExecutionProvider.html#configuration-options)
+DirectML 已停用，不再注册其执行提供程序。此前验证遵循其顺序执行、禁用 memory pattern 和同一 session 的 Run 串行限制。[官方限制](https://onnxruntime.ai/docs/execution-providers/DirectML-ExecutionProvider.html#configuration-options)
 
 ## 独立模型转换
 
@@ -61,15 +61,13 @@ python -m pip install ./python
 oneocr unpack --model models/oneocr-cjk-en.ocrpack --directory /path/to/source-bundle
 oneocr-native adapt --bundle /path/to/source-bundle \
   --directory /path/to/cuda-candidate --backend cuda
-oneocr-native adapt --bundle /path/to/source-bundle \
-  --directory /path/to/directml-candidate --backend directml
 ```
 
 输出目录必须不存在。清单关联原容器摘要、每个源模型摘要、转换模型摘要及输出接口；修改权重或更换包后需要重新转换。GPU 运行时和依赖库需另行提供，转换工具不会安装 CUDA、cuDNN 或 GPU 驱动。
 
 - **CoreML**：模型适配已淘汰，不再提供转换入口，旧 CoreML 适配清单明确报错。后端枚举保留兼容；默认 `FallbackCPU` 下真正恢复原模型 CPU，诊断保留请求后端及退休原因，`FallbackError` 明确报错。
 - **CUDA**：检测器保留原量化算子；识别器将 `DynamicQuantizeLSTM` 转为标准 LSTM，处理转置权重和 i/o/f/c 门顺序。
-- **DirectML**：优先保留原量化检测器与投影，转换不支持的量化 LSTM。
+- **DirectML**：已因正确性与性能验证结果淘汰；默认 `FallbackCPU` 恢复原模型 CPU，`FallbackError` 报错。旧开发转换工具的产物不再启用 DirectML 执行。
 - 分类和识别的默认 `--quantization grid` 保留激活舍入及裁剪。`--quantization relaxed` 仅保留裁剪，是更激进的数值实验。裁剪不能随意删除：量化边界可能承担 ReLU 行为。
 
 即使保留量化网格，浮点累加和标准 LSTM 也可能改变结果，必须逐例回归。不能因为 ONNX checker 或 CPU 加载通过就宣称 GPU 可用。某阶段候选不合格时，例如 `StageBackends: map[string]oneocr.Backend{"detector": oneocr.BackendCPU}`，可保留该阶段原模型。
@@ -102,6 +100,14 @@ Android 模拟器上原模型的 48 个卷积均为 UINT8 激活、INT8 权重�
 
 加速阶段拖慢整体处理时恢复原模型 CPU；最终启用组合必须达到 20% 的端到端收益门槛。该选择由实际平台验收结果确定，
 使用 `StageBackends` 保持 CPU 阶段；不能让被判定更慢的路径继续作为默认加速执行。
+
+先根据算子支持、实际分区和转换成本判断是否有明确加速依据；没有合理提速预期的方案不展开测试。
+有依据的方案先短测，只有结果显示有希望达到门槛才投入完整验收。正确性失败或短测明显慢于 CPU 即淘汰，不为否定方案补足三轮。
+
+Windows RTX 5080、ORT 1.29 / DirectML 1.15.4 的原图分阶段验证中，检测器完整 OCR 仅 37/42 图文字相同，
+框数量 40/42 相同，最大角点误差 32.006 像素、分数误差 0.04799；原 Latin 仅 40/42 图文字相同。
+分类器和原 CJK 的裁剪语义及 42 图文字通过，但短测完整 OCR 单实例平均耗时分别为 216.061、165.102 ms，
+同机官方原 CPU 为 140.937 ms；双实例也更慢。没有应保留的 DirectML 阶段，SDK 已实际恢复 CPU 处理。
 
 ### 紧凑输出
 

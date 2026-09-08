@@ -44,6 +44,8 @@ type Config struct {
 	// Backend defaults to CPU. StageBackends may override detector, classifier,
 	// or recognizer/<script>, e.g. recognizer/CJK. CPU fallback remains available
 	// inside an accelerated graph; Fallback controls whole-session fallback.
+	// CoreML and DirectML are retired compatibility aliases; their default
+	// fallback restores original-model CPU execution.
 	Backend       Backend            `json:"backend,omitempty"`
 	StageBackends map[string]Backend `json:"stage_backends,omitempty"`
 	DeviceID      int                `json:"device_id,omitempty"`

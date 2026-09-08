@@ -127,16 +127,25 @@ func TestAdaptationRejectsRetiredDetectorRecipes(t *testing.T) {
 		})
 	}
 }
-func TestNativeRetiredCoreMLFallbackAndProfiling(t *testing.T) {
+func TestNativeRetiredBackendFallbackAndProfiling(t *testing.T) {
 	bundle, library, fixtures := os.Getenv("ONEOCR_BUNDLE"), os.Getenv("ONEOCR_RUNTIME"), os.Getenv("ONEOCR_FIXTURES")
 	if bundle == "" || library == "" || fixtures == "" {
 		t.Skip("set native integration paths")
 	}
-	cfg := Config{BundleDir: bundle, RuntimeLibrary: library, Backend: BackendCoreML, Threads: 1, Fallback: FallbackError}
+	for _, backend := range []Backend{BackendCoreML, BackendDirectML} {
+		t.Run(string(backend), func(t *testing.T) {
+			testRetiredBackendFallback(t, bundle, library, fixtures, backend)
+		})
+	}
+}
+
+func testRetiredBackendFallback(t *testing.T, bundle, library, fixtures string, backend Backend) {
+	t.Helper()
+	cfg := Config{BundleDir: bundle, RuntimeLibrary: library, Backend: backend, Threads: 1, Fallback: FallbackError, ShapeCacheSize: 2}
 	if e, err := Open(cfg); err == nil {
 		e.Close()
 		t.Fatal("strict unsupported provider succeeded")
-	} else if !strings.Contains(err.Error(), "CoreML acceleration has been retired") {
+	} else if !strings.Contains(err.Error(), "acceleration has been retired") {
 		t.Fatal(err)
 	}
 	cfg.Fallback = FallbackCPU
@@ -154,8 +163,11 @@ func TestNativeRetiredCoreMLFallbackAndProfiling(t *testing.T) {
 		t.Fatal(result.Text, err)
 	}
 	for _, stage := range e.Diagnostics().Stages {
-		if stage.Requested != BackendCoreML || stage.Registered != BackendCPU || !strings.Contains(stage.FallbackReason, "CoreML acceleration has been retired") || stage.ExecutionMeasured {
+		if stage.Requested != backend || stage.Registered != BackendCPU || !strings.Contains(stage.FallbackReason, "acceleration has been retired") || stage.ExecutionMeasured {
 			t.Fatal(stage)
+		}
+		if stage.ShapeCacheMisses != 0 || len(stage.ShapeSessions) != 0 {
+			t.Fatal("retired backend created accelerated shape sessions", stage)
 		}
 	}
 	if err = e.Close(); err != nil {
