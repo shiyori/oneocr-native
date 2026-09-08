@@ -18,7 +18,7 @@ from onnx import TensorProto, helper, numpy_helper
 from .adaptation import _Converter, _node_inputs
 from .errors import ModelFormatError
 
-RECIPE = "v2-detector-integer-grid"
+RECIPE = "v2.1-detector-integer-grid"
 FLOAT_INTEGER_LIMIT = 2**24
 
 
@@ -44,7 +44,7 @@ def lookup_table(node: onnx.NodeProto, tensors: dict[str, np.ndarray]) -> np.nda
         helper.make_tensor_value_info(
             reference.input[s],
             TensorProto.UINT8,
-            [256, 1] if s == 0 and binary else [1, 256] if binary else [256],
+            shape,
         )
         for s in slots
     ]
@@ -73,9 +73,13 @@ def lookup_table(node: onnx.NodeProto, tensors: dict[str, np.ndarray]) -> np.nda
         model.SerializeToString(), options, providers=["CPUExecutionProvider"]
     )
     values = np.arange(256, dtype=np.uint8)
-    feeds = {reference.input[0]: values[:, None] if binary else values}
+    # Broadcasting selects a different CPU kernel and can change half-ties on
+    # x64. The detector's residual Adds are same-shaped, non-scalar operations.
+    feeds = {
+        reference.input[0]: np.broadcast_to(values[:, None], shape).copy() if binary else values
+    }
     if binary:
-        feeds[reference.input[3]] = values[None, :]
+        feeds[reference.input[3]] = np.broadcast_to(values[None, :], shape).copy()
     return session.run(None, feeds)[0].astype(np.float32).reshape(-1)
 
 
@@ -143,6 +147,27 @@ class _DetectorConverter(_Converter):
             ],
         )
 
+    def round_even(self, value: str) -> str:
+        """Use FP32's unit spacing to round to even without device Round.
+
+        The caller bounds x to [-256, 256]. Adding the even integer 3*2**22
+        places every result strictly in [2**23, 2**24), where FP32 has unit
+        spacing. That addition rounds half ties to even; subtracting the bias
+        then recovers the small integer exactly. The INT32 round trip both
+        preserves every biased integer and prevents cancelling the two float
+        offsets across an identity/cast-to-float optimization.
+
+        CoreML GPU Round was observed returning 27 for an exact 26.5 in a
+        detector subgraph. Floor/comparison alternatives execute on CPU in the
+        tested EP; these Add/Cast/Sub operations can stay in CoreML instead.
+        Actual EP arithmetic still needs validation after graph optimization.
+        """
+        bias = self.constant(np.float32(3 * 2**22), "round_bias")
+        shifted = self.emit("Add", [value, bias])
+        integer = self.emit("Cast", [shifted], to=TensorProto.INT32)
+        restored = self.emit("Cast", [integer], to=TensorProto.FLOAT)
+        return self.emit("Sub", [restored, bias])
+
     def conv(self, n: onnx.NodeProto) -> None:
         if len(n.input) not in (8, 9):
             raise ModelFormatError("unsupported detector QLinearConv inputs")
@@ -201,6 +226,13 @@ class _DetectorConverter(_Converter):
                     [chunk, self.constant(wg[:, start:end].astype(np.float32), "integer_weight")],
                     **attrs,
                 )
+                if self.backend == "cuda":
+                    # cuDNN may leave a small transform residual around an
+                    # integer (observed: 231 -> 230.999...). Do not truncate
+                    # that residual into a whole-code error. This restores the
+                    # exact integer only while the provider's error is < .5;
+                    # target-device validation remains mandatory.
+                    partial = self.emit("Round", [partial])
                 partial = self.emit("Cast", [partial], to=TensorProto.INT32)
                 acc = partial if acc is None else self.emit("Add", [acc, partial])
             group_results.append(acc)
@@ -213,7 +245,17 @@ class _DetectorConverter(_Converter):
         if not np.isfinite(multiplier).all():
             raise ModelFormatError("nonfinite detector Conv requantization multiplier")
         scaled = self.emit("Mul", [acc, self.constant(multiplier, "requant_scale")])
-        rounded = self.emit("Round", [scaled])
+        # Values outside this interval saturate to the same UINT8 endpoint
+        # regardless of rounding; this also bounds the FP32 bias-rounding interval.
+        bounded = self.emit(
+            "Clip",
+            [
+                scaled,
+                self.constant(np.float32(-int(yzero) - 1), "round_min"),
+                self.constant(np.float32(256 - int(yzero)), "round_max"),
+            ],
+        )
+        rounded = self.round_even(bounded)
         shifted = self.emit("Add", [rounded, self.constant(np.float32(yzero), "yzero")])
         self.emit(
             "Clip",
@@ -221,6 +263,32 @@ class _DetectorConverter(_Converter):
             n.output[0],
         )
         self.mark(n.output[0], ys, yz)
+
+    def elementwise_add_guard(self, a: str, b: str) -> str:
+        """Reject broadcasting/scalars instead of using the wrong CPU oracle.
+
+        Shape operations act on metadata, not image tensors. Fixed-shape graph
+        optimization folds the check away. The named Gather fails for an
+        unsupported layout; its zero result is part of the lookup index.
+        """
+        ashape, bshape = self.emit("Shape", [a]), self.emit("Shape", [b])
+        same_dims = self.emit("Equal", [ashape, bshape])
+        same_dims = self.emit("Cast", [same_dims], to=TensorProto.INT32)
+        same_dims = self.emit("ReduceMin", [same_dims], keepdims=0)
+        same_rank = self.emit("Equal", [self.emit("Size", [ashape]), self.emit("Size", [bshape])])
+        same_rank = self.emit("Cast", [same_rank], to=TensorProto.INT32)
+        nonscalar = self.emit(
+            "Greater", [self.emit("Size", [a]), self.constant(np.int64(1), "scalar_size")]
+        )
+        nonscalar = self.emit("Cast", [nonscalar], to=TensorProto.INT32)
+        valid = self.emit("Mul", [self.emit("Mul", [same_dims, same_rank]), nonscalar])
+        invalid = self.emit("Sub", [self.constant(np.int32(1), "one"), valid])
+        return self.emit(
+            "Gather",
+            [self.constant(np.array([0], np.int32), "valid_layout"), invalid],
+            axis=0,
+            name=self.name("QLinearAdd_requires_equal_nonscalar_shapes"),
+        )
 
     def lut(self, n: onnx.NodeProto) -> None:
         binary = n.op_type == "QLinearAdd"
@@ -235,6 +303,7 @@ class _DetectorConverter(_Converter):
             index = self.emit("Mul", [index, self.constant(np.int32(256), "lut_stride")])
             other = self.emit("Cast", [n.input[3]], to=TensorProto.INT32)
             index = self.emit("Add", [index, other])
+            index = self.emit("Add", [index, self.elementwise_add_guard(n.input[0], n.input[3])])
         table = self.constant(lookup_table(n, self.tensors), "lookup")
         self.emit("Gather", [table, index], n.output[0], axis=0)
         self.mark(n.output[0], *n.input[-2:])

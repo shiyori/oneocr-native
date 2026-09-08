@@ -9,6 +9,7 @@ import onnx
 import onnxruntime as ort
 import pytest
 from onnx import TensorProto, helper
+from onnxruntime.capi.onnxruntime_pybind11_state import InvalidArgument
 from test_adaptation import make_model, tensor
 
 from oneocr_native.adaptation import _prune, adapt_model
@@ -16,9 +17,9 @@ from oneocr_native.detector_adaptation import _DetectorConverter, channel_blocks
 from oneocr_native.errors import ModelFormatError
 
 
-def convert(model):
+def convert(model, backend="coreml"):
     candidate = copy.deepcopy(model)
-    converter = _DetectorConverter(candidate, "coreml")
+    converter = _DetectorConverter(candidate, backend)
     converter.convert()
     _prune(candidate)
     onnx.checker.check_model(candidate)
@@ -126,6 +127,27 @@ def test_split_accumulation_and_int32_bias():
     assert len(channel_blocks(weight, 129)) > 1
 
 
+def test_cuda_does_not_truncate_small_integer_accumulator_residuals():
+    model = conv_model([[[[1]]]], [128], xs=1, xz=0, ws=1, ys=1, yz=0)
+    candidate, _ = convert(model, "cuda")
+    # Inject the observed kind of cuDNN error at the Conv output. The remaining
+    # actual conversion graph must restore integers before bias/requantization.
+    partials = np.array(
+        [-100.000244, -99.999755, 7.99999, 8.00002, 100.9999, 101.0001], np.float32
+    ).reshape(1, 1, 2, 3)
+    conv = next(n for n in candidate.graph.node if n.op_type == "Conv")
+    conv.CopyFrom(helper.make_node("Identity", ["partial"], list(conv.output)))
+    del candidate.graph.input[:]
+    candidate.graph.input.append(
+        helper.make_tensor_value_info("partial", TensorProto.FLOAT, partials.shape)
+    )
+    _prune(candidate)
+    for optimized in (False, True):
+        np.testing.assert_array_equal(
+            run(candidate, {"partial": partials}, optimized)[0], np.rint(partials) + 128
+        )
+
+
 def test_reject_overflow_and_contract_mismatch():
     model = conv_model([[[[127]]]], [np.iinfo(np.int32).max])
     with pytest.raises(ModelFormatError, match="overflow"):
@@ -135,6 +157,48 @@ def test_reject_overflow_and_contract_mismatch():
     model.graph.node[1].input[1] = "wrong"
     with pytest.raises(ModelFormatError, match="contract mismatch"):
         convert(model)
+
+
+@pytest.mark.parametrize("provider", ["CPUExecutionProvider", "CoreMLExecutionProvider"])
+def test_explicit_ties_even_all_boundaries(provider):
+    if provider == "CoreMLExecutionProvider" and os.environ.get("ONEOCR_TEST_COREML") != "1":
+        pytest.skip("set ONEOCR_TEST_COREML=1 for the hardware rounding regression")
+    if provider not in ort.get_available_providers():
+        pytest.skip(f"{provider} unavailable")
+    ties = np.arange(-256, 256, dtype=np.float32) + np.float32(0.5)
+    values = np.concatenate(
+        [ties, np.nextafter(ties, np.inf), np.nextafter(ties, -np.inf)]
+    ).reshape(1, 1, 32, 48)
+    model = make_model(
+        [],
+        [helper.make_tensor_value_info("data", TensorProto.FLOAT, values.shape)],
+        [helper.make_tensor_value_info("result", TensorProto.FLOAT, values.shape)],
+    )
+    converter = _DetectorConverter(model, "coreml")
+    converter.emit("Identity", [converter.round_even("data")], "result")
+    model.graph.node.extend(converter.nodes)
+    onnx.checker.check_model(model)
+    options = ort.SessionOptions()
+    options.intra_op_num_threads = options.inter_op_num_threads = 1
+    options.log_severity_level = 3
+    providers = (
+        [
+            (
+                "CoreMLExecutionProvider",
+                {
+                    "ModelFormat": "MLProgram",
+                    "MLComputeUnits": "CPUAndGPU",
+                    "RequireStaticInputShapes": "1",
+                    "AllowLowPrecisionAccumulationOnGPU": "0",
+                },
+            ),
+            "CPUExecutionProvider",
+        ]
+        if provider == "CoreMLExecutionProvider"
+        else [provider]
+    )
+    compiled = ort.InferenceSession(model.SerializeToString(), options, providers=providers)
+    np.testing.assert_array_equal(compiled.run(None, {"data": values})[0], np.rint(values))
 
 
 @pytest.mark.parametrize("binary", [False, True])
@@ -174,15 +238,19 @@ def test_lookup_exhaustive(binary, optimized):
     feeds = {"a": ((np.arange(256, dtype=np.float32) - 129) * np.float32(0.019))[:, None]}
     if binary:
         feeds["b"] = ((np.arange(256, dtype=np.float32) - 117) * np.float32(0.031))[None, :]
+        with pytest.raises(InvalidArgument, match="requires_equal_nonscalar_shapes"):
+            run(candidate, feeds, optimized)
+        with pytest.raises(InvalidArgument, match="requires_equal_nonscalar_shapes"):
+            run(
+                candidate,
+                {"a": np.zeros((1, 1), np.float32), "b": np.zeros((1, 1), np.float32)},
+                optimized,
+            )
+        feeds = {k: np.broadcast_to(v, (256, 256)).copy() for k, v in feeds.items()}
     np.testing.assert_array_equal(
         run(candidate, feeds, optimized)[0], run(model, feeds, optimized)[0]
     )
     if binary:
-        # Elementwise/vector kernels and broadcasting must agree with the oracle table.
-        expanded = {k: np.broadcast_to(v, (256, 256)).copy() for k, v in feeds.items()}
-        np.testing.assert_array_equal(
-            run(candidate, expanded, optimized)[0], run(model, expanded, optimized)[0]
-        )
         add = next(n for n in model.graph.node if n.op_type == "QLinearAdd")
         add.input[3:6] = add.input[:3]
         candidate, _ = convert(model)
@@ -228,9 +296,68 @@ def test_real_first_divergent_conv_and_detector():
     del original.graph.output[:]
     original.graph.output.extend(values[name] for name in names)
     assert info["split_convolutions"] == 2
-    assert info["recipe_version"] == "v2-detector-integer-grid"
+    assert info["recipe_version"] == "v2.1-detector-integer-grid"
     for optimized in (False, True):
         for expected, actual in zip(
             run(original, feeds, optimized), run(candidate, feeds, optimized)
         ):
             np.testing.assert_array_equal(actual, expected)
+
+
+@pytest.mark.integration
+def test_real_coreml_half_tie_in_detector_subgraph():
+    root = os.environ.get("ONEOCR_DETECTOR_REGRESSION_DIR")
+    captured = os.environ.get("ONEOCR_COREML_REGRESSION_INPUT")
+    if not root or not captured or os.environ.get("ONEOCR_TEST_COREML") != "1":
+        pytest.skip(
+            "provide the original detector and CoreML half-tie capture to enable regression"
+        )
+    if "CoreMLExecutionProvider" not in ort.get_available_providers():
+        pytest.skip("CoreMLExecutionProvider unavailable")
+    source = (Path(root) / "formal-cjk-source/models/detection/universal.onnx").read_bytes()
+    with np.load(captured) as archive:
+        feeds = {name: archive[name] for name in ("data", "im_info")}
+    converted, _ = adapt_model(source, "coreml", detector=True)
+    original, candidate = (
+        onnx.load_model_from_string(source),
+        onnx.load_model_from_string(converted),
+    )
+    probe = "pytorch_1775_quantized"
+    original.graph.output.append(
+        helper.make_tensor_value_info(probe, TensorProto.UINT8, [None] * 4)
+    )
+    candidate.graph.output.append(
+        helper.make_tensor_value_info(probe, TensorProto.FLOAT, [None] * 4)
+    )
+    for value in candidate.graph.input:
+        for dim, size in zip(value.type.tensor_type.shape.dim, feeds[value.name].shape):
+            dim.dim_value = size
+    candidate = onnx.shape_inference.infer_shapes(candidate)
+    names = [v.name for v in candidate.graph.output]
+    options = ort.SessionOptions()
+    options.intra_op_num_threads = options.inter_op_num_threads = 1
+    options.log_severity_level = 3
+    cpu = ort.InferenceSession(
+        original.SerializeToString(), options, providers=["CPUExecutionProvider"]
+    )
+    gpu = ort.InferenceSession(
+        candidate.SerializeToString(),
+        options,
+        providers=[
+            (
+                "CoreMLExecutionProvider",
+                {
+                    "ModelFormat": "MLProgram",
+                    "MLComputeUnits": "CPUAndGPU",
+                    "RequireStaticInputShapes": "1",
+                    "AllowLowPrecisionAccumulationOnGPU": "0",
+                },
+            ),
+            "CPUExecutionProvider",
+        ],
+    )
+    expected = cpu.run(names, feeds)
+    # The captured failure was 26.5 -> 27 instead of 26, then zero point 109.
+    assert expected[-1][0, 69, 15, 11] == 135
+    for actual, reference in zip(gpu.run(names, feeds), expected):
+        np.testing.assert_array_equal(actual, reference)

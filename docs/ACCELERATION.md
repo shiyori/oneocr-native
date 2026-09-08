@@ -79,7 +79,7 @@ oneocr-native adapt --bundle /path/to/source-bundle \
 
 ### 检测器 v2 整数网格配方
 
-CoreML/CUDA 的 `--quantization grid` 检测器使用 `v2-detector-integer-grid`。
+CoreML/CUDA 的 `--quantization grid` 检测器使用 `v2.1-detector-integer-grid`。
 分类器、识别器和显式 `relaxed` 模式仍使用原配方。公开检测接口仍为 18 个浮点输出，
 无需修改 Go/C/C++ 调用代码；旧候选目录不会自动升级，需重新生成到新目录。
 
@@ -87,8 +87,17 @@ CoreML/CUDA 的 `--quantization grid` 检测器使用 `v2-detector-integer-grid`
 - 卷积先减 zero point，以整数值权重计算；按绝对累加上界将超出 `2^24` 的卷积拆为连续通道段。
   段结果转为 INT32 后求和并加入原 INT32 偏置，再按原 CPU 算子的 FLOAT32 比例、舍入和截断重定标。
   上界可能溢出 INT32、单通道无法安全拆分或量化连接不匹配时，转换报错。
+  CUDA 在转 INT32 前先恢复到最近整数，避免 cuDNN 的微小小数残差被截断成一级误差；
+  这要求设备卷积残差小于 0.5，不能替代目标设备的逐输出验证。
+- 重定标利用 FP32 在 `[2^23, 2^24)` 区间的单位间距实现 ties-to-even，不依赖设备端 Round。
+  CoreML GPU 实测中，即使乘法结果同为 `26.5`，Round 仍可能得到 `27` 而 CPU 为 `26`。
+  v2.1 先将值限制在不会改变最终 UINT8 饱和结果的区间，再加偶数偏移 `3×2^22`，
+  经 INT32/FLOAT 转换后减去偏移，恢复舍入后的整数；该转换防止前后的浮点偏移被直接消去。
+  这些 Add/Cast/Sub 可由 CoreML 执行，无需使用该 EP 尚未接管的 Floor/比较操作。
 - Add/Sigmoid 分别使用完整的 65536 项和 256 项查找表，表由转换环境的 ORT CPU 算子生成。
   **在目标平台生成候选**，并以该机器的原模型 CPU 为基准验收；不要将一个平台的表视为所有平台的参考。
+  Add 表使用同形状的逐元素输入生成，不能以广播算子的舍入代替；检测器 Add 只接受同形状、
+  元素数大于 1 的输入。图内检查形状元数据并对不支持的广播/标量布局报错，固定尺寸优化可消除检查。
 - 清单记录配方、参考 ORT 版本/系统/架构、源和候选摘要以及拆分卷积数量；现有按模型内容划分的运行缓存隔离新旧模型。
 
 该配方仍标记为 experimental/approximate：FP32 类型和累加上界不能保证设备内部没有降低精度或变换算法。
@@ -101,9 +110,12 @@ CoreML 的部分整数操作可能由 ORT CPU 分区执行；这与整个阶段�
 未达标时保留失败节点和最小复现，不以调整检测阈值或自动改用 CPU 宣称修复完成。
 
 单元测试覆盖舍入边界、zero point、偏置、分组/步幅/填充、分段累加与查找表穷举。
+`ONEOCR_TEST_COREML=1` 启用 CoreML 舍入回归，检查半整数及其相邻可表示值；需要可用 CoreML EP。
 `ONEOCR_DETECTOR_REGRESSION_DIR` 可指向仓库外的原始回归资料目录，运行实际首个差异节点及完整检测输出回归；
 需要其中的 `formal-cjk-source/models/detection/universal.onnx` 和 `universal/input0.bin`（FLOAT32、1×3×160×1024）。
 未提供资料时该测试明确跳过，不将模型或捕获张量写入测试源码。
+另可设置 `ONEOCR_COREML_REGRESSION_INPUT` 为 CoreML 半值失败样例的捕获 NPZ（`data`、`im_info`），
+同时启用上述两个变量，检查固定尺寸完整图及曾出现 `135/136` 差异的中间量化输出。
 
 ### 紧凑输出
 
