@@ -341,7 +341,15 @@ def adapt_model(
         del model.graph.output[:]
         model.graph.output.extend(values[name] for name in ("script_id_score", "flip_score"))
     _prune(model)
-    converter = _Converter(model, backend, quantization == "grid")
+    recipe = "v1"
+    reference = None
+    if detector and backend in ("coreml", "cuda") and quantization == "grid":
+        from .detector_adaptation import RECIPE, _DetectorConverter, reference_runtime
+
+        converter = _DetectorConverter(model, backend)
+        recipe, reference = RECIPE, reference_runtime()
+    else:
+        converter = _Converter(model, backend, quantization == "grid")
     converter.convert()
     if compact:
         compact_recognizer(model)
@@ -352,6 +360,12 @@ def adapt_model(
         "outputs": [v.name for v in model.graph.output],
         "converted_operators": converter.converted,
         "approximate": bool(converter.converted),
+        "recipe_version": recipe,
+        **(
+            {"reference_runtime": reference, "split_convolutions": converter.split_convolutions}
+            if reference
+            else {}
+        ),
     }
 
 
@@ -399,7 +413,8 @@ def adapt_bundle(
                 "bytes": len(result),
                 "sha256": sha256(result).hexdigest(),
                 "source_sha256": resources[original]["sha256"],
-                "recipe": f"v1-{backend}-{quantization}" + ("-compact" if use_compact else ""),
+                "recipe": f"{details['recipe_version']}-{backend}-{quantization}"
+                + ("-compact" if use_compact else ""),
                 **details,
             }
         result = {
