@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/shiyori/oneocr-native)](https://github.com/shiyori/oneocr-native/releases)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-blue.svg)](LICENSE)
 
-中国語・日本語・韓国語・英語・数字に対応するオフライン OCR。Go、Android、C++、独立した Python SDK を提供します。共通の既定モデルを使うため、モデルの選択や呼び出しごとのパス指定は不要です。
+中国語・日本語・韓国語・英語・数字に対応するオフライン OCR。Go、Android、C++、Python SDK を提供します。
 
 ## 準備
 
@@ -17,11 +17,11 @@ git clone https://github.com/shiyori/oneocr-native.git
 cd oneocr-native
 ```
 
-既定の [oneocr-cjk-en.ocrpack](models/oneocr-cjk-en.ocrpack) は `models/` にあります。リポジトリのルートで実行すれば自動的に見つかります。別のプロジェクトでは、作業ディレクトリまたは実行ファイルの隣の `models/` に置いてください。Android は下記の assets を使います。モデルと SDK は分離されており、推論時の通信は不要です。
+リポジトリには[既定モデル](models/oneocr-cjk-en.ocrpack)が含まれます。別のプロジェクトでは `models/`、Android では assets に配置してください。
 
 ## Go / CLI
 
-Go ≥1.24、CGO、ONNX Runtime 1.29 CPU が必要です。ソースからの導入時はランタイムを一度指定します。デスクトップ SDK にはランタイムが含まれるため、`oneocr install` だけで導入できます。
+ソースからの利用には Go ≥1.24、CGO、ONNX Runtime 1.29 CPU が必要です。デスクトップ SDK にはランタイムが含まれるため、`--runtime` は省略できます。
 
 ```bash
 go install ./cmd/oneocr
@@ -52,7 +52,7 @@ func main() {
 }
 ```
 
-導入後は別のディレクトリからも呼び出せます。`ONEOCR_RUNTIME` でも指定でき、Windows は `onnxruntime.dll`、macOS は `libonnxruntime.dylib`、Linux は `libonnxruntime.so` を使用します。外部プロジェクトへの組み込み、メモリ上の画像、タイムアウトは [Go ガイド](docs/GO.md)を参照してください。
+導入方法と画像入力は [Go ガイド](docs/GO.md)を参照してください。
 
 ## Android
 
@@ -82,7 +82,7 @@ try (OneOcr engine = OneOcr.fromAsset(context)) {
 }
 ```
 
-AAR には JNI、Go native、ONNX Runtime が含まれるため、ORT の追加依存は不要です。`fromAsset(context)` はモデルをアプリ専用領域へストリーム保存します。複数画像ではエンジンを再利用し、終了時に閉じてください。AAR のビルドと導入は [SDK ガイド](sdk/SDK.md)を参照してください。
+AAR にはランタイムが含まれます。導入の詳細は [SDK ガイド](sdk/SDK.md)を参照してください。
 
 ## C++17
 
@@ -116,11 +116,11 @@ cmake -S . -B build -DCMAKE_PREFIX_PATH=/absolute/path/to/oneocr-sdk
 cmake --build build --config Release
 ```
 
-既定モデルはアプリの作業ディレクトリの `models/` に置きます。ランタイムは SDK に含まれます。結果は UTF-8 JSON で、リソースは自動解放されます。エンコード済みバイト列や RGB 入力にも対応しています。C API と配置方法は [SDK ガイド](sdk/SDK.md)を参照してください。
+SDK にはランタイムが含まれ、結果は JSON で返ります。C API と配置方法は [SDK ガイド](sdk/SDK.md)を参照してください。
 
 ## Python 3.11–3.13
 
-リポジトリのルートでインストールします。依存関係は pip が導入します。ビルド済み wheel は `python -m pip install oneocr_native-0.1.0-py3-none-any.whl` で導入できます。
+リポジトリのルートで実行します。依存関係は pip が導入します。
 
 ```bash
 python -m pip install ./python
@@ -138,7 +138,7 @@ with OneOcrEngine() as engine:
         print(line.text, line.quad)
 ```
 
-Pillow の画像も利用できます。Python SDK は独自の OCR パイプラインを実行し、Go 共有ライブラリを必要としません。別のディレクトリでは「準備」の手順でモデルを配置してください。画像入力、検出、行認識は [Python ガイド](python/README.md)を参照してください。
+画像入力とその他の使い方は [Python ガイド](python/README.md)を参照してください。
 
 ## ドキュメント
 
@@ -146,6 +146,6 @@ Pillow の画像も利用できます。Python SDK は独自の OCR パイプラ
 
 ## ライセンスと注意事項
 
-ソースコードは **AGPL-3.0-only**（GNU AGPL 第 3 版のみ）で提供します。[LICENSE](LICENSE)を参照してください。第三者のモデルと依存関係には、それぞれの権利とライセンスが適用されます。[第三者に関する表記](THIRD_PARTY_NOTICES.md)も参照してください。
+ソースコード：[AGPL-3.0-only](LICENSE)。モデルと依存関係：[第三者に関する表記](THIRD_PARTY_NOTICES.md)。
 
 本プロジェクトは交流・学習を目的とする非公式の実装です。元の提供元の製品やサービスを代表するものではなく、いかなる保証もありません。

@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/shiyori/oneocr-native)](https://github.com/shiyori/oneocr-native/releases)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-blue.svg)](LICENSE)
 
-离线 OCR，支持中文、日文、韩文、英文和数字，提供 Go、Android、C++ 和独立 Python SDK。默认使用同一个模型，无需选择模型或在每次调用时传入路径。
+支持中日韩英和数字的离线 OCR，提供 Go、Android、C++、Python SDK。
 
 ## 准备
 
@@ -17,11 +17,11 @@ git clone https://github.com/shiyori/oneocr-native.git
 cd oneocr-native
 ```
 
-默认模型 [oneocr-cjk-en.ocrpack](models/oneocr-cjk-en.ocrpack) 已放在仓库的 `models/` 中。从仓库根目录运行可直接找到它；接入自己的项目时，将这个文件放入工作目录或程序目录的 `models/`。Android 使用下面的 assets 方式。模型与 SDK 分开存放，推理无需联网。
+仓库已包含[默认模型](models/oneocr-cjk-en.ocrpack)。接入自己的项目时，将模型放入 `models/`；Android 放入 assets。
 
 ## Go / CLI
 
-需要 Go ≥1.24、CGO 和 ONNX Runtime 1.29 CPU。源码安装时指定一次运行库；桌面 SDK 已带运行库，可直接执行 `oneocr install`。
+源码需 Go ≥1.24、CGO 和 ONNX Runtime 1.29 CPU；桌面 SDK 已包含运行库，安装时可省略 `--runtime`。
 
 ```bash
 go install ./cmd/oneocr
@@ -52,7 +52,7 @@ func main() {
 }
 ```
 
-安装后可在其他目录直接调用。运行库也可通过 `ONEOCR_RUNTIME` 设置；Windows 使用 `onnxruntime.dll`，macOS 使用 `libonnxruntime.dylib`，Linux 使用 `libonnxruntime.so`。在其他 Go 项目中接入源码、内存图片和超时调用见 [Go 使用指南](docs/GO.md)。
+更多安装方式和图片输入见 [Go 使用指南](docs/GO.md)。
 
 ## Android
 
@@ -82,7 +82,7 @@ try (OneOcr engine = OneOcr.fromAsset(context)) {
 }
 ```
 
-AAR 包含 JNI、Go native 和 ONNX Runtime，不需要再添加 ORT 依赖。`fromAsset(context)` 会把默认模型流式保存到应用私有目录；连续识别时复用引擎，结束后关闭。AAR 构建与完整接入方法见 [SDK 使用指南](sdk/SDK.md)。
+AAR 已包含运行库。完整接入方法见 [SDK 使用指南](sdk/SDK.md)。
 
 ## C++17
 
@@ -116,11 +116,11 @@ cmake -S . -B build -DCMAKE_PREFIX_PATH=/absolute/path/to/oneocr-sdk
 cmake --build build --config Release
 ```
 
-默认模型放入应用工作目录的 `models/`，运行时库随 SDK 提供。返回值是 UTF-8 JSON；引擎自动释放资源，也支持编码字节与 RGB 输入。C API 和部署方式见 [SDK 使用指南](sdk/SDK.md)。
+运行库随 SDK 提供，识别结果为 JSON。C API 和部署方式见 [SDK 使用指南](sdk/SDK.md)。
 
 ## Python 3.11–3.13
 
-在仓库根目录安装，依赖由 pip 一并安装；也可用 `python -m pip install oneocr_native-0.1.0-py3-none-any.whl` 安装构建好的 wheel。
+在仓库根目录运行以下命令，依赖由 pip 安装：
 
 ```bash
 python -m pip install ./python
@@ -138,7 +138,7 @@ with OneOcrEngine() as engine:
         print(line.text, line.quad)
 ```
 
-也支持 Pillow 图片对象。Python SDK 自己执行 OCR 管线，不依赖 Go 动态库；从其他目录运行时按“准备”一节放置默认模型。图片输入、检测与单行识别见 [Python 使用指南](python/README.md)。
+更多图片输入和调用方式见 [Python 使用指南](python/README.md)。
 
 ## 文档
 
@@ -146,6 +146,6 @@ with OneOcrEngine() as engine:
 
 ## 许可证与声明
 
-源码采用 **AGPL-3.0-only**，仅适用 GNU AGPL 第 3 版，见 [LICENSE](LICENSE)。第三方模型和依赖保留各自的权利与许可，见 [第三方声明](THIRD_PARTY_NOTICES.md)。
+源码采用 [AGPL-3.0-only](LICENSE)。模型与依赖见 [第三方声明](THIRD_PARTY_NOTICES.md)。
 
 本项目为非官方实现，供交流学习，不代表原厂产品或服务，不提供任何担保。

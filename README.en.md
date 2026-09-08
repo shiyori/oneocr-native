@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/shiyori/oneocr-native)](https://github.com/shiyori/oneocr-native/releases)
 [![License](https://img.shields.io/badge/license-AGPL--3.0--only-blue.svg)](LICENSE)
 
-Offline OCR for Chinese, Japanese, Korean, English and digits, with Go, Android, C++ and independent Python SDKs. All use one default model; no model selection or per-call model path is needed.
+Offline OCR for Chinese, Japanese, Korean, English and digits. SDKs for Go, Android, C++ and Python.
 
 ## Setup
 
@@ -17,11 +17,11 @@ git clone https://github.com/shiyori/oneocr-native.git
 cd oneocr-native
 ```
 
-The default [oneocr-cjk-en.ocrpack](models/oneocr-cjk-en.ocrpack) is in `models/`. Commands run from the repository root find it automatically. For another project, place this file in `models/` under the working directory or next to the executable. Android uses assets as shown below. The model is separate from the SDK; inference works offline.
+The repository includes the [default model](models/oneocr-cjk-en.ocrpack). For another project, place it in `models/`; use assets on Android.
 
 ## Go / CLI
 
-Requires Go ≥1.24, CGO and ONNX Runtime 1.29 CPU. Supply the runtime once when installing from source. Desktop SDKs include it, so `oneocr install` needs no arguments.
+Source builds require Go ≥1.24, CGO and ONNX Runtime 1.29 CPU. Desktop SDKs include the runtime, so omit `--runtime` when installing.
 
 ```bash
 go install ./cmd/oneocr
@@ -52,7 +52,7 @@ func main() {
 }
 ```
 
-After installation, run from any directory. `ONEOCR_RUNTIME` can also select the runtime: `onnxruntime.dll` on Windows, `libonnxruntime.dylib` on macOS, or `libonnxruntime.so` on Linux. See the [Go guide](docs/GO.md) for external projects, memory inputs and timeouts.
+See the [Go guide](docs/GO.md) for installation options and image inputs.
 
 ## Android
 
@@ -82,7 +82,7 @@ try (OneOcr engine = OneOcr.fromAsset(context)) {
 }
 ```
 
-The AAR includes JNI, Go native and ONNX Runtime; do not add a second ORT dependency. `fromAsset(context)` streams the default asset into private app storage. Reuse the engine for multiple images and close it when finished. See the [SDK guide](sdk/SDK.md) for building and integrating the AAR.
+The AAR includes the runtime. See the [SDK guide](sdk/SDK.md) for integration details.
 
 ## C++17
 
@@ -116,11 +116,11 @@ cmake -S . -B build -DCMAKE_PREFIX_PATH=/absolute/path/to/oneocr-sdk
 cmake --build build --config Release
 ```
 
-Place the default model in `models/` under the application's working directory. Runtime libraries are included in the SDK. Results are UTF-8 JSON; the engine owns its resources and also accepts encoded bytes and RGB buffers. See the [SDK guide](sdk/SDK.md) for the C API and deployment.
+The SDK includes runtime libraries and returns JSON results. See the [SDK guide](sdk/SDK.md) for the C API and deployment.
 
 ## Python 3.11–3.13
 
-Install from the repository root; pip installs the runtime dependencies. A built wheel can be installed with `python -m pip install oneocr_native-0.1.0-py3-none-any.whl`.
+Run from the repository root; pip installs the dependencies:
 
 ```bash
 python -m pip install ./python
@@ -138,7 +138,7 @@ with OneOcrEngine() as engine:
         print(line.text, line.quad)
 ```
 
-Pillow images are accepted too. Python runs its own OCR pipeline without the Go shared library. When running elsewhere, place the default model as described in Setup. See the [Python guide](python/README.md) for image inputs, detection and cropped-line recognition.
+See the [Python guide](python/README.md) for more inputs and usage examples.
 
 ## Documentation
 
@@ -146,6 +146,6 @@ Pillow images are accepted too. Python runs its own OCR pipeline without the Go 
 
 ## License and notice
 
-Source is licensed under **AGPL-3.0-only**, GNU AGPL version 3 only; see [LICENSE](LICENSE). Third-party models and dependencies retain their own rights and licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
+Source: [AGPL-3.0-only](LICENSE). Models and dependencies: [third-party notices](THIRD_PARTY_NOTICES.md).
 
 This unofficial implementation is shared for learning and discussion. It does not represent an original vendor product or service and is provided without warranty.
