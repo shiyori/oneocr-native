@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"strings"
 )
 
 const AdaptationSchema = "oneocr.adaptation.v1"
@@ -50,6 +51,9 @@ func readAdaptation(directory string, b *Bundle) (*AdaptationManifest, error) {
 		resources[r.File] = r
 	}
 	for name, v := range m.Models {
+		if strings.Contains(v.Recipe, "-detector-integer-grid") {
+			return nil, fmt.Errorf("oneocr: retired detector integer-grid adaptation %q; regenerate with the original quantized detector", v.Recipe)
+		}
 		r, ok := resources[name]
 		if !ok || r.Kind != "onnx" || v.SourceSHA256 != r.SHA256 || !validRelative(v.File) || !validHash(v.SHA256) || v.Bytes < 1 || v.Bytes > maxModelBytes || v.Recipe == "" {
 			return nil, fmt.Errorf("oneocr: invalid adaptation entry %q", name)
@@ -57,6 +61,9 @@ func readAdaptation(directory string, b *Bundle) (*AdaptationManifest, error) {
 		if len(v.Outputs) == 0 {
 			return nil, fmt.Errorf("oneocr: missing adaptation outputs: %s", name)
 		}
+	}
+	if m.Backend == BackendCoreML {
+		return nil, fmt.Errorf("oneocr: CoreML model adaptation has been retired; use original models")
 	}
 	return &m, nil
 }

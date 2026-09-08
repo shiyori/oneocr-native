@@ -52,6 +52,6 @@ oneocr recognize --model model.ocrpack --backend cuda --device 0 --fallback erro
   --profile-dir /path/to/profiles --diagnostics /path/to/new-report.json image.png
 ```
 
-See [model adaptation, diagnostics and validation](ACCELERATION.md). CoreML and Windows CUDA have executed on test hardware; adapted models still fail result parity. DirectML has not run with a compatible runtime. The default desktop runtime does not bundle CUDA/cuDNN or DirectML GPU dependencies.
+See [model adaptation, diagnostics and validation](ACCELERATION.md). CoreML adaptation and the v2 detector integer-grid recipes have been retired; loading these manifests returns an explicit error. The CoreML backend enum remains available for original models. CUDA detector adaptation now preserves quantized operators. An isolated ORT 1.29 DirectML build now loads and runs the SDK on Windows; full stage accuracy and performance require separate acceptance. The default desktop runtime does not bundle CUDA/cuDNN or DirectML GPU dependencies.
 
 Independent detection and cropped-line recognition: [API guide](STAGES.md). `Detect` returns regions only; `RecognizeLine` consumes an already cropped horizontal line. Encoded, file and RGB variants are available.

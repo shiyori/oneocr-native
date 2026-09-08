@@ -95,6 +95,39 @@ func TestAdaptationRejectsForeignSourceAndEscapingFiles(t *testing.T) {
 		t.Fatal("accepted path traversal")
 	}
 }
+
+func TestAdaptationRejectsRetiredDetectorRecipes(t *testing.T) {
+	for _, recipe := range []string{"v2-detector-integer-grid-coreml-grid", "v2.1-detector-integer-grid-cuda-grid", "v1-coreml-grid", "v3-original-quantized-detector-directml-grid"} {
+		t.Run(recipe, func(t *testing.T) {
+			directory := t.TempDir()
+			sourceHash, modelHash := strings.Repeat("a", 64), strings.Repeat("b", 64)
+			b := &Bundle{SourceSHA256: sourceHash, Resources: []Resource{{FileInfo: FileInfo{File: "detector.onnx", SHA256: modelHash}, Kind: "onnx"}}}
+			manifest := AdaptationManifest{Schema: AdaptationSchema, SourceSHA256: sourceHash, Backend: BackendDirectML, Models: map[string]AdaptedModel{"detector.onnx": {FileInfo: FileInfo{File: "models/detector.onnx", Bytes: 1, SHA256: modelHash}, SourceSHA256: modelHash, Recipe: recipe, Outputs: []string{"scores"}}}}
+			if strings.Contains(recipe, "coreml") {
+				manifest.Backend = BackendCoreML
+			}
+			data, err := json.Marshal(manifest)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err = os.WriteFile(filepath.Join(directory, "adaptation.json"), data, 0600); err != nil {
+				t.Fatal(err)
+			}
+			_, err = readAdaptation(directory, b)
+			if strings.Contains(recipe, "-detector-integer-grid") {
+				if err == nil || !strings.Contains(err.Error(), "retired detector integer-grid") {
+					t.Fatalf("expected explicit retirement error, got %v", err)
+				}
+			} else if manifest.Backend == BackendCoreML {
+				if err == nil || !strings.Contains(err.Error(), "CoreML model adaptation has been retired") {
+					t.Fatalf("expected explicit CoreML retirement error, got %v", err)
+				}
+			} else if err != nil {
+				t.Fatal(err)
+			}
+		})
+	}
+}
 func TestNativeBackendFallbackAndProfiling(t *testing.T) {
 	bundle, library, fixtures := os.Getenv("ONEOCR_BUNDLE"), os.Getenv("ONEOCR_RUNTIME"), os.Getenv("ONEOCR_FIXTURES")
 	if bundle == "" || library == "" || fixtures == "" {

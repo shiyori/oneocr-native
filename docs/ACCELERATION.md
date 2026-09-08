@@ -7,11 +7,10 @@
 ```go
 config := oneocr.Config{
     ModelPath: "models/oneocr-cjk-en.ocrpack",
-    Backend: oneocr.BackendCoreML,
+    Backend: oneocr.BackendCPU,
     Threads: 2,
     Fallback: oneocr.FallbackCPU,
     CacheDir: "/path/to/oneocr-cache",
-    // AdaptationDir: "/path/to/experimental-coreml-models",
 }
 engine, err := oneocr.Open(config)
 if err != nil { return err }
@@ -49,7 +48,7 @@ result, err := engine.Recognize(ctx, frame, oneocr.Options{})
 
 重复截图尺寸可设置 `ShapeCacheSize: 2`（CLI `--shape-cache 2`），对加速阶段按输入尺寸创建固定形状会话并做 LRU 淘汰。首次遇到尺寸可能编译较久，context 会在创建后再次检查；不能承诺硬性实时 deadline。原有固定 batch/channel/height 不会被改写，权重不变。缓存命中、淘汰及每个尺寸的实际会话配置见 `ShapeSessions`。阶段顶层 Registered 表示模板注册，尺寸会话的回退看子项。
 
-容量限制针对存活会话；CoreML 磁盘编译缓存按内容和尺寸保存，全部 Engine 停止后可以清理 `CacheDir`。高频、固定画面可先验证仅检测器使用 CoreML + 尺寸缓存，分类和识别器保留 CPU；全阶段 GPU 不一定更快。
+容量限制针对存活会话；CoreML 磁盘编译缓存按内容和尺寸保存，全部 Engine 停止后可以清理 `CacheDir`。尺寸缓存的创建和淘汰成本也必须计入混合尺寸负载；不能从固定尺寸命中结果推断通用加速收益。
 
 DirectML 使用顺序执行并禁用 memory pattern；同一 session 不允许多个 `Run` 同时执行，独立 Engine 使用各自 session。[官方限制](https://onnxruntime.ai/docs/execution-providers/DirectML-ExecutionProvider.html#configuration-options)
 
@@ -61,8 +60,6 @@ DirectML 使用顺序执行并禁用 memory pattern；同一 session 不允许�
 python -m pip install ./python
 oneocr unpack --model models/oneocr-cjk-en.ocrpack --directory /path/to/source-bundle
 oneocr-native adapt --bundle /path/to/source-bundle \
-  --directory /path/to/coreml-candidate --backend coreml
-oneocr-native adapt --bundle /path/to/source-bundle \
   --directory /path/to/cuda-candidate --backend cuda
 oneocr-native adapt --bundle /path/to/source-bundle \
   --directory /path/to/directml-candidate --backend directml
@@ -70,52 +67,37 @@ oneocr-native adapt --bundle /path/to/source-bundle \
 
 输出目录必须不存在。清单关联原容器摘要、每个源模型摘要、转换模型摘要及输出接口；修改权重或更换包后需要重新转换。GPU 运行时和依赖库需另行提供，转换工具不会安装 CUDA、cuDNN 或 GPU 驱动。
 
-- **CoreML**：检测器默认使用下述 v2 整数网格候选；识别器保留 CPU 的量化 LSTM，将量化投影展开为 MatMul。
-- **CUDA**：检测器默认使用同一 v2 配方；识别器将 `DynamicQuantizeLSTM` 转为标准 LSTM，处理转置权重和 i/o/f/c 门顺序。
+- **CoreML**：模型适配已淘汰，不再提供转换入口，旧 CoreML 适配清单明确报错。通用后端枚举仍保留，原模型直接执行的分区和收益需要单独检查。
+- **CUDA**：检测器保留原量化算子；识别器将 `DynamicQuantizeLSTM` 转为标准 LSTM，处理转置权重和 i/o/f/c 门顺序。
 - **DirectML**：优先保留原量化检测器与投影，转换不支持的量化 LSTM。
-- 默认 `--quantization grid` 保留激活舍入及裁剪。`--quantization relaxed` 仅保留裁剪，是更激进的数值实验。裁剪不能随意删除：量化边界可能承担 ReLU 行为。
+- 分类和识别的默认 `--quantization grid` 保留激活舍入及裁剪。`--quantization relaxed` 仅保留裁剪，是更激进的数值实验。裁剪不能随意删除：量化边界可能承担 ReLU 行为。
 
 即使保留量化网格，浮点累加和标准 LSTM 也可能改变结果，必须逐例回归。不能因为 ONNX checker 或 CPU 加载通过就宣称 GPU 可用。某阶段候选不合格时，例如 `StageBackends: map[string]oneocr.Backend{"detector": oneocr.BackendCPU}`，可保留该阶段原模型。
 
-### 检测器 v2 整数网格配方
+### 已移除整数格点检测图
 
-CoreML/CUDA 的 `--quantization grid` 检测器使用 `v2.1-detector-integer-grid`。
-分类器、识别器和显式 `relaxed` 模式仍使用原配方。公开检测接口仍为 18 个浮点输出，
-无需修改 Go/C/C++ 调用代码；旧候选目录不会自动升级，需重新生成到新目录。
+`v2-detector-integer-grid` 和 `v2.1-detector-integer-grid` 已移除。它们曾通过本机检测一致性验证，
+但 CoreML 与 Android 的性能明显落后于原量化 CPU；按方案淘汰要求，不再生成或加载任何后端的这类候选。
+SDK 读取旧清单时明确返回 `retired detector integer-grid adaptation`，不会悄悄回退或加载旧缓存。
 
-- 内部 FP32 张量表示精确的 UINT8 整数值，保留原始输入 QuantizeLinear 和输出 DequantizeLinear。
-- 卷积先减 zero point，以整数值权重计算；按绝对累加上界将超出 `2^24` 的卷积拆为连续通道段。
-  段结果转为 INT32 后求和并加入原 INT32 偏置，再按原 CPU 算子的 FLOAT32 比例、舍入和截断重定标。
-  上界可能溢出 INT32、单通道无法安全拆分或量化连接不匹配时，转换报错。
-  CUDA 在转 INT32 前先恢复到最近整数，避免 cuDNN 的微小小数残差被截断成一级误差；
-  这要求设备卷积残差小于 0.5，不能替代目标设备的逐输出验证。
-- 重定标利用 FP32 在 `[2^23, 2^24)` 区间的单位间距实现 ties-to-even，不依赖设备端 Round。
-  CoreML GPU 实测中，即使乘法结果同为 `26.5`，Round 仍可能得到 `27` 而 CPU 为 `26`。
-  v2.1 先将值限制在不会改变最终 UINT8 饱和结果的区间，再加偶数偏移 `3×2^22`，
-  经 INT32/FLOAT 转换后减去偏移，恢复舍入后的整数；该转换防止前后的浮点偏移被直接消去。
-  这些 Add/Cast/Sub 可由 CoreML 执行，无需使用该 EP 尚未接管的 Floor/比较操作。
-- Add/Sigmoid 分别使用完整的 65536 项和 256 项查找表，表由转换环境的 ORT CPU 算子生成。
-  **在目标平台生成候选**，并以该机器的原模型 CPU 为基准验收；不要将一个平台的表视为所有平台的参考。
-  Add 表使用同形状的逐元素输入生成，不能以广播算子的舍入代替；检测器 Add 只接受同形状、
-  元素数大于 1 的输入。图内检查形状元数据并对不支持的广播/标量布局报错，固定尺寸优化可消除检查。
-- 清单记录配方、参考 ORT 版本/系统/架构、源和候选摘要以及拆分卷积数量；现有按模型内容划分的运行缓存隔离新旧模型。
+检测器使用 `v3-original-quantized-detector`：仅裁剪无关输出、保持 18 个公共浮点输出，
+保留原 QLinearConv、QLinearAdd、QLinearSigmoid 和量化边界。检测器的 `grid`/`relaxed` 均不再展开量化计算，
+也不会恢复已知存在检测差异的 v1 浮点转换。保留原模型不代表其主要计算能进入 GPU，必须核对实际执行分区。
 
-该配方仍标记为 experimental/approximate：FP32 类型和累加上界不能保证设备内部没有降低精度或变换算法。
-CoreML 的部分整数操作可能由 ORT CPU 分区执行；这与整个阶段失败后的 CPU 回退不同。
-需核对 profile 和 CoreML compute plan，不能仅凭输出一致声称 GPU 加速成功。
+历史资料显示，CoreML 原整数格点图被拆成大量 CPU/CoreML 分区；Android 新图的浮点 Conv 成本远高于原量化 Conv，
+Cast、Gather、Add 和布局转换进一步增加开销。旧实现、精度回归捕获、逐算子 profile 和机器报告保存在仓库外，
+不再把已移除方案作为可选加速功能维护。当前回归检查原量化算子保留、输出一致及旧配方拒绝加载。
 
-验收分别比较新图 CPU、CoreML/CUDA 与同机原模型 CPU：框数量、方向和最终文字相同，
-匹配框角点偏差不超过 0.1 像素，分数绝对误差不超过 `1e-4`；同时检查原始 18 个输出、
-变化尺寸和缓存关闭/开启。正确性通过后才进行约两分钟单/双实例性能测试。
-未达标时保留失败节点和最小复现，不以调整检测阈值或自动改用 CPU 宣称修复完成。
+Android 模拟器上原模型的 48 个卷积均为 UINT8 激活、INT8 权重、UINT8 输出；ORT 1.29 XNNPACK 的
+量化卷积仅接管全 UINT8 或全 INT8，明确不支持该混合组合，因此原图只把池化交给 XNNPACK。
+[ORT 1.29 支持条件](https://github.com/microsoft/onnxruntime/blob/v1.29.0/onnxruntime/core/providers/xnnpack/nn/conv_base.cc#L220-L254)
+旧整数格点图把量化张量展开为 FP32 并改用浮点卷积；本模拟器 CPU profile 中 Conv 耗时约为原量化 Conv 的
+6.2 倍，另有约 26.7% 的 kernel 时间用于其他算子。这些 profile 用于解释开销，正式平均耗时来自关闭 profiling 的独立计时。
 
-单元测试覆盖舍入边界、zero point、偏置、分组/步幅/填充、分段累加与查找表穷举。
-`ONEOCR_TEST_COREML=1` 启用 CoreML 舍入回归，检查半整数及其相邻可表示值；需要可用 CoreML EP。
-`ONEOCR_DETECTOR_REGRESSION_DIR` 可指向仓库外的原始回归资料目录，运行实际首个差异节点及完整检测输出回归；
-需要其中的 `formal-cjk-source/models/detection/universal.onnx` 和 `universal/input0.bin`（FLOAT32、1×3×160×1024）。
-未提供资料时该测试明确跳过，不将模型或捕获张量写入测试源码。
-另可设置 `ONEOCR_COREML_REGRESSION_INPUT` 为 CoreML 半值失败样例的捕获 NPZ（`data`、`im_info`），
-同时启用上述两个变量，检查固定尺寸完整图及曾出现 `135/136` 差异的中间量化输出。
+
+验收以同机原 CPU 为参照：文字、框数量和方向相同，角点误差不超过 0.1 像素，分数误差不超过 `1e-4`。
+正式性能测试关闭 profiling，按完整六图循环分别测试单/双实例三轮；每轮至少 30 秒，平均耗时每轮均低于 CPU
+才认定该配置有可重复收益。冷启动、P50/P95、内存和缓存失效成本单独报告。
 
 ### 紧凑输出
 
@@ -130,8 +112,7 @@ oneocr-native adapt --bundle /path/to/source-bundle \
 
 ```bash
 oneocr recognize --model models/oneocr-cjk-en.ocrpack \
-  --backend coreml --adaptation-dir /path/to/coreml-candidate \
-  --warmup --format json image.png
+  --backend cpu --warmup --format json image.png
 
 oneocr recognize --model models/oneocr-cjk-en.ocrpack \
   --backend cuda --device 0 --fallback error --cpu-stages detector \
@@ -153,9 +134,9 @@ CPU 保持默认。CoreML 可在 macOS 实测；CUDA 需要匹配 CUDA/cuDNN 的
 
 Independent detection and cropped-line recognition: [API guide](STAGES.md). Go, CLI, C/C++ and Python expose separate entry points.
 
-历史 v1 CoreML 浮点检测器候选在新增 PaddleOCR 图片回归中与 CPU 对照出现文本和框差异，未满足“无新增识别错误”的验收条件。该结果不能作为 v2 的验收结论。部分 720p 合成图上的短时提速不能代表通用准确率或稳定生产性能。Windows CUDA v1 已执行但候选未通过一致性验收；DirectML 尚未使用兼容运行时完成推理。
+历史 v1 CoreML 浮点检测器候选在新增 PaddleOCR 图片回归中与 CPU 对照出现文本和框差异，未满足“无新增识别错误”的验收条件。v2/v2.1 曾通过一致性验证，但现已移除其实现和加载入口。部分 720p 合成图上的短时提速不能代表通用准确率或稳定生产性能。Windows CUDA v1 已执行但候选未通过一致性验收；DirectML 已以隔离构建的 ORT 1.29 完成初步推理，完整阶段正确性与性能验收需单独记录。
 
-CUDA v1 浮点候选在 CPU 对照中也存在扩展参考样例的新增检测行。DirectML 转换候选的 CPU 回归一致，但本次取得的 DirectML ORT 1.24.4 无法提供 SDK 所需的 API 29，设备端推理未完成。
+CUDA v1 浮点候选在 CPU 对照中也存在扩展参考样例的新增检测行。DirectML 的公开 ORT 1.24.4 包无法提供 SDK 所需的 API 29；现已从 ORT v1.29.0 源码构建匹配运行库，初步检测器捕获输入的 18 个输出精确一致。标准 LSTM 转换有额外数值误差，不能仅因全部算子进入 DML 就采用。
 
 
 ### 历史 v1 平台结果与运行时边界
@@ -164,4 +145,5 @@ CUDA v1 浮点候选在 CPU 对照中也存在扩展参考样例的新增检测�
 - Windows x64 的 CPU Go/C++/Python 及独立检测/单行识别接口已实际检查。CUDA 也取得了真实 kernel 执行记录；原图仅加速检测器时，本轮完整 OCR 输出与 CPU 一致，但大部分检测计算仍在 CPU。原图全阶段 CUDA 和转换候选存在文字差异，不能推广为等价加速。
 - 本次 Windows ORT 1.29 CUDA 二进制实际需要 CUDA 13 的 cuBLAS/cudart 和 cuDNN 9。隔离测试使用 cuBLAS 13.0.2.14、cudart 13.0.96、cuDNN 9.13.0.50；这描述已测试组合，不代表所有 ORT 构建的依赖相同。缺库时必须区分显式报错与已记录原因的 CPU 回退。
 - 本次取得的官方 DirectML ORT 1.24.4 仅提供至 API 24，不能被当前 API 29 绑定初始化。需要兼容的运行时或独立兼容性工作，不能仅通过降低版本检查绕过 ABI 要求。
+- 当前隔离 DirectML 构建使用 ORT v1.29.0（源码 `2e2543fbe9fae542f921d47a72d21d5a4ef0b710`）、DirectML 1.15.4、VS2022/MSVC 19.44、Windows SDK 10.0.26100.0；从官方源码以 `--use_dml --build_shared_lib --config Release` 构建。`onnxruntime.dll` 与 `DirectML.dll` 配套使用，保持与 CUDA 运行库隔离。最小矩阵模型及冻结 SDK 已在 RTX 5080 上记录实际 DML 执行；这属于兼容性验证，不替代 42 图及三轮性能验收。
 - 同一提交和输入的 CPU OCR 文字在 macOS/Windows 的复杂图片上也可能有差异；跨平台一致性需逐图核对。机器测量与逐图报告继续保存在仓库外。

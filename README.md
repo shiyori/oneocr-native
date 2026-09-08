@@ -130,6 +130,6 @@ Source: [MIT](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md).
 
 Go/C/C++ 默认 CPU，可显式选择 CoreML、CUDA、DirectML，并配置设备、阶段回退和字符类别。复用 Engine，使用 `Warmup` 预热；偶发并发使用少量独立 Engine。识别输出已减少额外复制，原模型保持可用。
 
-独立的 `oneocr-native adapt` 开发工具生成带源模型校验的实验模型；不把注册成功视为 GPU 加速。CoreML 和 Windows CUDA 已实际执行，但转换候选有结果差异；DirectML 尚未跑通兼容的运行时。使用方式、profiling 和数值限制见 [加速与高频识别](docs/ACCELERATION.md)。
+独立的 `oneocr-native adapt` 开发工具生成带源模型校验的实验模型；不把注册成功视为 GPU 加速。CoreML 模型适配和 v2 整数格点检测图已淘汰，旧清单明确报错；检测器保留原量化算子。DirectML 的兼容运行时与阶段收益需真机验证。使用方式、profiling 和数值限制见 [加速与高频识别](docs/ACCELERATION.md)。
 
 Independent detection and cropped-line recognition: [API guide](docs/STAGES.md). Go, CLI, C/C++ and Python expose separate entry points.

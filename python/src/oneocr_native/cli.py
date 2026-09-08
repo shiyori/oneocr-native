@@ -6,7 +6,7 @@ import sys
 from dataclasses import asdict
 from pathlib import Path
 
-from .adaptation import adapt_bundle
+from .adaptation import BACKENDS, adapt_bundle
 from .bundle import export_bundle
 from .cache import prepare
 from .config import PipelineConfig
@@ -45,7 +45,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     adapter.add_argument("--bundle", type=Path, required=True)
     adapter.add_argument("--directory", type=Path, required=True)
-    adapter.add_argument("--backend", choices=("cpu", "coreml", "cuda", "directml"), required=True)
+    adapter.add_argument("--backend", choices=BACKENDS, required=True)
     adapter.add_argument(
         "--compact-output",
         action="store_true",
@@ -55,7 +55,7 @@ def main(argv: list[str] | None = None) -> int:
         "--quantization",
         choices=("grid", "relaxed"),
         default="grid",
-        help="grid retains activation rounding; relaxed retains only clipping",
+        help="non-detector conversion: grid retains rounding; relaxed retains only clipping",
     )
     adapter.add_argument("--output", type=Path)
     args = parser.parse_args(argv)

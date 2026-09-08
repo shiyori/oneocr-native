@@ -23,7 +23,7 @@ from .bundle import load_bundle
 from .errors import ModelFormatError
 
 SCHEMA = "oneocr.adaptation.v1"
-BACKENDS = ("cpu", "coreml", "cuda", "directml")
+BACKENDS = ("cpu", "cuda", "directml")
 
 
 def _external_inputs(graph: onnx.GraphProto) -> set[str]:
@@ -188,7 +188,7 @@ class _Converter:
         self.nodes.append(helper.make_node("LSTM", replacement, list(n.output), **attrs))
 
     def convert(self) -> None:
-        floats = self.backend in ("coreml", "cuda")
+        floats = self.backend == "cuda"
         for n in self.model.graph.node:
             op = n.op_type
             if (
@@ -318,6 +318,8 @@ def adapt_model(
     compact: bool = False,
     quantization: str = "grid",
 ) -> tuple[bytes, dict]:
+    if backend == "coreml":
+        raise ModelFormatError("CoreML model adaptation has been retired; use original models")
     if backend not in BACKENDS or quantization not in ("grid", "relaxed"):
         raise ValueError("invalid adaptation backend or quantization mode")
     model = onnx.load_model_from_string(data)
@@ -341,15 +343,11 @@ def adapt_model(
         del model.graph.output[:]
         model.graph.output.extend(values[name] for name in ("script_id_score", "flip_score"))
     _prune(model)
-    recipe = "v1"
-    reference = None
-    if detector and backend in ("coreml", "cuda") and quantization == "grid":
-        from .detector_adaptation import RECIPE, _DetectorConverter, reference_runtime
-
-        converter = _DetectorConverter(model, backend)
-        recipe, reference = RECIPE, reference_runtime()
-    else:
-        converter = _Converter(model, backend, quantization == "grid")
+    # The integer-grid detector recipe was retired. Preserve the original
+    # quantized operators instead of silently reviving the inaccurate v1
+    # floating-point detector conversion, including in relaxed mode.
+    recipe = "v3-original-quantized-detector" if detector else "v1"
+    converter = _Converter(model, "cpu" if detector else backend, quantization == "grid")
     converter.convert()
     if compact:
         compact_recognizer(model)
@@ -361,11 +359,6 @@ def adapt_model(
         "converted_operators": converter.converted,
         "approximate": bool(converter.converted),
         "recipe_version": recipe,
-        **(
-            {"reference_runtime": reference, "split_convolutions": converter.split_convolutions}
-            if reference
-            else {}
-        ),
     }
 
 
@@ -377,6 +370,8 @@ def adapt_bundle(
     compact: bool = False,
     quantization: str = "grid",
 ) -> Path:
+    if backend == "coreml":
+        raise ModelFormatError("CoreML model adaptation has been retired; use original models")
     if backend not in BACKENDS:
         raise ValueError("unknown adaptation backend")
     prepared = load_bundle(bundle_dir)

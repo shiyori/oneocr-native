@@ -70,7 +70,7 @@ def test_quantized_conv_grid_retains_clipping_and_bias():
     )
     values = np.array([-2, -1, 0, 0.25, 0.5, 1, 4, 40], np.float32).reshape(1, 1, 2, 4)
     expected = session(model.SerializeToString(), 1).run(None, {"data": values})[0]
-    converted, info = adapt_model(model.SerializeToString(), "coreml")
+    converted, info = adapt_model(model.SerializeToString(), "cuda")
     got = session(converted, 1).run(None, {"data": values})[0]
     np.testing.assert_array_equal(got, expected)
     assert got.min() == 0  # Removing quantizers without clipping loses fused ReLU.
