@@ -111,7 +111,8 @@ with OneOcrEngine("models/oneocr-cjk-en.ocrpack") as engine:
 |---|---|---|---|
 | macOS ARM64 | 实际 OCR、C++/外部 Go/SDK 换目录验证 | 实际 OCR、wheel 独立安装 | 交叉构建宿主 |
 | Android arm64-v8a / x86_64，API 26+ | Go native + JNI 构建 | 未提供 Android Python 包 | AAR/消费者编译及 ELF 检查；模拟器存在下述兼容问题 |
-| Linux / Windows 桌面 | 源码适配，需匹配 ORT 与 CGO；本次未实机验证 | 文件锁/RTL 已适配，本次未实机验证 | 不适用 |
+| Windows x64 | CPU 实际 OCR/C++ 验证；CUDA 已执行但存在下述结果差异 | 实际 CPU OCR、独立接口与包测试 | 不适用 |
+| Linux 桌面 | CI 基础测试通过；未手工实机验收 | CI 测试通过；未手工实机验收 | 不适用 |
 
 不是原始 DLL 的完整等价复现。自动模式跳过包外脚本并返回警告；强制指定包外脚本报错。输出包含文本、行四边形、脚本和警告；`confidence`、`words` 为 null。检测合并与阅读顺序仍属实验性；未验证手写和自然竖排 CJK。复杂 RTL 混排可能有歧义：Python macOS 使用 ICU，其他平台与 Go 使用可移植近似。
 
@@ -129,6 +130,6 @@ Source: [MIT](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md).
 
 Go/C/C++ 默认 CPU，可显式选择 CoreML、CUDA、DirectML，并配置设备、阶段回退和字符类别。复用 Engine，使用 `Warmup` 预热；偶发并发使用少量独立 Engine。识别输出已减少额外复制，原模型保持可用。
 
-独立的 `oneocr-native adapt` 开发工具生成带源模型校验的实验模型；不把注册成功视为 GPU 加速。CoreML 在本机验证，CUDA/DirectML 需要对应真机验收。使用方式、profiling 和数值限制见 [加速与高频识别](docs/ACCELERATION.md)。
+独立的 `oneocr-native adapt` 开发工具生成带源模型校验的实验模型；不把注册成功视为 GPU 加速。CoreML 和 Windows CUDA 已实际执行，但转换候选有结果差异；DirectML 尚未跑通兼容的运行时。使用方式、profiling 和数值限制见 [加速与高频识别](docs/ACCELERATION.md)。
 
 Independent detection and cropped-line recognition: [API guide](docs/STAGES.md). Go, CLI, C/C++ and Python expose separate entry points.

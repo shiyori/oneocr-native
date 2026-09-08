@@ -113,6 +113,15 @@ CPU 保持默认。CoreML 可在 macOS 实测；CUDA 需要匹配 CUDA/cuDNN 的
 
 Independent detection and cropped-line recognition: [API guide](STAGES.md). Go, CLI, C/C++ and Python expose separate entry points.
 
-当前 CoreML 浮点检测器候选在新增 PaddleOCR 图片回归中与 CPU 对照出现文本和框差异，尚未满足“无新增识别错误”的验收条件。保留为显式实验选项，不推荐替代默认 CPU。部分 720p 合成图上的短时提速不能代表通用准确率或稳定生产性能。CUDA/DirectML 尚缺对应硬件验证。
+当前 CoreML 浮点检测器候选在新增 PaddleOCR 图片回归中与 CPU 对照出现文本和框差异，尚未满足“无新增识别错误”的验收条件。保留为显式实验选项，不推荐替代默认 CPU。部分 720p 合成图上的短时提速不能代表通用准确率或稳定生产性能。Windows CUDA 已执行但候选未通过一致性验收；DirectML 尚未使用兼容运行时完成推理。
 
-CUDA 浮点候选在 CPU 对照中也存在扩展参考样例的新增检测行；其模型正确性尚未全部通过。DirectML 转换候选的 CPU 回归一致，但设备端仍未验证。
+CUDA 浮点候选在 CPU 对照中也存在扩展参考样例的新增检测行；其模型正确性尚未全部通过。DirectML 转换候选的 CPU 回归一致，但本次取得的 DirectML ORT 1.24.4 无法提供 SDK 所需的 API 29，设备端推理未完成。
+
+
+### 已知平台结果与运行时边界
+
+- 原量化检测器在 macOS CoreML 与 CPU 的当前独立检测样例上保持一致，但 profile 显示主要计算仍由 CPU 执行。浮点转换候选在 CPU 上已改变部分框；同一候选切换 CoreML 又有额外差异。尺寸缓存没有解决这些几何差异。
+- Windows x64 的 CPU Go/C++/Python 及独立检测/单行识别接口已实际检查。CUDA 也取得了真实 kernel 执行记录；原图仅加速检测器时，本轮完整 OCR 输出与 CPU 一致，但大部分检测计算仍在 CPU。原图全阶段 CUDA 和转换候选存在文字差异，不能推广为等价加速。
+- 本次 Windows ORT 1.29 CUDA 二进制实际需要 CUDA 13 的 cuBLAS/cudart 和 cuDNN 9。隔离测试使用 cuBLAS 13.0.2.14、cudart 13.0.96、cuDNN 9.13.0.50；这描述已测试组合，不代表所有 ORT 构建的依赖相同。缺库时必须区分显式报错与已记录原因的 CPU 回退。
+- 本次取得的官方 DirectML ORT 1.24.4 仅提供至 API 24，不能被当前 API 29 绑定初始化。需要兼容的运行时或独立兼容性工作，不能仅通过降低版本检查绕过 ABI 要求。
+- 同一提交和输入的 CPU OCR 文字在 macOS/Windows 的复杂图片上也可能有差异；跨平台一致性需逐图核对。机器测量与逐图报告继续保存在仓库外。

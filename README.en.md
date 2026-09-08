@@ -111,7 +111,8 @@ with OneOcrEngine("models/oneocr-cjk-en.ocrpack") as engine:
 |---|---|---|---|
 | macOS ARM64 | OCR, C++/external Go and relocated SDK tested | OCR and isolated wheel installation tested | Cross-build host |
 | Android arm64-v8a / x86_64, API 26+ | Go native + JNI built | No Android Python distribution | AAR/consumer compilation and ELF checks; see emulator compatibility issue below |
-| Linux / Windows desktop | Source adapters; matching ORT and CGO required; not run here | Portable locking/RTL implemented; not run here | N/A |
+| Windows x64 | CPU OCR/C++ validated; CUDA ran with the result differences below | CPU OCR, independent stages and package tests validated | N/A |
+| Linux desktop | Basic CI passed; no manual host validation | CI passed; no manual host validation | N/A |
 
 This is not full parity with the original DLL. Automatic mode skips unavailable scripts with warnings; explicit unavailable scripts fail. Results include text, line quads, scripts and warnings; `confidence` and `words` are null. Grouping and reading order remain experimental; handwriting and natural vertical CJK are unvalidated. Complex inverse RTL is ambiguous: Python uses ICU on macOS and a portable approximation elsewhere, as does Go.
 
@@ -129,6 +130,6 @@ Source: [MIT](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md).
 
 Go/C/C++ keep CPU as the default and allow explicit CoreML, CUDA and DirectML selection, device/stage fallback settings, and character-class restrictions. Reuse Engines, call `Warmup`, and use a small number of independent Engines for occasional concurrency. Recognition avoids an extra copy of the probability matrix.
 
-The offline `oneocr-native adapt` tool creates source-verified experimental model variants; originals remain available. Provider registration is not proof of GPU execution or a speedup. CoreML is exercised locally; CUDA/DirectML require target-hardware validation. See the [acceleration guide](docs/ACCELERATION.md).
+The offline `oneocr-native adapt` tool creates source-verified experimental model variants; originals remain available. Provider registration is not proof of GPU execution or a speedup. CoreML and Windows CUDA have executed, but adapted models change results. A compatible DirectML runtime has not yet been validated. See the [acceleration guide](docs/ACCELERATION.md).
 
 Independent detection and cropped-line recognition: [API guide](docs/STAGES.md). Go, CLI, C/C++ and Python expose separate entry points.

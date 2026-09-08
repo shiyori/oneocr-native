@@ -1,6 +1,6 @@
 # OneOCR 可直接接入的 SDK
 
-默认使用 `oneocr-cjk-en.ocrpack`，需要西里尔和阿拉伯文字时选择 `oneocr-extended.ocrpack`。模型与 SDK 独立分发，一个模型文件适用于所有支持的平台。当前本地构建内容：Android AAR（arm64-v8a、x86_64）、macOS ARM64 C++/Go/CLI SDK，以及可编译的 Go 模块源码包，以及独立 Python wheel。Windows/Linux 没有本次预编译验收产物。
+默认使用 `oneocr-cjk-en.ocrpack`，需要西里尔和阿拉伯文字时选择 `oneocr-extended.ocrpack`。模型与 SDK 独立分发，一个模型文件适用于所有支持的平台。当前本地构建内容：Android AAR（arm64-v8a、x86_64）、macOS ARM64 C++/Go/CLI SDK，以及可编译的 Go 模块源码包，以及独立 Python wheel。Windows 已在隔离目录编译并实际调用 C ABI/C++，但尚未提供正式 Windows SDK 归档；Linux 尚无手工预编译验收产物。
 
 ## Android：引用一个 AAR
 
@@ -129,7 +129,7 @@ auto diagnostics = engine.closeWithDiagnostics();
 
 C 入口对应 `OneOCRWarmup`、`OneOCRRecognizeEncodedWithTimeout`、`OneOCRRecognizeRGBWithTimeout`、`OneOCRDiagnostics` 和 `OneOCRCloseWithDiagnostics`。超时单位为毫秒，0 表示无超时，上限 86400000；计时包含等待 Engine，设备内核停止可能晚于 deadline。所有返回字符串继续由 `OneOCRFree` 释放。
 
-诊断区分请求后端、注册后端与实际 kernel profile。profiling 在 Close 后完成；未测量的分配不能当作 GPU 执行证明。DirectML 同一 session 串行；并发使用各自独立的 Engine。CoreML 编译缓存按模型内容、ORT 版本、平台和配置隔离。CUDA/DirectML 需要额外的目标运行时及真机验证；不能仅凭本机 C ABI 构建通过宣称支持。
+诊断区分请求后端、注册后端与实际 kernel profile。profiling 在 Close 后完成；未测量的分配不能当作 GPU 执行证明。DirectML 同一 session 串行；并发使用各自独立的 Engine。CoreML 编译缓存按模型内容、ORT 版本、平台和配置隔离。Windows CUDA 已补齐匹配依赖并执行实际 kernel，但转换候选存在结果差异。DirectML 1.24.4 不满足当前绑定的 ORT API 29 要求；不能仅凭 C ABI 构建通过宣称后端验收。
 
 Python wheel 保持独立 CPU 识别入口，新增 `oneocr-native adapt` 离线转换工具；Go/C/C++ 运行不依赖 Python。详细模型转换和持续调用说明位于源码 `docs/ACCELERATION.md`。
 

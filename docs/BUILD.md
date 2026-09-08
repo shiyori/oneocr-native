@@ -18,7 +18,7 @@ uv build --project python --out-dir dist
 ONEOCR_RUNTIME=/path/to/libonnxruntime.dylib go test -race ./...
 ```
 
-`ONEOCR_BUNDLE`、`ONEOCR_MODEL`、`ONEOCR_FIXTURES`、`ONEOCR_PACKAGES` 启用旧完整资源管线与新包的额外回归；这些外部开发输入不进入发行包。测试默认可直接使用已入库的模型与合成图片。Linux/Windows CI 提供基础单元测试；本次手工集成验收在 macOS ARM64，Android 为构建及消费者编译。
+`ONEOCR_BUNDLE`、`ONEOCR_MODEL`、`ONEOCR_FIXTURES`、`ONEOCR_PACKAGES` 启用旧完整资源管线与新包的额外回归；这些外部开发输入不进入发行包。测试默认可直接使用已入库的模型与合成图片。Linux/Windows/macOS CI 提供基础检查。手工 CPU 集成检查已覆盖 macOS ARM64 与 Windows x64；CUDA 执行及 DirectML 兼容限制见 [加速验证边界](ACCELERATION.md)。Android 已完成构建及消费者编译，完整设备 OCR 尚未通过。
 
 ## Native SDK
 

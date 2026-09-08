@@ -111,7 +111,8 @@ with OneOcrEngine("models/oneocr-cjk-en.ocrpack") as engine:
 |---|---|---|---|
 | macOS ARM64 | OCR・C++・外部 Go・移動した SDK で検証 | OCR と wheel 単独インストールを検証 | クロスビルド環境 |
 | Android arm64-v8a / x86_64、API 26+ | Go native + JNI ビルド済み | Android Python 配布なし | AAR・利用側コンパイル・ELF 検査済み、端末 OCR 未検証 |
-| Linux / Windows デスクトップ | ソース対応、適切な ORT/CGO が必要、今回は未実行 | ファイルロックと RTL を移植、今回は未実行 | 対象外 |
+| Windows x64 | CPU OCR/C++ を検証済み。CUDA は実行済みだが結果に差異あり | CPU OCR、独立 API、パッケージを検証済み | 対象外 |
+| Linux デスクトップ | CI 基本テスト成功。実機の手動検証は未実施 | CI テスト成功。実機の手動検証は未実施 | 対象外 |
 
 元の DLL と完全に同等ではありません。自動モードでは未収録の文字体系を警告付きでスキップし、明示指定ではエラーにします。結果はテキスト、行の四角形、文字体系、警告を含み、`confidence` と `words` は null です。領域結合と読み順は実験的で、手書きと自然な CJK 縦書きは未検証です。複雑な RTL 混在には曖昧性があります。Python は macOS で ICU、その他では Go と同様の移植可能な近似を使います。
 
@@ -129,6 +130,6 @@ Source: [MIT](LICENSE). [Third-party notices](THIRD_PARTY_NOTICES.md).
 
 Go/C/C++ は CPU を既定とし、CoreML・CUDA・DirectML、デバイス、処理段階ごとのフォールバック、文字種を明示的に設定できます。Engine を再利用し、`Warmup` で初期化してください。同時処理には少数の独立した Engine を使用します。認識結果の確率配列の追加コピーも削減しています。
 
-オフラインの `oneocr-native adapt` ツールは、元モデルのハッシュを検証する実験用モデルを生成します。元モデルは保持されます。Provider の登録成功だけでは GPU 実行や速度向上を証明できません。CoreML はローカルで検証し、CUDA/DirectML は対応する実機での検証が必要です。[詳細](docs/ACCELERATION.md)。
+オフラインの `oneocr-native adapt` ツールは、元モデルのハッシュを検証する実験用モデルを生成します。元モデルは保持されます。Provider の登録成功だけでは GPU 実行や速度向上を証明できません。CoreML と Windows CUDA は実行済みですが、変換モデルには結果の差異があります。DirectML の互換ランタイムではまだ検証できていません。[詳細](docs/ACCELERATION.md)。
 
 Independent detection and cropped-line recognition: [API guide](docs/STAGES.md). Go, CLI, C/C++ and Python expose separate entry points.
