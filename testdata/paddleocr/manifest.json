@@ -1,0 +1,169 @@
+{
+  "source": "https://github.com/PaddlePaddle/PaddleOCR/tree/main/tests/test_files",
+  "commit": "2661c7c0ef5c613e8f93c6e93b2e052399f0f854",
+  "files": [
+    {
+      "file": "book.jpg",
+      "source_url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/2661c7c0ef5c613e8f93c6e93b2e052399f0f854/tests/test_files/book.jpg",
+      "source_commit": "2661c7c0ef5c613e8f93c6e93b2e052399f0f854",
+      "sha256": "782cc71a2730020ea8da815de3e40a964b7f150c183d1f8c01dd211de9dcbcc4",
+      "bytes": 256618,
+      "size": [
+        1100,
+        708
+      ],
+      "720p_file": "720p-book.png",
+      "720p_transform": "aspect-preserving downscale only and white letterbox; no stretching or upscaling",
+      "720p_sha256": "009492263d4c759a81f020f0351430fd35c0182fdca5aa4832d83e6704953950",
+      "720p_size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "file": "book_rot180.jpg",
+      "source_url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/2661c7c0ef5c613e8f93c6e93b2e052399f0f854/tests/test_files/book_rot180.jpg",
+      "source_commit": "2661c7c0ef5c613e8f93c6e93b2e052399f0f854",
+      "sha256": "6fb6b8ea8836a0acb46762a85d2bcf97100e33f0c4b49dcfc0b97f5955f4e534",
+      "bytes": 310779,
+      "size": [
+        1100,
+        708
+      ],
+      "720p_file": "720p-book_rot180.png",
+      "720p_transform": "aspect-preserving downscale only and white letterbox; no stretching or upscaling",
+      "720p_sha256": "b1558d77ce88bf946bbe67a6552c974f71c5a0060703d2d74061bffd8fd41f6f",
+      "720p_size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "file": "doc_with_formula.png",
+      "source_url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/2661c7c0ef5c613e8f93c6e93b2e052399f0f854/tests/test_files/doc_with_formula.png",
+      "source_commit": "2661c7c0ef5c613e8f93c6e93b2e052399f0f854",
+      "sha256": "6b07d28527dc9e930804fa73df562f1a81599c6b8a1a8bbc2a80742fa9f26e80",
+      "bytes": 493450,
+      "size": [
+        816,
+        1056
+      ],
+      "720p_file": "720p-doc_with_formula.png",
+      "720p_transform": "aspect-preserving downscale only and white letterbox; no stretching or upscaling",
+      "720p_sha256": "4eebb48907a0da4961de648cbc43d20b0286540e220eb177b1b29ead1cd77810",
+      "720p_size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "file": "formula.png",
+      "source_url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/2661c7c0ef5c613e8f93c6e93b2e052399f0f854/tests/test_files/formula.png",
+      "source_commit": "2661c7c0ef5c613e8f93c6e93b2e052399f0f854",
+      "sha256": "7885d4a349edcdfbfbc439305b8b554c2500f095949bc53d14835656b902dbcc",
+      "bytes": 2346,
+      "size": [
+        448,
+        64
+      ],
+      "720p_file": "720p-formula.png",
+      "720p_transform": "aspect-preserving downscale only and white letterbox; no stretching or upscaling",
+      "720p_sha256": "e42446d63eb19c69ca7196fb359b8551c5bd403815d803a4121e833cf2cff20b",
+      "720p_size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "file": "medal_table.png",
+      "source_url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/2661c7c0ef5c613e8f93c6e93b2e052399f0f854/tests/test_files/medal_table.png",
+      "source_commit": "2661c7c0ef5c613e8f93c6e93b2e052399f0f854",
+      "sha256": "6d50148ceccb2d5cecc50b084b5105e3167f2d55a8899b29e04c3ebe46e88fa8",
+      "bytes": 191475,
+      "size": [
+        550,
+        345
+      ],
+      "720p_file": "720p-medal_table.png",
+      "720p_transform": "aspect-preserving downscale only and white letterbox; no stretching or upscaling",
+      "720p_sha256": "c965c88510d86123bd259db1ab6f02a868a88978cefeac0e09b6459f1f755810",
+      "720p_size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "file": "seal.png",
+      "source_url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/2661c7c0ef5c613e8f93c6e93b2e052399f0f854/tests/test_files/seal.png",
+      "source_commit": "2661c7c0ef5c613e8f93c6e93b2e052399f0f854",
+      "sha256": "be29cb91999450742958c62ead08f93825b92e5fa4290c063cc7991259da6c24",
+      "bytes": 184275,
+      "size": [
+        640,
+        640
+      ],
+      "720p_file": "720p-seal.png",
+      "720p_transform": "aspect-preserving downscale only and white letterbox; no stretching or upscaling",
+      "720p_sha256": "15e5eb138f773a4cbb6a06224bbfaeb067d4f20e61047a679653bf83ad427e86",
+      "720p_size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "file": "table.jpg",
+      "source_url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/2661c7c0ef5c613e8f93c6e93b2e052399f0f854/tests/test_files/table.jpg",
+      "source_commit": "2661c7c0ef5c613e8f93c6e93b2e052399f0f854",
+      "sha256": "acd113bb3a89b488941ee0962776a28e45897fa2802cd306ec3bb68d9043115c",
+      "bytes": 16208,
+      "size": [
+        551,
+        132
+      ],
+      "720p_file": "720p-table.png",
+      "720p_transform": "aspect-preserving downscale only and white letterbox; no stretching or upscaling",
+      "720p_sha256": "48db7eed65c8d979ae32d6f79c577e5583adedf93f37be1ad93b9b48b6d9d469",
+      "720p_size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "file": "textline.png",
+      "source_url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/2661c7c0ef5c613e8f93c6e93b2e052399f0f854/tests/test_files/textline.png",
+      "source_commit": "2661c7c0ef5c613e8f93c6e93b2e052399f0f854",
+      "sha256": "5362ba97741413494c507237b5096ef09ed575a501c4d9e68bfeffe17528a6ad",
+      "bytes": 73730,
+      "size": [
+        514,
+        64
+      ],
+      "720p_file": "720p-textline.png",
+      "720p_transform": "aspect-preserving downscale only and white letterbox; no stretching or upscaling",
+      "720p_sha256": "ec4653ef1e60727cf4cec2b8610f0f1e0c8064c53cdb35ed3a7665296d0605da",
+      "720p_size": [
+        1280,
+        720
+      ]
+    },
+    {
+      "file": "textline_rot180.jpg",
+      "source_url": "https://raw.githubusercontent.com/PaddlePaddle/PaddleOCR/2661c7c0ef5c613e8f93c6e93b2e052399f0f854/tests/test_files/textline_rot180.jpg",
+      "source_commit": "2661c7c0ef5c613e8f93c6e93b2e052399f0f854",
+      "sha256": "a642ee32c10f5660d34bd06212a8bfc46ce9f4ea0c09366a510db34f17642127",
+      "bytes": 11746,
+      "size": [
+        429,
+        48
+      ],
+      "720p_file": "720p-textline_rot180.png",
+      "720p_transform": "aspect-preserving downscale only and white letterbox; no stretching or upscaling",
+      "720p_sha256": "a5b94b2e32c45dcf96c5d7e527309d1d948e2dda138f121815d8cbea22731088",
+      "720p_size": [
+        1280,
+        720
+      ]
+    }
+  ],
+  "ground_truth_available": false
+}

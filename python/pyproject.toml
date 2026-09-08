@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "oneocr-native"
+version = "0.1.0"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+readme = "README.md"
+description = "Experimental offline OneOCR container reader and native CPU OCR"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+  "filelock>=3.18,<4",
+  "numpy>=2.4,<3",
+  "onnx>=1.22,<1.23",
+  "onnxruntime>=1.29,<1.30",
+  "opencv-python-headless>=4.13,<6",
+  "pillow>=12,<13",
+  "pycryptodome>=3.23,<4",
+]
+
+[project.scripts]
+oneocr-native = "oneocr_native.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "ruff>=0.11,<1"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/oneocr_native"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "examples", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "uv.lock", "pyproject.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["integration: requires a user supplied OneOCR model"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100

@@ -1,0 +1,26 @@
+[
+  {
+    "file" : "mixed-720p-a.png",
+    "font_size" : 36,
+    "height" : 720,
+    "synthetic" : true,
+    "text" : "屏幕文字识别测试 2026\n日本語の文字認識テスト\n한국어 문자 인식 테스트\nEnglish OCR benchmark 1280 x 720\n数字 0123456789 123.45\n中日韓 English 日本語 한국어",
+    "width" : 1280
+  },
+  {
+    "file" : "mixed-720p-b.png",
+    "font_size" : 32,
+    "height" : 720,
+    "synthetic" : true,
+    "text" : "任务状态：运行中\n日本語テスト 2026\n中文与数字 12345\nHello World 123\n한국어 테스트 2026\nFrame size 1280 x 720\nCPU / CoreML\nLatency 16.67 ms",
+    "width" : 1280
+  },
+  {
+    "file" : "mixed-720p-c.png",
+    "font_size" : 28,
+    "height" : 720,
+    "synthetic" : true,
+    "text" : "自动化测试 / Automation test\n当前画面分辨率 1280 x 720\n読み取り結果を確認します\n화면의 문자를 인식합니다\nEnglish text with numbers 001 002 003\n订单编号 20260908\n日本語とEnglishの混在\n한국어 English 12345\n0123456789 9876543210",
+    "width" : 1280
+  }
+]

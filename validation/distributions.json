@@ -1,0 +1,105 @@
+{
+  "schema": "oneocr.distribution.validation.v1",
+  "host": "darwin-arm64",
+  "checks": {
+    "relocated_cpp_binary": "passed",
+    "external_cmake_target": "passed",
+    "relocated_cli_install_and_recognize": "passed",
+    "external_go_source_sdk": "passed",
+    "isolated_python_wheel_without_go_library": "passed",
+    "recognized_text": "你好世界 日本語テスト 한국어 123",
+    "android_elf": [
+      {
+        "file": "jni/arm64-v8a/liboneocr.so",
+        "load_alignment_min": 16384,
+        "needed": [
+          "liblog.so",
+          "libdl.so",
+          "libc.so"
+        ]
+      },
+      {
+        "file": "jni/arm64-v8a/liboneocr_jni.so",
+        "load_alignment_min": 16384,
+        "needed": [
+          "liboneocr.so",
+          "libm.so",
+          "libdl.so",
+          "libc.so"
+        ]
+      },
+      {
+        "file": "jni/arm64-v8a/libonnxruntime.so",
+        "load_alignment_min": 16384,
+        "needed": [
+          "libdl.so",
+          "liblog.so",
+          "libandroid.so",
+          "libm.so",
+          "libc.so"
+        ]
+      },
+      {
+        "file": "jni/x86_64/liboneocr.so",
+        "load_alignment_min": 16384,
+        "needed": [
+          "liblog.so",
+          "libdl.so",
+          "libc.so"
+        ]
+      },
+      {
+        "file": "jni/x86_64/liboneocr_jni.so",
+        "load_alignment_min": 16384,
+        "needed": [
+          "liboneocr.so",
+          "libm.so",
+          "libdl.so",
+          "libc.so"
+        ]
+      },
+      {
+        "file": "jni/x86_64/libonnxruntime.so",
+        "load_alignment_min": 16384,
+        "needed": [
+          "libdl.so",
+          "liblog.so",
+          "libandroid.so",
+          "libm.so",
+          "libc.so"
+        ]
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "file": "oneocr-android-0.1.0.aar",
+      "bytes": 32262754,
+      "sha256": "cc97c54a41129ef781927859c2fa9cd6aee5097ac214c75833aef9f6235b07ec"
+    },
+    {
+      "file": "oneocr-android-sdk-0.1.0.zip",
+      "bytes": 32182399,
+      "sha256": "34322a2dc081aa651376b8adffda4c6705cf171a24e0ef33183bd78e54f979b2"
+    },
+    {
+      "file": "oneocr-go-sdk-0.1.0.zip",
+      "bytes": 103875,
+      "sha256": "0db41f370f976a708e7ab9ab0ccdc8ad0e3f85bffd01143dbecfafb188c90801"
+    },
+    {
+      "file": "oneocr-sdk-darwin-arm64-0.1.0.zip",
+      "bytes": 14067795,
+      "sha256": "c07b62b0069ed0605e02e21c55a9e38fff5c7663e291bc4bf7052bfc1d1e7a5a"
+    },
+    {
+      "file": "oneocr_native-0.1.0-py3-none-any.whl",
+      "bytes": 32516,
+      "sha256": "f0158292f010192614977cd5ebc76590b4ac63842afc65d01af731a98d4b792c"
+    }
+  ],
+  "limits": [
+    "Android native/AAR/consumer compile only; no device OCR",
+    "Windows/Linux desktop not executed on this host"
+  ]
+}

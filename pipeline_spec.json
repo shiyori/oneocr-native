@@ -1,0 +1,100 @@
+{
+  "profile": "relationrcnn-seglink-dblstm-v1",
+  "detector": {
+    "color": "RGB",
+    "dtype": "float32",
+    "layout": "NCHW",
+    "range": [
+      0,
+      255
+    ],
+    "embedded_normalization": true,
+    "padding_multiple": 32,
+    "padding_rgb": [
+      255,
+      255,
+      255
+    ],
+    "levels": [
+      2,
+      3,
+      4
+    ],
+    "stride": "2**level",
+    "center_offset": "(stride-1)/2",
+    "regression_scale": "8*stride-1",
+    "link_threshold": 0.8,
+    "nms_iou": 0.2,
+    "neighbors_yx": [
+      [
+        -1,
+        -1
+      ],
+      [
+        -1,
+        0
+      ],
+      [
+        -1,
+        1
+      ],
+      [
+        0,
+        -1
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        -1
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        1,
+        1
+      ]
+    ],
+    "connectivity": "either directional link >= threshold"
+  },
+  "classifier": {
+    "scripts": [
+      null,
+      "CJK",
+      "Latin",
+      "Cyrillic",
+      "Arabic",
+      "Devanagari",
+      "Greek",
+      "Thai",
+      "Hebrew",
+      "Tamil"
+    ],
+    "flip": "rotate 180 degrees if flip_score < 0"
+  },
+  "recognizer": {
+    "color": "RGB",
+    "dtype": "float32",
+    "layout": "NCHW",
+    "height": 60,
+    "range": [
+      0,
+      1
+    ],
+    "side_padding": 16,
+    "width_alignment": "pixels_per_frame",
+    "sequence_length": "padded_width/pixels_per_frame",
+    "decoder": "greedy CTC",
+    "blank": "index explicitly labelled <blank> in alphabet; never assume 0",
+    "unicode": "expand composite maps; visual-to-logical RTL; NFC"
+  },
+  "limitations": [
+    "Independent final quad fitting, line normalization and reading order",
+    "Rejection/calibration models exported but not used by the reference pipeline",
+    "confidence and words are null; natural vertical CJK and handwriting not validated"
+  ]
+}

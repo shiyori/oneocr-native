@@ -1,0 +1,107 @@
+[
+  {
+    "file": "Latin.png",
+    "script": "Latin",
+    "text": "Hello World 123"
+  },
+  {
+    "file": "CJK.png",
+    "script": "CJK",
+    "text": "你好世界 日本語テスト 한국어 123"
+  },
+  {
+    "file": "Cyrillic.png",
+    "script": "Cyrillic",
+    "text": "Привет мир 123"
+  },
+  {
+    "file": "Arabic.png",
+    "script": "Arabic",
+    "text": "مرحبا بالعالم"
+  },
+  {
+    "file": "Devanagari.png",
+    "script": "Devanagari",
+    "text": "नमस्ते दुनिया"
+  },
+  {
+    "file": "Greek.png",
+    "script": "Greek",
+    "text": "Καλημέρα κόσμε 123"
+  },
+  {
+    "file": "Hebrew.png",
+    "script": "Hebrew",
+    "text": "שלום עולם"
+  },
+  {
+    "file": "Tamil.png",
+    "script": "Tamil",
+    "text": "வணக்கம் உலகம்"
+  },
+  {
+    "file": "Thai.png",
+    "script": "Thai",
+    "text": "สวัสดีชาวโลก"
+  },
+  {
+    "file": "CJK_basic.png",
+    "script": "CJK",
+    "text": "你好世界"
+  },
+  {
+    "file": "Arabic_numbers.png",
+    "script": "Arabic",
+    "text": "السعر 123.45 USD"
+  },
+  {
+    "file": "Hebrew_numbers.png",
+    "script": "Hebrew",
+    "text": "מחיר 123.45 USD"
+  },
+  {
+    "file": "Latin_rotate_90.png",
+    "text": "Hello World 123",
+    "derived": true
+  },
+  {
+    "file": "Latin_rotate_180.png",
+    "text": "Hello World 123",
+    "derived": true
+  },
+  {
+    "file": "Latin_rotate_270.png",
+    "text": "Hello World 123",
+    "derived": true
+  },
+  {
+    "file": "Latin_rotate_12.png",
+    "text": "Hello World 123",
+    "derived": true
+  },
+  {
+    "file": "low_contrast.png",
+    "text": "Hello World 123",
+    "derived": true
+  },
+  {
+    "file": "blank.png",
+    "text": "",
+    "derived": true
+  },
+  {
+    "file": "columns.png",
+    "text": "Hello World 123\nHello World 123\nHello World 123\nПривет мир 123\nПривет мир 123\nПривет мир 123",
+    "derived": true
+  },
+  {
+    "file": "columns_rotate_90.png",
+    "text": "Hello World 123\nHello World 123\nHello World 123\nПривет мир 123\nПривет мир 123\nПривет мир 123",
+    "derived": true
+  },
+  {
+    "file": "multilingual.png",
+    "text": "Hello World 123\n你好世界 日本語テスト 한국어 123\nПривет мир 123\nمرحبا بالعالم\nनमस्ते दुनिया\nΚαλημέρα κόσμε 123\nשלום עולם\nவணக்கம் உலகம்\nสวัสดีชาวโลก",
+    "derived": true
+  }
+]
