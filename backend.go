@@ -21,7 +21,7 @@ type Backend string
 
 const (
 	BackendCPU      Backend = "cpu"
-	BackendCoreML   Backend = "coreml"
+	BackendCoreML   Backend = "coreml" // Retired; the default fallback restores original-model CPU.
 	BackendCUDA     Backend = "cuda"
 	BackendDirectML Backend = "directml"
 )
@@ -144,9 +144,7 @@ func (c Config) stageBackend(stage string) Backend {
 func backendPlatform(b Backend) error {
 	switch b {
 	case BackendCoreML:
-		if runtime.GOOS != "darwin" {
-			return fmt.Errorf("CoreML requires an Apple runtime")
-		}
+		return fmt.Errorf("CoreML acceleration has been retired after CPU performance validation; use original-model CPU")
 	case BackendCUDA:
 		if runtime.GOOS != "windows" && runtime.GOOS != "linux" {
 			return fmt.Errorf("CUDA requires a supported NVIDIA runtime on Windows/Linux")
@@ -159,7 +157,7 @@ func backendPlatform(b Backend) error {
 	return nil
 }
 
-func sessionOptions(config Config, backend Backend, modelHash, stage string) (*ort.SessionOptions, string, error) {
+func sessionOptions(config Config, backend Backend, stage string) (*ort.SessionOptions, string, error) {
 	options, err := ort.NewSessionOptions()
 	if err != nil {
 		return nil, "", err
@@ -187,25 +185,6 @@ func sessionOptions(config Config, backend Backend, modelHash, stage string) (*o
 		return nil, "", err
 	}
 	switch backend {
-	case BackendCoreML:
-		cache := config.CacheDir
-		if cache == "" {
-			cache, err = os.UserCacheDir()
-			if err != nil {
-				return nil, "", err
-			}
-			cache = filepath.Join(cache, "oneocr")
-		}
-		// In-memory ORT cache keys may only hash graph names, so isolate by the
-		// complete model bytes, ORT version, platform and provider options here.
-		cache, err = filepath.Abs(filepath.Join(cache, "coreml", ort.GetVersion(), runtime.GOOS+"-"+runtime.GOARCH, config.CoreMLComputeUnits, modelHash))
-		if err != nil {
-			return nil, "", err
-		}
-		if err = os.MkdirAll(cache, 0700); err != nil {
-			return nil, "", err
-		}
-		err = options.AppendExecutionProviderCoreMLV2(map[string]string{"ModelFormat": "MLProgram", "MLComputeUnits": config.CoreMLComputeUnits, "RequireStaticInputShapes": "0", "EnableOnSubgraphs": "0", "AllowLowPrecisionAccumulationOnGPU": "0", "ModelCacheDirectory": cache})
 	case BackendCUDA:
 		var cuda *ort.CUDAProviderOptions
 		cuda, err = ort.NewCUDAProviderOptions()
@@ -240,7 +219,7 @@ func sessionOptions(config Config, backend Backend, modelHash, stage string) (*o
 
 func (n *network) createSession(model []byte, backend Backend, outputs []string) error {
 	hash := fmt.Sprintf("%x", sha256.Sum256(model))
-	options, profileDir, err := sessionOptions(n.config, backend, hash, n.diagnostics.Stage)
+	options, profileDir, err := sessionOptions(n.config, backend, n.diagnostics.Stage)
 	if err != nil {
 		return err
 	}

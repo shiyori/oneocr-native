@@ -120,7 +120,7 @@ Python 3.11–3.13，完整 OCR 管线由 Python 自己执行，直接调用 pip
 ```cpp
 auto engine = oneocr::Engine::fromOptions(R"({
   "model_path": "oneocr-cjk-en.ocrpack",
-  "backend": "coreml", "fallback": "cpu", "threads": 2
+  "backend": "cpu", "fallback": "cpu", "threads": 2
 })");
 engine.warmup(30000);
 auto result = engine.recognizeFile("image.png", "", 30000);
@@ -129,7 +129,7 @@ auto diagnostics = engine.closeWithDiagnostics();
 
 C 入口对应 `OneOCRWarmup`、`OneOCRRecognizeEncodedWithTimeout`、`OneOCRRecognizeRGBWithTimeout`、`OneOCRDiagnostics` 和 `OneOCRCloseWithDiagnostics`。超时单位为毫秒，0 表示无超时，上限 86400000；计时包含等待 Engine，设备内核停止可能晚于 deadline。所有返回字符串继续由 `OneOCRFree` 释放。
 
-诊断区分请求后端、注册后端与实际 kernel profile。profiling 在 Close 后完成；未测量的分配不能当作 GPU 执行证明。DirectML 同一 session 串行；并发使用各自独立的 Engine。CoreML 编译缓存按模型内容、ORT 版本、平台和配置隔离。CoreML 模型适配和 v2 整数格点检测图已淘汰；旧清单在建会话前明确报错。通用 CoreML 后端枚举保留，检测器适配保留原量化算子。Windows CUDA 已执行实际 kernel，但不能用已移除候选的结果宣称当前原图加速。公开 DirectML 1.24.4 不满足当前绑定的 ORT API 29 要求；隔离源码构建的 ORT 1.29 + DirectML 1.15.4 已完成 SDK 初步推理，但完整阶段精度和性能仍需分别验收。
+诊断区分请求后端、注册后端与实际 kernel profile。profiling 在 Close 后完成；未测量的分配不能当作 GPU 执行证明。DirectML 同一 session 串行；并发使用各自独立的 Engine。CoreML 不再创建会话或编译缓存。CoreML 模型适配和 v2 整数格点检测图已淘汰；旧清单在建会话前明确报错。CoreML 后端枚举保留兼容，默认 FallbackCPU 真正恢复原模型 CPU 并记录退休原因，严格模式明确报错；检测器适配保留原量化算子。Windows CUDA 已执行实际 kernel，但不能用已移除候选的结果宣称当前原图加速。公开 DirectML 1.24.4 不满足当前绑定的 ORT API 29 要求；隔离源码构建的 ORT 1.29 + DirectML 1.15.4 已完成 SDK 初步推理，但完整阶段精度和性能仍需分别验收。
 
 Python wheel 保持独立 CPU 识别入口，新增 `oneocr-native adapt` 离线转换工具；Go/C/C++ 运行不依赖 Python。详细模型转换和持续调用说明位于源码 `docs/ACCELERATION.md`。
 

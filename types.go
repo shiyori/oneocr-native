@@ -48,7 +48,8 @@ type Config struct {
 	StageBackends map[string]Backend `json:"stage_backends,omitempty"`
 	DeviceID      int                `json:"device_id,omitempty"`
 	Fallback      FallbackPolicy     `json:"fallback,omitempty"`
-	// CacheDir isolates CoreML compiled models by source, runtime and options.
+	// CacheDir and CoreMLComputeUnits are retained for configuration compatibility.
+	// The retired CoreML backend no longer compiles models or writes this cache.
 	CacheDir           string `json:"cache_dir,omitempty"`
 	CoreMLComputeUnits string `json:"coreml_compute_units,omitempty"` // ALL (default), CPUAndGPU, CPUAndNeuralEngine, CPUOnly
 	// AdaptationDir is an explicitly selected, source-hash-checked experimental

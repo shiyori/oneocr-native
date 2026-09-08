@@ -7,7 +7,6 @@ import (
 	"math"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
 	"time"
@@ -128,19 +127,17 @@ func TestAdaptationRejectsRetiredDetectorRecipes(t *testing.T) {
 		})
 	}
 }
-func TestNativeBackendFallbackAndProfiling(t *testing.T) {
+func TestNativeRetiredCoreMLFallbackAndProfiling(t *testing.T) {
 	bundle, library, fixtures := os.Getenv("ONEOCR_BUNDLE"), os.Getenv("ONEOCR_RUNTIME"), os.Getenv("ONEOCR_FIXTURES")
 	if bundle == "" || library == "" || fixtures == "" {
 		t.Skip("set native integration paths")
 	}
-	unsupported := BackendDirectML
-	if runtime.GOOS == "windows" {
-		unsupported = BackendCoreML
-	}
-	cfg := Config{BundleDir: bundle, RuntimeLibrary: library, Backend: unsupported, Threads: 1, Fallback: FallbackError}
+	cfg := Config{BundleDir: bundle, RuntimeLibrary: library, Backend: BackendCoreML, Threads: 1, Fallback: FallbackError}
 	if e, err := Open(cfg); err == nil {
 		e.Close()
 		t.Fatal("strict unsupported provider succeeded")
+	} else if !strings.Contains(err.Error(), "CoreML acceleration has been retired") {
+		t.Fatal(err)
 	}
 	cfg.Fallback = FallbackCPU
 	cfg.ProfilingDir = t.TempDir()
@@ -157,7 +154,7 @@ func TestNativeBackendFallbackAndProfiling(t *testing.T) {
 		t.Fatal(result.Text, err)
 	}
 	for _, stage := range e.Diagnostics().Stages {
-		if stage.Registered != BackendCPU || stage.FallbackReason == "" || stage.ExecutionMeasured {
+		if stage.Requested != BackendCoreML || stage.Registered != BackendCPU || !strings.Contains(stage.FallbackReason, "CoreML acceleration has been retired") || stage.ExecutionMeasured {
 			t.Fatal(stage)
 		}
 	}

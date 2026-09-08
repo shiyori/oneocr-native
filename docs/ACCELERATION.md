@@ -1,6 +1,6 @@
 # 高频识别与可选加速
 
-默认仍使用原始模型和 ONNX Runtime CPU。Go SDK、CLI、C/C++ 可显式选择 CoreML、CUDA、DirectML；后端注册成功并不保证主要计算进入 GPU，也不保证更快。加速模型是独立的实验副本，不覆盖 `.ocrpack` 或原资源。
+默认仍使用原始模型和 ONNX Runtime CPU。Go SDK、CLI、C/C++ 可显式选择 CUDA、DirectML；旧 `coreml` 配置在默认回退策略下恢复原模型 CPU，严格策略明确报错；后端注册成功并不保证主要计算进入 GPU，也不保证更快。加速模型是独立的实验副本，不覆盖 `.ocrpack` 或原资源。
 
 ## 配置与回退
 
@@ -23,12 +23,12 @@ result, err := engine.Recognize(ctx, frame, oneocr.Options{})
 
 | 字段 | 默认与含义 |
 |---|---|
-| `Backend` | `cpu`；可选 `coreml`、`cuda`、`directml` |
-| `DeviceID` | `0`；CUDA/DirectML 的设备索引，CoreML 由系统调度 |
+| `Backend` | `cpu`；可选 `cuda`、`directml`；旧 `coreml` 仅作兼容，默认恢复 CPU |
+| `DeviceID` | `0`；CUDA/DirectML 的设备索引 |
 | `Fallback` | `cpu`：注册、建会话或原生 Run 失败时，允许该阶段改用原模型 CPU 会话；`error` 返回错误 |
 | `StageBackends` | 可单独覆盖 `detector`、`classifier`、`recognizer/CJK`、`recognizer/Latin` 等阶段 |
-| `CoreMLComputeUnits` | `ALL`；亦可选 `CPUOnly`、`CPUAndGPU`、`CPUAndNeuralEngine` |
-| `CacheDir` | 系统用户缓存目录下的 `oneocr`；CoreML 编译缓存按模型内容、ORT 版本、平台及选项隔离 |
+| `CoreMLComputeUnits` | 仅保留旧配置兼容；不再启动 CoreML |
+| `CacheDir` | 保留旧配置兼容；不再生成 CoreML 编译缓存 |
 | `AdaptationDir` | 空；显式使用转换工具生成的 `adaptation.json` 和模型 |
 | `ProfilingDir` | 空；设置后收集 ORT kernel profile，Close 后完成统计 |
 | `ShapeCacheSize` | 默认 `0` 关闭；`1..4` 限制每阶段按输入尺寸复用的会话数量 |
@@ -48,7 +48,7 @@ result, err := engine.Recognize(ctx, frame, oneocr.Options{})
 
 重复截图尺寸可设置 `ShapeCacheSize: 2`（CLI `--shape-cache 2`），对加速阶段按输入尺寸创建固定形状会话并做 LRU 淘汰。首次遇到尺寸可能编译较久，context 会在创建后再次检查；不能承诺硬性实时 deadline。原有固定 batch/channel/height 不会被改写，权重不变。缓存命中、淘汰及每个尺寸的实际会话配置见 `ShapeSessions`。阶段顶层 Registered 表示模板注册，尺寸会话的回退看子项。
 
-容量限制针对存活会话；CoreML 磁盘编译缓存按内容和尺寸保存，全部 Engine 停止后可以清理 `CacheDir`。尺寸缓存的创建和淘汰成本也必须计入混合尺寸负载；不能从固定尺寸命中结果推断通用加速收益。
+容量限制针对存活会话；旧 CoreML 磁盘编译缓存不再使用。尺寸缓存的创建和淘汰成本也必须计入混合尺寸负载；不能从固定尺寸命中结果推断通用加速收益。
 
 DirectML 使用顺序执行并禁用 memory pattern；同一 session 不允许多个 `Run` 同时执行，独立 Engine 使用各自 session。[官方限制](https://onnxruntime.ai/docs/execution-providers/DirectML-ExecutionProvider.html#configuration-options)
 
@@ -67,7 +67,7 @@ oneocr-native adapt --bundle /path/to/source-bundle \
 
 输出目录必须不存在。清单关联原容器摘要、每个源模型摘要、转换模型摘要及输出接口；修改权重或更换包后需要重新转换。GPU 运行时和依赖库需另行提供，转换工具不会安装 CUDA、cuDNN 或 GPU 驱动。
 
-- **CoreML**：模型适配已淘汰，不再提供转换入口，旧 CoreML 适配清单明确报错。通用后端枚举仍保留，原模型直接执行的分区和收益需要单独检查。
+- **CoreML**：模型适配已淘汰，不再提供转换入口，旧 CoreML 适配清单明确报错。后端枚举保留兼容；默认 `FallbackCPU` 下真正恢复原模型 CPU，诊断保留请求后端及退休原因，`FallbackError` 明确报错。
 - **CUDA**：检测器保留原量化算子；识别器将 `DynamicQuantizeLSTM` 转为标准 LSTM，处理转置权重和 i/o/f/c 门顺序。
 - **DirectML**：优先保留原量化检测器与投影，转换不支持的量化 LSTM。
 - 分类和识别的默认 `--quantization grid` 保留激活舍入及裁剪。`--quantization relaxed` 仅保留裁剪，是更激进的数值实验。裁剪不能随意删除：量化边界可能承担 ReLU 行为。
@@ -96,8 +96,12 @@ Android 模拟器上原模型的 48 个卷积均为 UINT8 激活、INT8 权重�
 
 
 验收以同机原 CPU 为参照：文字、框数量和方向相同，角点误差不超过 0.1 像素，分数误差不超过 `1e-4`。
-正式性能测试关闭 profiling，按完整六图循环分别测试单/双实例三轮；每轮至少 30 秒，平均耗时每轮均低于 CPU
-才认定该配置有可重复收益。冷启动、P50/P95、内存和缓存失效成本单独报告。
+正式性能测试关闭 profiling，按完整六图循环分别测试单/双实例三轮；每轮至少 30 秒，端到端平均耗时每轮均比同机原始 CPU 模型降低至少 20%
+（候选平均耗时 ≤ 原 CPU 的 0.8，约至少 1.25 倍速度），才认定该调用模式有可重复收益。单、双实例分别验收；
+候选自身 CPU 或旧 GPU 版本不能充当性能基线。冷启动、P50/P95、内存和缓存失效成本单独报告。
+
+加速阶段拖慢整体处理时恢复原模型 CPU；最终启用组合必须达到 20% 的端到端收益门槛。该选择由实际平台验收结果确定，
+使用 `StageBackends` 保持 CPU 阶段；不能让被判定更慢的路径继续作为默认加速执行。
 
 ### 紧凑输出
 
@@ -122,13 +126,13 @@ oneocr recognize --model models/oneocr-cjk-en.ocrpack \
 
 使用 `--characters han,kana,latin,digits` 等选择字符类别。`--diagnostics` 不覆盖已有文件。高频应用使用长期存活的 SDK 或 stream 示例；反复启动单图 CLI 会重复加载模型。
 
-`engine.Diagnostics()` 在使用中和 Close 后均可调用。每个阶段分别报告：请求后端、已注册后端、实际模型摘要、实验转换、回退原因、运行次数与耗时。启用 profiling 并 Close 后，另有实际执行 provider 的 kernel 事件及耗时。`ExecutionMeasured=false` 时不能推断实际分配；CoreML 事件也不能单独证明 GPU/ANE 硬件类型，需要 CoreML compute plan 辅助检查。
+`engine.Diagnostics()` 在使用中和 Close 后均可调用。每个阶段分别报告：请求后端、已注册后端、实际模型摘要、实验转换、回退原因、运行次数与耗时。启用 profiling 并 Close 后，另有实际执行 provider 的 kernel 事件及耗时。`ExecutionMeasured=false` 时不能推断实际分配；历史 CoreML 事件也不能单独证明 GPU/ANE 硬件类型，旧报告需结合 compute plan；当前版本不再创建 CoreML 会话。
 
 profiling 用于短时诊断，持续生产运行应关闭，以免 trace 本身增加开销和内存。核对算子分配与持续吞吐应分开进行。
 
 ## 验证边界
 
-CPU 保持默认。CoreML 可在 macOS 实测；CUDA 需要匹配 CUDA/cuDNN 的 NVIDIA 环境，DirectML 需要 Windows/DX12 真机。编译、模型 CPU 回归、实际后端接管和稳定提速是四项独立结果，缺失真机验证的后端不标为验收通过。
+CPU 保持默认。CoreML 加速已停用并恢复 CPU 默认处理；CUDA 需要匹配 CUDA/cuDNN 的 NVIDIA 环境，DirectML 需要 Windows/DX12 真机。编译、模型 CPU 回归、实际后端接管和稳定提速是四项独立结果，缺失真机验证的后端不标为验收通过。
 
 性能测试应包含代表性实际截图、变化尺寸、单流/双调用方和冷启动；本轮按约两分钟的短时连续调用验证，比较同机 CPU 的 P50/P95、吞吐和 RSS/显存。短时生成样例不代表生产容量或通用准确率。本轮接入实测脚本、详细 trace 和机器报告留在仓库外；仓库保留转换与生命周期回归测试。
 

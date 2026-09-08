@@ -5,7 +5,6 @@ import (
 	"context"
 	"os"
 	"path/filepath"
-	"runtime"
 	"testing"
 )
 
@@ -57,15 +56,16 @@ func TestShapeKeySeparatesAllInputs(t *testing.T) {
 		t.Fatal(first, same, other)
 	}
 }
-func TestNativeCoreMLShapeCache(t *testing.T) {
-	if runtime.GOOS != "darwin" {
-		t.Skip("requires CoreML")
+func TestNativeAcceleratedShapeCache(t *testing.T) {
+	backend := Backend(os.Getenv("ONEOCR_TEST_BACKEND"))
+	if backend != BackendCUDA && backend != BackendDirectML {
+		t.Skip("set ONEOCR_TEST_BACKEND=cuda or directml")
 	}
-	model, lib, fixtures, adaptation := os.Getenv("ONEOCR_MODEL_PACKAGE"), os.Getenv("ONEOCR_RUNTIME"), os.Getenv("ONEOCR_FIXTURES"), os.Getenv("ONEOCR_COREML_ADAPTATION")
-	if model == "" || lib == "" || fixtures == "" || adaptation == "" {
-		t.Skip("set CoreML validation paths")
+	model, lib, fixtures, adaptation := os.Getenv("ONEOCR_MODEL_PACKAGE"), os.Getenv("ONEOCR_RUNTIME"), os.Getenv("ONEOCR_FIXTURES"), os.Getenv("ONEOCR_ADAPTATION")
+	if model == "" || lib == "" || fixtures == "" {
+		t.Skip("set accelerated validation paths")
 	}
-	cfg := Config{ModelPath: model, RuntimeLibrary: lib, Backend: BackendCoreML, Fallback: FallbackError, Threads: 2, AdaptationDir: adaptation, ShapeCacheSize: 2, CacheDir: t.TempDir(), ProfilingDir: t.TempDir(), StageBackends: map[string]Backend{"classifier": BackendCPU, "recognizer/CJK": BackendCPU, "recognizer/Latin": BackendCPU}}
+	cfg := Config{ModelPath: model, RuntimeLibrary: lib, Backend: backend, Fallback: FallbackError, Threads: 2, AdaptationDir: adaptation, ShapeCacheSize: 2, ProfilingDir: t.TempDir(), StageBackends: map[string]Backend{"classifier": BackendCPU, "recognizer/CJK": BackendCPU, "recognizer/Latin": BackendCPU}}
 	e, err := Open(cfg)
 	if err != nil {
 		t.Fatal(err)
@@ -93,7 +93,8 @@ func TestNativeCoreMLShapeCache(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, s := range e.Diagnostics().Stages {
-		if s.Stage == "detector" && (!s.ExecutionMeasured || s.Providers["CoreMLExecutionProvider"].KernelEvents == 0) {
+		provider := map[Backend]string{BackendCUDA: "CUDAExecutionProvider", BackendDirectML: "DmlExecutionProvider"}[backend]
+		if s.Stage == "detector" && (!s.ExecutionMeasured || s.Providers[provider].KernelEvents == 0) {
 			t.Fatal(s)
 		}
 	}
