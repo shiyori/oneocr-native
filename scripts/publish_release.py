@@ -105,7 +105,7 @@ def record(directory: Path, platform: str):
     require(platform in BUILD_PLATFORMS, "unsupported release build platform")
     create(directory, partial=True)
     audit(directory, partial=True)
-    names = {p.name for p in directory.iterdir() if p.is_file()} - {"release-manifest.json", "SHA256SUMS"}
+    names = {p.name for p in directory.iterdir() if p.is_file() and not p.name.startswith(".")} - {"release-manifest.json", "SHA256SUMS"}
     require(all(expected_assets()[name][1] in {platform, ""} for name in names), "wrong platform asset")
     (directory / RECORD).write_text(json.dumps({
         "schema": "oneocr.build.v1", "version": VERSION, "commit": current_commit(), "platform": platform,

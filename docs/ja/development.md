@@ -35,7 +35,7 @@ python scripts/build_sdk.py --target android --output dist/release --android-sdk
 
 `version.json` と一致するバージョンタグ（例：`v0.1.0`）を push すると `release-publish` が自動実行されます。Android 完全版/Core AAR、共通 Python パッケージ、任意の Linux パッケージをビルドし、Linux のネイティブ ABI スモークテストと内容・ライセンス・チェックサム検査を実行します。ドラフトへアップロードしてリモートの SHA-256 を照合した後、正式版として公開し Latest に設定します。各プラットフォームのビルド記録は同じソースコミットに結び付けられ、通常の CI 通過が必要です。ダウンロード文書は既定で `releases/latest` と `latest/download` を使います。
 
-拡張検証は Actions で `main` の `release-build` を手動実行するか、`gh workflow run release-build.yml --ref main` で起動します。完全な OCR 比較、ランタイム互換性、複数 Python バージョンの利用テスト、Android エミュレーターテストを含み、通常 CI や正式公開の前提条件ではありません。成功後、必要に応じて `python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` でレポートを取得できます。公開失敗時は同じバージョンタグで `release-publish` を再実行できます。公開済みで内容が異なる制品は上書きしません。
+拡張検証は Actions で `main` の `release-build` を手動実行するか、`gh workflow run release-build.yml --ref main` で起動します。完全な OCR 比較、ランタイム互換性、複数 Python バージョンの利用テスト、Android エミュレーターテストを含み、通常 CI や正式公開の前提条件ではありません。成功後、必要に応じて `python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` でレポートを取得できます。公開失敗時は `main` から `release-publish` を手動実行し、`tag` に元のバージョンタグを指定します。現在の公開スクリプトで元のタグのソースを処理し、Go モジュールのタグは変更しません。公開済みで内容が異なる制品は上書きしません。
 
 
 [モデルパッケージ形式](model-format.md)

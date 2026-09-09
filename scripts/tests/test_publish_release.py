@@ -76,5 +76,22 @@ class AssembleTests(unittest.TestCase):
             release.assemble(self.packages, self.output)
 
 
+class RecordTests(unittest.TestCase):
+    def test_ignores_uv_hidden_output_marker(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            (directory / ".gitignore").write_text("*")
+            (directory / "model.ocrpack").write_bytes(b"model")
+            for name in ("release-manifest.json", "SHA256SUMS"):
+                (directory / name).write_text("metadata")
+            with patch.object(release, "create"), patch.object(release, "audit"), \
+                 patch.object(release, "current_commit", return_value="tagged"), \
+                 patch.object(release, "expected_assets", return_value={"model.ocrpack": ("model", "")}):
+                release.record(directory, "linux-amd64")
+            record = json.loads((directory / release.RECORD).read_text())
+            self.assertEqual(set(record["assets"]), {"model.ocrpack"})
+            self.assertEqual(record["commit"], "tagged")
+
+
 if __name__ == "__main__":
     unittest.main()

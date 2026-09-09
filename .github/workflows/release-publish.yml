@@ -3,10 +3,15 @@ on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing stable tag to publish with current release tooling
+        required: true
+        type: string
 permissions:
   contents: read
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ inputs.tag || github.ref_name }}
   cancel-in-progress: false
 env:
   PYTHONUTF8: '1'
@@ -15,10 +20,19 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
+      - name: Load publication tooling from this workflow revision
+        env:
+          TOOLING_COMMIT: ${{ github.workflow_sha }}
+        run: git show "${TOOLING_COMMIT}:scripts/publish_release.py" > scripts/publish_release.py
       - name: Verify release tag
+        env:
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           python scripts/version.py --check
-          PYTHONPATH=scripts python -c 'import os; from version import TAG; assert os.environ["GITHUB_REF"] == "refs/tags/" + TAG, "Run this workflow on the version tag"'
+          PYTHONPATH=scripts python -c 'import os; from version import TAG; assert os.environ["RELEASE_TAG"] == TAG, "Run this workflow on the version tag"'
   linux:
     needs: version
     strategy:
@@ -33,6 +47,13 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
+      - name: Load publication tooling from this workflow revision
+        env:
+          TOOLING_COMMIT: ${{ github.workflow_sha }}
+        run: git show "${TOOLING_COMMIT}:scripts/publish_release.py" > scripts/publish_release.py
       - uses: actions/setup-go@v5
         with:
           go-version: '1.26.x'
@@ -70,6 +91,13 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+          fetch-depth: 0
+      - name: Load publication tooling from this workflow revision
+        env:
+          TOOLING_COMMIT: ${{ github.workflow_sha }}
+        run: git show "${TOOLING_COMMIT}:scripts/publish_release.py" > scripts/publish_release.py
       - uses: actions/setup-go@v5
         with:
           go-version: '1.26.x'
@@ -120,7 +148,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.tag || github.ref }}
           fetch-depth: 0
+      - name: Load publication tooling from this workflow revision
+        env:
+          TOOLING_COMMIT: ${{ github.workflow_sha }}
+        run: git show "${TOOLING_COMMIT}:scripts/publish_release.py" > scripts/publish_release.py
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
