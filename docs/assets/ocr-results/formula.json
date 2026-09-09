@@ -1,0 +1,3120 @@
+{
+  "confidence": 0.9165858519953379,
+  "confidence_method": "ctc_token_geometric_mean",
+  "coordinate_space": "oriented_image",
+  "text": "3\na compilation of various multi-wavelength observations\nthat span IR, optical/UV, soft, and hard X-rays, and\nrepresents an update to Ref. 22. The QLF is fit by a\nwhere tg = oTc/4rGmp = 4.5 x 105yr is the Edding-\nton time, and ep Nace corresponds to the fraction of the\ndouble power-law\nmass that is radiated ns it falls into the black hole. The\nsfra\nmass that is added to the black hole A is therefore\ndlog1eI(L/T.) + (1./T.)T\nM = (1 -<)Mace. If we define the bolometric lumi-\nnosity function of quasars of L, f)dlogge L as the number\nAll results shown in this work correspond to \"global fit\ndensity of quasars per log luminosity, and we suppose\nA\" in Ref. 2n, in which the model parameters o., L.,\nthat a fraction o(M,t) of black holes is active at a time\n7, and 22 have a parametrized redshift dependence and\nt, then o(L,t) is related to the black hole mass function\nare simultaneously fit across all redshifts.\nEq- Dean be integrated over time, which results in\nvia\n(L,t)dlog1L = o(M,t)e(Mr,t)dM.\nx(01)叫림\nThe quantity 8 is the BH duty eyele, where (Ar(Mf,t)) =\nda2 DL1.AMd/t\n(1-6)\nwhere do is the mas function today. For a sufficiently\nhigh redshift z, e(Mf,z) is negligible compared to eo,\nwe can therefore rewrite the secoud term ou the left-hand\nLe., in the absence of mergers, the mass function today\nmust equal the accreted mass, We model the present-day\nside of Eq. Din terms of the quasar luminosity function\nmass function as in Refs. [5) [0], which we very briefly\nsummarize here.\nN (6)\nThe present-day SMBH mass function can be esti-\n7Te (o1)mh5\n3y/ePWY-7]7e\nand properties of the host galaxy (say, property X) and\nMultiplying by the mass and integrating the equation\ngalaxy catalogs, which give dn/dX. The scaling relation\nabove over time shows that the blaek hole mass density\nis direetly related to the integral of the quasar luminosity\nis expeased as\nfnction\nlog1g M = 0. + b, log1o X.\n(11)\nTV(V)JP- Wad\n€\nUsing the galaxy velocity dispersion as our fiducial proxy\nfor SMBH mass, we parametrize the velocity dispersion\ndhogno Lộ(T,=)T,\nfunction (VDF) as\nwhich is the Soltan argument (n.\n(12)\nNote that the radiative efficiency only changes an over-\nall amplitude of pau, while the Eddington ratio changes\nIncluding scatter in the relation between black hole mass\nboth the amplitude and the shape of the final SMBH\nand galaxy property leads to\nmass function, while keeping the total mass density fixed.\n(doP(log10 Mf|log1ø)dn\nAs a toy example consider a scenario in which the red-\n(CT)\nb(M)=\nshift evolution of the parameters is negligible, then the\nM log(10)\nquasar luminosity function (QL.F) is always given by a\ndouble power-law, with a break at a luminosity L,, The\nwhere p is assumed to be log-normal\ncorrespondling break in the SMBH mnass function will be\nM. - L,fg/X2 and the power-laws of dn/dlog M will\nP(log1gMf|10g3)=\nbe the same as o(L). Therefore, reducing (increasing) A\nincreases (reduces) the characteristic mass of the turn-\n1 (1og20M-6.-b. 10g10\nover in the SMBH mass function. In this seenario, black\nx exp\nholes of all masses grow at the same time. The mea-\n(14)\nsured quasar luminosity function, however, has a break\nthat evolves over time, mostly decreasing with redshift.\nAs in Refs. 2H [20 the adopt the velocity disper-\nThis implies that more massive black holes assemble their\nWe therefore use\nsion funetion as the mass peoy.\nmass earlier on.\nX - o/200km s-1 in Eq. I and the M - o relation\nSMBH growth from accretion can thus be modelled\nfroen Ref. (31], which correspouds to o, = 8.32 ± 0.05,\nby directly relating it to the observed QLF, We use the\n6. =5.64±0.32, and te = 0.38. For the VDF, we choose\nbolometric QLF presented in Ref. 27, which is based on",
+  "lines": [
+    {
+      "text": "3",
+      "quad": [
+        [
+          867.768,
+          25.042
+        ],
+        [
+          874.437,
+          26.068
+        ],
+        [
+          873.164,
+          34.347
+        ],
+        [
+          866.494,
+          33.321
+        ]
+      ],
+      "bbox": {
+        "x": 866.494,
+        "y": 25.042,
+        "width": 7.942999999999984,
+        "height": 9.305
+      },
+      "detection_score": 0.8960727453231812,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9945202618914557,
+      "words": null
+    },
+    {
+      "text": "a compilation of various multi-wavelength observations",
+      "quad": [
+        [
+          646.827,
+          46.835
+        ],
+        [
+          875.665,
+          46.369
+        ],
+        [
+          875.693,
+          60.044
+        ],
+        [
+          646.855,
+          60.51
+        ]
+      ],
+      "bbox": {
+        "x": 646.827,
+        "y": 46.369,
+        "width": 228.86599999999999,
+        "height": 14.140999999999998
+      },
+      "detection_score": 0.9683719873428345,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9763361935511254,
+      "words": null
+    },
+    {
+      "text": "that span IR, optical/UV, soft, and hard X-rays, and",
+      "quad": [
+        [
+          647.488,
+          55.768
+        ],
+        [
+          876.149,
+          55.768
+        ],
+        [
+          876.149,
+          70.595
+        ],
+        [
+          647.488,
+          70.595
+        ]
+      ],
+      "bbox": {
+        "x": 647.488,
+        "y": 55.768,
+        "width": 228.66099999999994,
+        "height": 14.826999999999998
+      },
+      "detection_score": 0.9478679299354553,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9710335150478585,
+      "words": null
+    },
+    {
+      "text": "represents an update to Ref. 22. The QLF is fit by a",
+      "quad": [
+        [
+          647.421,
+          68.73
+        ],
+        [
+          874.528,
+          67.383
+        ],
+        [
+          874.599,
+          79.408
+        ],
+        [
+          647.492,
+          80.756
+        ]
+      ],
+      "bbox": {
+        "x": 647.421,
+        "y": 67.383,
+        "width": 227.178,
+        "height": 13.373000000000005
+      },
+      "detection_score": 0.9245262145996094,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9197563628470583,
+      "words": null
+    },
+    {
+      "text": "where tg = oTc/4rGmp = 4.5 x 105yr is the Edding-",
+      "quad": [
+        [
+          408.226,
+          64.405
+        ],
+        [
+          634.774,
+          64.405
+        ],
+        [
+          634.774,
+          78.417
+        ],
+        [
+          408.226,
+          78.417
+        ]
+      ],
+      "bbox": {
+        "x": 408.226,
+        "y": 64.405,
+        "width": 226.548,
+        "height": 14.012
+      },
+      "detection_score": 0.9458967447280884,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8454693471580703,
+      "words": null
+    },
+    {
+      "text": "ton time, and ep Nace corresponds to the fraction of the",
+      "quad": [
+        [
+          406.912,
+          76.411
+        ],
+        [
+          635.507,
+          75.656
+        ],
+        [
+          635.551,
+          89.034
+        ],
+        [
+          406.956,
+          89.789
+        ]
+      ],
+      "bbox": {
+        "x": 406.912,
+        "y": 75.656,
+        "width": 228.63900000000007,
+        "height": 14.132999999999996
+      },
+      "detection_score": 0.9237638115882874,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9375095182996104,
+      "words": null
+    },
+    {
+      "text": "double power-law",
+      "quad": [
+        [
+          646.851,
+          79.131
+        ],
+        [
+          719.69,
+          79.131
+        ],
+        [
+          719.69,
+          90.595
+        ],
+        [
+          646.851,
+          90.595
+        ]
+      ],
+      "bbox": {
+        "x": 646.851,
+        "y": 79.131,
+        "width": 72.83900000000006,
+        "height": 11.463999999999999
+      },
+      "detection_score": 0.9919325709342957,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9834128293148122,
+      "words": null
+    },
+    {
+      "text": "mass that is radiated ns it falls into the black hole. The",
+      "quad": [
+        [
+          406.851,
+          86.494
+        ],
+        [
+          634.417,
+          86.494
+        ],
+        [
+          634.417,
+          99.869
+        ],
+        [
+          406.851,
+          99.869
+        ]
+      ],
+      "bbox": {
+        "x": 406.851,
+        "y": 86.494,
+        "width": 227.56600000000003,
+        "height": 13.375
+      },
+      "detection_score": 0.9905678033828735,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9687603885022738,
+      "words": null
+    },
+    {
+      "text": "sfra",
+      "quad": [
+        [
+          718.315,
+          96.405
+        ],
+        [
+          733.601,
+          96.405
+        ],
+        [
+          733.601,
+          105.321
+        ],
+        [
+          718.315,
+          105.321
+        ]
+      ],
+      "bbox": {
+        "x": 718.315,
+        "y": 96.405,
+        "width": 15.285999999999945,
+        "height": 8.915999999999997
+      },
+      "detection_score": 0.9777715802192688,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.7921161379302913,
+      "words": null
+    },
+    {
+      "text": "mass that is added to the black hole A is therefore",
+      "quad": [
+        [
+          406.843,
+          96.635
+        ],
+        [
+          635.464,
+          95.795
+        ],
+        [
+          635.516,
+          109.753
+        ],
+        [
+          406.894,
+          110.593
+        ]
+      ],
+      "bbox": {
+        "x": 406.843,
+        "y": 95.795,
+        "width": 228.67299999999994,
+        "height": 14.798000000000002
+      },
+      "detection_score": 0.9667812585830688,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9644033849187236,
+      "words": null
+    },
+    {
+      "text": "dlog1eI(L/T.) + (1./T.)T",
+      "quad": [
+        [
+          701.22,
+          106.494
+        ],
+        [
+          845.321,
+          106.494
+        ],
+        [
+          845.321,
+          120.685
+        ],
+        [
+          701.22,
+          120.685
+        ]
+      ],
+      "bbox": {
+        "x": 701.22,
+        "y": 106.494,
+        "width": 144.101,
+        "height": 14.191000000000003
+      },
+      "detection_score": 0.9134842753410339,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.6035369494557957,
+      "words": null
+    },
+    {
+      "text": "M = (1 -<)Mace. If we define the bolometric lumi-",
+      "quad": [
+        [
+          409.409,
+          107.603
+        ],
+        [
+          634.418,
+          107.809
+        ],
+        [
+          634.407,
+          120.067
+        ],
+        [
+          409.398,
+          119.861
+        ]
+      ],
+      "bbox": {
+        "x": 409.398,
+        "y": 107.603,
+        "width": 225.01999999999998,
+        "height": 12.463999999999999
+      },
+      "detection_score": 0.9713254570960999,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9018928982614947,
+      "words": null
+    },
+    {
+      "text": "nosity function of quasars of L, f)dlogge L as the number",
+      "quad": [
+        [
+          406.865,
+          116.947
+        ],
+        [
+          636.15,
+          118.97
+        ],
+        [
+          636.028,
+          132.799
+        ],
+        [
+          406.743,
+          130.776
+        ]
+      ],
+      "bbox": {
+        "x": 406.743,
+        "y": 116.947,
+        "width": 229.40699999999998,
+        "height": 15.852000000000004
+      },
+      "detection_score": 0.962619960308075,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8607414846113829,
+      "words": null
+    },
+    {
+      "text": "All results shown in this work correspond to \"global fit",
+      "quad": [
+        [
+          647.556,
+          124.753
+        ],
+        [
+          875.052,
+          124.213
+        ],
+        [
+          875.086,
+          138.517
+        ],
+        [
+          647.59,
+          139.057
+        ]
+      ],
+      "bbox": {
+        "x": 647.556,
+        "y": 124.213,
+        "width": 227.52999999999997,
+        "height": 14.843999999999994
+      },
+      "detection_score": 0.9575155377388,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9710161681271671,
+      "words": null
+    },
+    {
+      "text": "density of quasars per log luminosity, and we suppose",
+      "quad": [
+        [
+          406.851,
+          128.405
+        ],
+        [
+          637.423,
+          128.405
+        ],
+        [
+          637.423,
+          142.417
+        ],
+        [
+          406.851,
+          142.417
+        ]
+      ],
+      "bbox": {
+        "x": 406.851,
+        "y": 128.405,
+        "width": 230.572,
+        "height": 14.012
+      },
+      "detection_score": 0.9508016109466553,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9895278750385081,
+      "words": null
+    },
+    {
+      "text": "A\" in Ref. 2n, in which the model parameters o., L.,",
+      "quad": [
+        [
+          647.589,
+          135.131
+        ],
+        [
+          873.143,
+          135.131
+        ],
+        [
+          873.143,
+          149.321
+        ],
+        [
+          647.589,
+          149.321
+        ]
+      ],
+      "bbox": {
+        "x": 647.589,
+        "y": 135.131,
+        "width": 225.55399999999997,
+        "height": 14.189999999999998
+      },
+      "detection_score": 0.9212795495986938,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9362335918249844,
+      "words": null
+    },
+    {
+      "text": "that a fraction o(M,t) of black holes is active at a time",
+      "quad": [
+        [
+          406.851,
+          138.494
+        ],
+        [
+          634.774,
+          138.494
+        ],
+        [
+          634.774,
+          150.595
+        ],
+        [
+          406.851,
+          150.595
+        ]
+      ],
+      "bbox": {
+        "x": 406.851,
+        "y": 138.494,
+        "width": 227.923,
+        "height": 12.100999999999999
+      },
+      "detection_score": 0.9911182522773743,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9572137807659921,
+      "words": null
+    },
+    {
+      "text": "7, and 22 have a parametrized redshift dependence and",
+      "quad": [
+        [
+          648.176,
+          145.465
+        ],
+        [
+          873.487,
+          144.679
+        ],
+        [
+          873.537,
+          159.158
+        ],
+        [
+          648.226,
+          159.943
+        ]
+      ],
+      "bbox": {
+        "x": 648.176,
+        "y": 144.679,
+        "width": 225.361,
+        "height": 15.26400000000001
+      },
+      "detection_score": 0.9702923893928528,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9267497609384004,
+      "words": null
+    },
+    {
+      "text": "t, then o(L,t) is related to the black hole mass function",
+      "quad": [
+        [
+          407.488,
+          149.042
+        ],
+        [
+          636.149,
+          149.042
+        ],
+        [
+          636.149,
+          162.417
+        ],
+        [
+          407.488,
+          162.417
+        ]
+      ],
+      "bbox": {
+        "x": 407.488,
+        "y": 149.042,
+        "width": 228.661,
+        "height": 13.375
+      },
+      "detection_score": 0.9424428939819336,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.950966615253471,
+      "words": null
+    },
+    {
+      "text": "are simultaneously fit across all redshifts.",
+      "quad": [
+        [
+          647.384,
+          157.022
+        ],
+        [
+          817.307,
+          155.487
+        ],
+        [
+          817.436,
+          169.779
+        ],
+        [
+          647.514,
+          171.314
+        ]
+      ],
+      "bbox": {
+        "x": 647.384,
+        "y": 155.487,
+        "width": 170.05200000000002,
+        "height": 15.826999999999998
+      },
+      "detection_score": 0.9631587266921997,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9648903708832003,
+      "words": null
+    },
+    {
+      "text": "Eq- Dean be integrated over time, which results in",
+      "quad": [
+        [
+          656.02,
+          166.501
+        ],
+        [
+          861.119,
+          165.041
+        ],
+        [
+          861.224,
+          179.861
+        ],
+        [
+          656.125,
+          181.321
+        ]
+      ],
+      "bbox": {
+        "x": 656.02,
+        "y": 165.041,
+        "width": 205.20400000000006,
+        "height": 16.28
+      },
+      "detection_score": 0.9545791745185852,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9457937940961167,
+      "words": null
+    },
+    {
+      "text": "via",
+      "quad": [
+        [
+          408.511,
+          161.236
+        ],
+        [
+          426.914,
+          161.98
+        ],
+        [
+          426.51,
+          171.976
+        ],
+        [
+          408.107,
+          171.231
+        ]
+      ],
+      "bbox": {
+        "x": 408.107,
+        "y": 161.236,
+        "width": 18.80699999999996,
+        "height": 10.740000000000009
+      },
+      "detection_score": 0.9078373908996582,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9646034989254179,
+      "words": null
+    },
+    {
+      "text": "(L,t)dlog1L = o(M,t)e(Mr,t)dM.",
+      "quad": [
+        [
+          445.793,
+          179.771
+        ],
+        [
+          596.499,
+          179.02
+        ],
+        [
+          596.567,
+          192.575
+        ],
+        [
+          445.86,
+          193.326
+        ]
+      ],
+      "bbox": {
+        "x": 445.793,
+        "y": 179.02,
+        "width": 150.774,
+        "height": 14.305999999999983
+      },
+      "detection_score": 0.9477934837341309,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.7336773628883402,
+      "words": null
+    },
+    {
+      "text": "x(01)叫림",
+      "quad": [
+        [
+          743.978,
+          196.014
+        ],
+        [
+          815.73,
+          194.003
+        ],
+        [
+          816.207,
+          211.006
+        ],
+        [
+          744.455,
+          213.017
+        ]
+      ],
+      "bbox": {
+        "x": 743.978,
+        "y": 194.003,
+        "width": 72.22900000000004,
+        "height": 19.01400000000001
+      },
+      "detection_score": 0.9047785997390747,
+      "vertical": false,
+      "rotated_180": true,
+      "script": "CJK",
+      "confidence": 0.3411525238683846,
+      "words": null
+    },
+    {
+      "text": "The quantity 8 is the BH duty eyele, where (Ar(Mf,t)) =",
+      "quad": [
+        [
+          408.125,
+          199.131
+        ],
+        [
+          635.411,
+          199.131
+        ],
+        [
+          635.411,
+          213.321
+        ],
+        [
+          408.125,
+          213.321
+        ]
+      ],
+      "bbox": {
+        "x": 408.125,
+        "y": 199.131,
+        "width": 227.28599999999994,
+        "height": 14.189999999999998
+      },
+      "detection_score": 0.8966071605682373,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9044062216674889,
+      "words": null
+    },
+    {
+      "text": "da2 DL1.AMd/t",
+      "quad": [
+        [
+          753.407,
+          222.204
+        ],
+        [
+          844.389,
+          224.825
+        ],
+        [
+          843.958,
+          239.798
+        ],
+        [
+          752.976,
+          237.177
+        ]
+      ],
+      "bbox": {
+        "x": 752.976,
+        "y": 222.204,
+        "width": 91.41300000000001,
+        "height": 17.593999999999994
+      },
+      "detection_score": 0.9044647216796875,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.4067898130815855,
+      "words": null
+    },
+    {
+      "text": "(1-6)",
+      "quad": [
+        [
+          522.108,
+          230.791
+        ],
+        [
+          562.391,
+          230.151
+        ],
+        [
+          562.599,
+          243.229
+        ],
+        [
+          522.315,
+          243.869
+        ]
+      ],
+      "bbox": {
+        "x": 522.108,
+        "y": 230.151,
+        "width": 40.4910000000001,
+        "height": 13.71799999999999
+      },
+      "detection_score": 0.8975433111190796,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.7798534988726579,
+      "words": null
+    },
+    {
+      "text": "where do is the mas function today. For a sufficiently",
+      "quad": [
+        [
+          647.555,
+          243.567
+        ],
+        [
+          872.857,
+          242.897
+        ],
+        [
+          872.897,
+          256.313
+        ],
+        [
+          647.595,
+          256.984
+        ]
+      ],
+      "bbox": {
+        "x": 647.555,
+        "y": 242.897,
+        "width": 225.3420000000001,
+        "height": 14.086999999999989
+      },
+      "detection_score": 0.9551669955253601,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9316908309508368,
+      "words": null
+    },
+    {
+      "text": "high redshift z, e(Mf,z) is negligible compared to eo,",
+      "quad": [
+        [
+          647.549,
+          252.918
+        ],
+        [
+          873.204,
+          253.964
+        ],
+        [
+          873.14,
+          267.938
+        ],
+        [
+          647.484,
+          266.893
+        ]
+      ],
+      "bbox": {
+        "x": 647.484,
+        "y": 252.918,
+        "width": 225.7199999999999,
+        "height": 15.019999999999982
+      },
+      "detection_score": 0.9571628570556641,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8742168138077138,
+      "words": null
+    },
+    {
+      "text": "we can therefore rewrite the secoud term ou the left-hand",
+      "quad": [
+        [
+          406.778,
+          261.988
+        ],
+        [
+          636.142,
+          260.592
+        ],
+        [
+          636.229,
+          274.923
+        ],
+        [
+          406.866,
+          276.32
+        ]
+      ],
+      "bbox": {
+        "x": 406.778,
+        "y": 260.592,
+        "width": 229.45100000000002,
+        "height": 15.728000000000009
+      },
+      "detection_score": 0.9069461226463318,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9207573545781269,
+      "words": null
+    },
+    {
+      "text": "Le., in the absence of mergers, the mass function today",
+      "quad": [
+        [
+          647.589,
+          263.768
+        ],
+        [
+          873.423,
+          263.768
+        ],
+        [
+          873.423,
+          277.143
+        ],
+        [
+          647.589,
+          277.143
+        ]
+      ],
+      "bbox": {
+        "x": 647.589,
+        "y": 263.768,
+        "width": 225.83399999999995,
+        "height": 13.375
+      },
+      "detection_score": 0.9521641135215759,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9749521368826254,
+      "words": null
+    },
+    {
+      "text": "must equal the accreted mass, We model the present-day",
+      "quad": [
+        [
+          647.488,
+          274.494
+        ],
+        [
+          873.78,
+          274.494
+        ],
+        [
+          873.78,
+          287.232
+        ],
+        [
+          647.488,
+          287.232
+        ]
+      ],
+      "bbox": {
+        "x": 647.488,
+        "y": 274.494,
+        "width": 226.29199999999992,
+        "height": 12.738
+      },
+      "detection_score": 0.9936907887458801,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9790233423094379,
+      "words": null
+    },
+    {
+      "text": "side of Eq. Din terms of the quasar luminosity function",
+      "quad": [
+        [
+          407.488,
+          271.768
+        ],
+        [
+          632.786,
+          271.768
+        ],
+        [
+          632.786,
+          285.78
+        ],
+        [
+          407.488,
+          285.78
+        ]
+      ],
+      "bbox": {
+        "x": 407.488,
+        "y": 271.768,
+        "width": 225.29799999999994,
+        "height": 14.012
+      },
+      "detection_score": 0.9464339017868042,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9556310974803676,
+      "words": null
+    },
+    {
+      "text": "mass function as in Refs. [5) [0], which we very briefly",
+      "quad": [
+        [
+          647.359,
+          286.215
+        ],
+        [
+          873.559,
+          283.539
+        ],
+        [
+          873.73,
+          298.009
+        ],
+        [
+          647.53,
+          300.684
+        ]
+      ],
+      "bbox": {
+        "x": 647.359,
+        "y": 283.539,
+        "width": 226.37099999999998,
+        "height": 17.14500000000004
+      },
+      "detection_score": 0.933256983757019,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8976414416867432,
+      "words": null
+    },
+    {
+      "text": "summarize here.",
+      "quad": [
+        [
+          647.286,
+          297.12
+        ],
+        [
+          719.585,
+          295.191
+        ],
+        [
+          719.907,
+          307.235
+        ],
+        [
+          647.607,
+          309.164
+        ]
+      ],
+      "bbox": {
+        "x": 647.286,
+        "y": 295.191,
+        "width": 72.6210000000001,
+        "height": 13.973000000000013
+      },
+      "detection_score": 0.8780583739280701,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8690898558414826,
+      "words": null
+    },
+    {
+      "text": "N (6)",
+      "quad": [
+        [
+          610.382,
+          298.486
+        ],
+        [
+          633.63,
+          299.15
+        ],
+        [
+          633.284,
+          311.259
+        ],
+        [
+          610.036,
+          310.595
+        ]
+      ],
+      "bbox": {
+        "x": 610.036,
+        "y": 298.486,
+        "width": 23.59400000000005,
+        "height": 12.773000000000025
+      },
+      "detection_score": 0.8117595314979553,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.6803421145166678,
+      "words": null
+    },
+    {
+      "text": "The present-day SMBH mass function can be esti-",
+      "quad": [
+        [
+          656.761,
+          306.226
+        ],
+        [
+          874.861,
+          304.214
+        ],
+        [
+          874.996,
+          318.751
+        ],
+        [
+          656.895,
+          320.763
+        ]
+      ],
+      "bbox": {
+        "x": 656.761,
+        "y": 304.214,
+        "width": 218.235,
+        "height": 16.548999999999978
+      },
+      "detection_score": 0.920865535736084,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9686816732202893,
+      "words": null
+    },
+    {
+      "text": "7Te (o1)mh5",
+      "quad": [
+        [
+          472.372,
+          303.851
+        ],
+        [
+          564.285,
+          302.387
+        ],
+        [
+          564.519,
+          317.081
+        ],
+        [
+          472.606,
+          318.545
+        ]
+      ],
+      "bbox": {
+        "x": 472.372,
+        "y": 302.387,
+        "width": 92.14699999999999,
+        "height": 16.158000000000015
+      },
+      "detection_score": 0.8967686295509338,
+      "vertical": false,
+      "rotated_180": true,
+      "script": "CJK",
+      "confidence": 0.5467102943378368,
+      "words": null
+    },
+    {
+      "text": "3y/ePWY-7]7e",
+      "quad": [
+        [
+          539.447,
+          305.817
+        ],
+        [
+          596.832,
+          308.788
+        ],
+        [
+          596.221,
+          320.59
+        ],
+        [
+          538.836,
+          317.618
+        ]
+      ],
+      "bbox": {
+        "x": 538.836,
+        "y": 305.817,
+        "width": 57.99599999999998,
+        "height": 14.772999999999968
+      },
+      "detection_score": 0.926690936088562,
+      "vertical": false,
+      "rotated_180": true,
+      "script": "Latin",
+      "confidence": 0.5141140492341031,
+      "words": null
+    },
+    {
+      "text": "and properties of the host galaxy (say, property X) and",
+      "quad": [
+        [
+          646.494,
+          325.857
+        ],
+        [
+          873.5,
+          325.857
+        ],
+        [
+          873.5,
+          339.232
+        ],
+        [
+          646.494,
+          339.232
+        ]
+      ],
+      "bbox": {
+        "x": 646.494,
+        "y": 325.857,
+        "width": 227.00599999999997,
+        "height": 13.375
+      },
+      "detection_score": 0.9898110628128052,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9718715854211107,
+      "words": null
+    },
+    {
+      "text": "Multiplying by the mass and integrating the equation",
+      "quad": [
+        [
+          408.21,
+          323.04
+        ],
+        [
+          635.587,
+          324.518
+        ],
+        [
+          635.495,
+          338.582
+        ],
+        [
+          408.118,
+          337.104
+        ]
+      ],
+      "bbox": {
+        "x": 408.118,
+        "y": 323.04,
+        "width": 227.469,
+        "height": 15.541999999999973
+      },
+      "detection_score": 0.9546696543693542,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.987978313749603,
+      "words": null
+    },
+    {
+      "text": "galaxy catalogs, which give dn/dX. The scaling relation",
+      "quad": [
+        [
+          647.406,
+          337.896
+        ],
+        [
+          874.148,
+          336.261
+        ],
+        [
+          874.249,
+          350.186
+        ],
+        [
+          647.506,
+          351.821
+        ]
+      ],
+      "bbox": {
+        "x": 647.406,
+        "y": 336.261,
+        "width": 226.84300000000007,
+        "height": 15.560000000000002
+      },
+      "detection_score": 0.8919551968574524,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9825943172296104,
+      "words": null
+    },
+    {
+      "text": "above over time shows that the blaek hole mass density",
+      "quad": [
+        [
+          408.125,
+          335.131
+        ],
+        [
+          634.137,
+          335.131
+        ],
+        [
+          634.137,
+          348.506
+        ],
+        [
+          408.125,
+          348.506
+        ]
+      ],
+      "bbox": {
+        "x": 408.125,
+        "y": 335.131,
+        "width": 226.01199999999994,
+        "height": 13.375
+      },
+      "detection_score": 0.9864398837089539,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9683377866162157,
+      "words": null
+    },
+    {
+      "text": "is direetly related to the integral of the quasar luminosity",
+      "quad": [
+        [
+          407.488,
+          345.042
+        ],
+        [
+          634.049,
+          344.344
+        ],
+        [
+          634.092,
+          358.306
+        ],
+        [
+          407.531,
+          359.004
+        ]
+      ],
+      "bbox": {
+        "x": 407.488,
+        "y": 344.344,
+        "width": 226.60399999999998,
+        "height": 14.660000000000025
+      },
+      "detection_score": 0.9390311241149902,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9741374908214603,
+      "words": null
+    },
+    {
+      "text": "is expeased as",
+      "quad": [
+        [
+          647.139,
+          348.734
+        ],
+        [
+          712.304,
+          349.871
+        ],
+        [
+          712.093,
+          361.944
+        ],
+        [
+          646.928,
+          360.806
+        ]
+      ],
+      "bbox": {
+        "x": 646.928,
+        "y": 348.734,
+        "width": 65.37599999999998,
+        "height": 13.210000000000036
+      },
+      "detection_score": 0.9238400459289551,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8617451286595412,
+      "words": null
+    },
+    {
+      "text": "fnction",
+      "quad": [
+        [
+          408.125,
+          357.042
+        ],
+        [
+          445.423,
+          357.042
+        ],
+        [
+          445.423,
+          367.411
+        ],
+        [
+          408.125,
+          367.411
+        ]
+      ],
+      "bbox": {
+        "x": 408.125,
+        "y": 357.042,
+        "width": 37.298,
+        "height": 10.369000000000028
+      },
+      "detection_score": 0.8906804919242859,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9684895845297905,
+      "words": null
+    },
+    {
+      "text": "log1g M = 0. + b, log1o X.",
+      "quad": [
+        [
+          706.214,
+          366.315
+        ],
+        [
+          815.411,
+          366.315
+        ],
+        [
+          815.411,
+          379.232
+        ],
+        [
+          706.214,
+          379.232
+        ]
+      ],
+      "bbox": {
+        "x": 706.214,
+        "y": 366.315,
+        "width": 109.19699999999989,
+        "height": 12.91700000000003
+      },
+      "detection_score": 0.9661874175071716,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.676097486241485,
+      "words": null
+    },
+    {
+      "text": "(11)",
+      "quad": [
+        [
+          854.488,
+          366.961
+        ],
+        [
+          874.559,
+          367.742
+        ],
+        [
+          874.107,
+          379.376
+        ],
+        [
+          854.036,
+          378.595
+        ]
+      ],
+      "bbox": {
+        "x": 854.036,
+        "y": 366.961,
+        "width": 20.523000000000025,
+        "height": 12.414999999999964
+      },
+      "detection_score": 0.9380332827568054,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9944417255758073,
+      "words": null
+    },
+    {
+      "text": "TV(V)JP- Wad",
+      "quad": [
+        [
+          432.901,
+          374.198
+        ],
+        [
+          522.091,
+          376.428
+        ],
+        [
+          521.631,
+          394.801
+        ],
+        [
+          432.442,
+          392.571
+        ]
+      ],
+      "bbox": {
+        "x": 432.442,
+        "y": 374.198,
+        "width": 89.649,
+        "height": 20.60300000000001
+      },
+      "detection_score": 0.9259400367736816,
+      "vertical": false,
+      "rotated_180": true,
+      "script": "Latin",
+      "confidence": 0.5219489250402382,
+      "words": null
+    },
+    {
+      "text": "€",
+      "quad": [
+        [
+          622.125,
+          379.498
+        ],
+        [
+          633.393,
+          380.04
+        ],
+        [
+          632.795,
+          392.472
+        ],
+        [
+          621.526,
+          391.93
+        ]
+      ],
+      "bbox": {
+        "x": 621.526,
+        "y": 379.498,
+        "width": 11.867000000000075,
+        "height": 12.97399999999999
+      },
+      "detection_score": 0.8862717151641846,
+      "vertical": true,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.2884372876200436,
+      "words": null
+    },
+    {
+      "text": "Using the galaxy velocity dispersion as our fiducial proxy",
+      "quad": [
+        [
+          647.589,
+          384.405
+        ],
+        [
+          875.512,
+          384.405
+        ],
+        [
+          875.512,
+          398.417
+        ],
+        [
+          647.589,
+          398.417
+        ]
+      ],
+      "bbox": {
+        "x": 647.589,
+        "y": 384.405,
+        "width": 227.9229999999999,
+        "height": 14.012
+      },
+      "detection_score": 0.9576964974403381,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9608556895507525,
+      "words": null
+    },
+    {
+      "text": "for SMBH mass, we parametrize the velocity dispersion",
+      "quad": [
+        [
+          648.13,
+          395.055
+        ],
+        [
+          874.946,
+          396.774
+        ],
+        [
+          874.847,
+          409.872
+        ],
+        [
+          648.031,
+          408.152
+        ]
+      ],
+      "bbox": {
+        "x": 648.031,
+        "y": 395.055,
+        "width": 226.91500000000008,
+        "height": 14.817000000000007
+      },
+      "detection_score": 0.9318045377731323,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9807248627123578,
+      "words": null
+    },
+    {
+      "text": "dhogno Lộ(T,=)T,",
+      "quad": [
+        [
+          526.036,
+          398.494
+        ],
+        [
+          614.983,
+          400.672
+        ],
+        [
+          614.505,
+          420.204
+        ],
+        [
+          525.558,
+          418.026
+        ]
+      ],
+      "bbox": {
+        "x": 525.558,
+        "y": 398.494,
+        "width": 89.42499999999995,
+        "height": 21.70999999999998
+      },
+      "detection_score": 0.8609965443611145,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.5962192576597746,
+      "words": null
+    },
+    {
+      "text": "function (VDF) as",
+      "quad": [
+        [
+          646.851,
+          405.679
+        ],
+        [
+          727.512,
+          405.679
+        ],
+        [
+          727.512,
+          418.417
+        ],
+        [
+          646.851,
+          418.417
+        ]
+      ],
+      "bbox": {
+        "x": 646.851,
+        "y": 405.679,
+        "width": 80.66099999999994,
+        "height": 12.738
+      },
+      "detection_score": 0.8864867687225342,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9802745850768866,
+      "words": null
+    },
+    {
+      "text": "which is the Soltan argument (n.",
+      "quad": [
+        [
+          409.399,
+          427.768
+        ],
+        [
+          545.78,
+          427.768
+        ],
+        [
+          545.78,
+          440.048
+        ],
+        [
+          409.399,
+          440.048
+        ]
+      ],
+      "bbox": {
+        "x": 409.399,
+        "y": 427.768,
+        "width": 136.38099999999997,
+        "height": 12.28000000000003
+      },
+      "detection_score": 0.9264644980430603,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8369305426276927,
+      "words": null
+    },
+    {
+      "text": "(12)",
+      "quad": [
+        [
+          853.042,
+          432.405
+        ],
+        [
+          874.137,
+          432.405
+        ],
+        [
+          874.137,
+          446.595
+        ],
+        [
+          853.042,
+          446.595
+        ]
+      ],
+      "bbox": {
+        "x": 853.042,
+        "y": 432.405,
+        "width": 21.094999999999914,
+        "height": 14.190000000000055
+      },
+      "detection_score": 0.9141117930412292,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9918355431242801,
+      "words": null
+    },
+    {
+      "text": "Note that the radiative efficiency only changes an over-",
+      "quad": [
+        [
+          417.059,
+          438.309
+        ],
+        [
+          633.515,
+          438.64
+        ],
+        [
+          633.497,
+          450.734
+        ],
+        [
+          417.04,
+          450.403
+        ]
+      ],
+      "bbox": {
+        "x": 417.04,
+        "y": 438.309,
+        "width": 216.47499999999997,
+        "height": 12.424999999999955
+      },
+      "detection_score": 0.9650319218635559,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9773410394784012,
+      "words": null
+    },
+    {
+      "text": "all amplitude of pau, while the Eddington ratio changes",
+      "quad": [
+        [
+          409.449,
+          448.449
+        ],
+        [
+          635.563,
+          449.482
+        ],
+        [
+          635.503,
+          462.55
+        ],
+        [
+          409.389,
+          461.517
+        ]
+      ],
+      "bbox": {
+        "x": 409.389,
+        "y": 448.449,
+        "width": 226.17399999999998,
+        "height": 14.100999999999999
+      },
+      "detection_score": 0.9501180648803711,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9468705502819246,
+      "words": null
+    },
+    {
+      "text": "Including scatter in the relation between black hole mass",
+      "quad": [
+        [
+          646.214,
+          456.405
+        ],
+        [
+          874.875,
+          456.405
+        ],
+        [
+          874.875,
+          469.78
+        ],
+        [
+          646.214,
+          469.78
+        ]
+      ],
+      "bbox": {
+        "x": 646.214,
+        "y": 456.405,
+        "width": 228.66099999999994,
+        "height": 13.375
+      },
+      "detection_score": 0.9595628380775452,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9703750805708552,
+      "words": null
+    },
+    {
+      "text": "both the amplitude and the shape of the final SMBH",
+      "quad": [
+        [
+          406.851,
+          457.857
+        ],
+        [
+          633.321,
+          457.857
+        ],
+        [
+          633.321,
+          471.232
+        ],
+        [
+          406.851,
+          471.232
+        ]
+      ],
+      "bbox": {
+        "x": 406.851,
+        "y": 457.857,
+        "width": 226.47000000000003,
+        "height": 13.375
+      },
+      "detection_score": 0.9900493621826172,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9746723176172256,
+      "words": null
+    },
+    {
+      "text": "and galaxy property leads to",
+      "quad": [
+        [
+          647.662,
+          467.861
+        ],
+        [
+          767.487,
+          466.806
+        ],
+        [
+          767.592,
+          478.833
+        ],
+        [
+          647.768,
+          479.887
+        ]
+      ],
+      "bbox": {
+        "x": 647.662,
+        "y": 466.806,
+        "width": 119.92999999999995,
+        "height": 13.081000000000017
+      },
+      "detection_score": 0.9701663851737976,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.956177507762722,
+      "words": null
+    },
+    {
+      "text": "mass function, while keeping the total mass density fixed.",
+      "quad": [
+        [
+          406.849,
+          469.09
+        ],
+        [
+          633.32,
+          468.838
+        ],
+        [
+          633.335,
+          482.364
+        ],
+        [
+          406.864,
+          482.616
+        ]
+      ],
+      "bbox": {
+        "x": 406.849,
+        "y": 468.838,
+        "width": 226.48600000000005,
+        "height": 13.777999999999963
+      },
+      "detection_score": 0.940004289150238,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.968545730760936,
+      "words": null
+    },
+    {
+      "text": "(doP(log10 Mf|log1ø)dn",
+      "quad": [
+        [
+          714.798,
+          486.456
+        ],
+        [
+          825.587,
+          481.951
+        ],
+        [
+          826.262,
+          498.55
+        ],
+        [
+          715.473,
+          503.054
+        ]
+      ],
+      "bbox": {
+        "x": 714.798,
+        "y": 481.951,
+        "width": 111.46399999999994,
+        "height": 21.102999999999952
+      },
+      "detection_score": 0.9274926781654358,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.6210304195931036,
+      "words": null
+    },
+    {
+      "text": "As a toy example consider a scenario in which the red-",
+      "quad": [
+        [
+          406.224,
+          479.593
+        ],
+        [
+          634.884,
+          479.789
+        ],
+        [
+          634.873,
+          492.699
+        ],
+        [
+          406.213,
+          492.503
+        ]
+      ],
+      "bbox": {
+        "x": 406.213,
+        "y": 479.593,
+        "width": 228.671,
+        "height": 13.105999999999995
+      },
+      "detection_score": 0.8908568024635315,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9749230150044726,
+      "words": null
+    },
+    {
+      "text": "(CT)",
+      "quad": [
+        [
+          852.405,
+          491.131
+        ],
+        [
+          874.137,
+          491.131
+        ],
+        [
+          874.137,
+          504.506
+        ],
+        [
+          852.405,
+          504.506
+        ]
+      ],
+      "bbox": {
+        "x": 852.405,
+        "y": 491.131,
+        "width": 21.73199999999997,
+        "height": 13.375
+      },
+      "detection_score": 0.907183825969696,
+      "vertical": false,
+      "rotated_180": true,
+      "script": "Latin",
+      "confidence": 0.7923272679267302,
+      "words": null
+    },
+    {
+      "text": "b(M)=",
+      "quad": [
+        [
+          670.494,
+          490.494
+        ],
+        [
+          719.054,
+          490.494
+        ],
+        [
+          719.054,
+          505.958
+        ],
+        [
+          670.494,
+          505.958
+        ]
+      ],
+      "bbox": {
+        "x": 670.494,
+        "y": 490.494,
+        "width": 48.559999999999945,
+        "height": 15.463999999999999
+      },
+      "detection_score": 0.8734148144721985,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8360100167245114,
+      "words": null
+    },
+    {
+      "text": "shift evolution of the parameters is negligible, then the",
+      "quad": [
+        [
+          406.214,
+          489.679
+        ],
+        [
+          636.149,
+          489.679
+        ],
+        [
+          636.149,
+          502.595
+        ],
+        [
+          406.214,
+          502.595
+        ]
+      ],
+      "bbox": {
+        "x": 406.214,
+        "y": 489.679,
+        "width": 229.935,
+        "height": 12.916000000000054
+      },
+      "detection_score": 0.9733783006668091,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.980303846972351,
+      "words": null
+    },
+    {
+      "text": "M log(10)",
+      "quad": [
+        [
+          742.494,
+          497.042
+        ],
+        [
+          792.786,
+          497.042
+        ],
+        [
+          792.786,
+          510.417
+        ],
+        [
+          742.494,
+          510.417
+        ]
+      ],
+      "bbox": {
+        "x": 742.494,
+        "y": 497.042,
+        "width": 50.291999999999916,
+        "height": 13.375
+      },
+      "detection_score": 0.9274449348449707,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9095142888356741,
+      "words": null
+    },
+    {
+      "text": "quasar luminosity function (QL.F) is always given by a",
+      "quad": [
+        [
+          406.851,
+          501.042
+        ],
+        [
+          635.054,
+          501.042
+        ],
+        [
+          635.054,
+          514.417
+        ],
+        [
+          406.851,
+          514.417
+        ]
+      ],
+      "bbox": {
+        "x": 406.851,
+        "y": 501.042,
+        "width": 228.20299999999997,
+        "height": 13.375000000000057
+      },
+      "detection_score": 0.9629833102226257,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9493369242903016,
+      "words": null
+    },
+    {
+      "text": "double power-law, with a break at a luminosity L,, The",
+      "quad": [
+        [
+          408.125,
+          510.494
+        ],
+        [
+          636.786,
+          510.494
+        ],
+        [
+          636.786,
+          523.232
+        ],
+        [
+          408.125,
+          523.232
+        ]
+      ],
+      "bbox": {
+        "x": 408.125,
+        "y": 510.494,
+        "width": 228.66099999999994,
+        "height": 12.737999999999943
+      },
+      "detection_score": 0.987747073173523,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9660727330486683,
+      "words": null
+    },
+    {
+      "text": "where p is assumed to be log-normal",
+      "quad": [
+        [
+          647.768,
+          515.131
+        ],
+        [
+          796.786,
+          515.131
+        ],
+        [
+          796.786,
+          527.232
+        ],
+        [
+          647.768,
+          527.232
+        ]
+      ],
+      "bbox": {
+        "x": 647.768,
+        "y": 515.131,
+        "width": 149.01799999999992,
+        "height": 12.100999999999999
+      },
+      "detection_score": 0.9908787608146667,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9703671861666169,
+      "words": null
+    },
+    {
+      "text": "correspondling break in the SMBH mnass function will be",
+      "quad": [
+        [
+          407.459,
+          521.129
+        ],
+        [
+          636.782,
+          520.602
+        ],
+        [
+          636.812,
+          533.914
+        ],
+        [
+          407.489,
+          534.441
+        ]
+      ],
+      "bbox": {
+        "x": 407.459,
+        "y": 520.602,
+        "width": 229.353,
+        "height": 13.839000000000055
+      },
+      "detection_score": 0.9077833890914917,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8909484071467284,
+      "words": null
+    },
+    {
+      "text": "M. - L,fg/X2 and the power-laws of dn/dlog M will",
+      "quad": [
+        [
+          409.399,
+          531.131
+        ],
+        [
+          635.69,
+          531.131
+        ],
+        [
+          635.69,
+          544.685
+        ],
+        [
+          409.399,
+          544.685
+        ]
+      ],
+      "bbox": {
+        "x": 409.399,
+        "y": 531.131,
+        "width": 226.29100000000005,
+        "height": 13.553999999999974
+      },
+      "detection_score": 0.9303618669509888,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9222313859100413,
+      "words": null
+    },
+    {
+      "text": "P(log1gMf|10g3)=",
+      "quad": [
+        [
+          658.176,
+          539.166
+        ],
+        [
+          743.668,
+          538.274
+        ],
+        [
+          743.808,
+          551.622
+        ],
+        [
+          658.316,
+          552.514
+        ]
+      ],
+      "bbox": {
+        "x": 658.176,
+        "y": 538.274,
+        "width": 85.63199999999995,
+        "height": 14.240000000000009
+      },
+      "detection_score": 0.9739875793457031,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.6579057463141209,
+      "words": null
+    },
+    {
+      "text": "be the same as o(L). Therefore, reducing (increasing) A",
+      "quad": [
+        [
+          407.488,
+          541.857
+        ],
+        [
+          634.774,
+          541.857
+        ],
+        [
+          634.774,
+          555.232
+        ],
+        [
+          407.488,
+          555.232
+        ]
+      ],
+      "bbox": {
+        "x": 407.488,
+        "y": 541.857,
+        "width": 227.286,
+        "height": 13.375
+      },
+      "detection_score": 0.9879534244537354,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9402091045406301,
+      "words": null
+    },
+    {
+      "text": "increases (reduces) the characteristic mass of the turn-",
+      "quad": [
+        [
+          407.432,
+          552.725
+        ],
+        [
+          636.774,
+          551.687
+        ],
+        [
+          636.841,
+          566.511
+        ],
+        [
+          407.499,
+          567.549
+        ]
+      ],
+      "bbox": {
+        "x": 407.432,
+        "y": 551.687,
+        "width": 229.409,
+        "height": 15.861999999999966
+      },
+      "detection_score": 0.9646297097206116,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9709344694968648,
+      "words": null
+    },
+    {
+      "text": "1 (1og20M-6.-b. 10g10",
+      "quad": [
+        [
+          722.036,
+          559.131
+        ],
+        [
+          846.417,
+          559.131
+        ],
+        [
+          846.417,
+          574.595
+        ],
+        [
+          722.036,
+          574.595
+        ]
+      ],
+      "bbox": {
+        "x": 722.036,
+        "y": 559.131,
+        "width": 124.38100000000009,
+        "height": 15.464000000000055
+      },
+      "detection_score": 0.8985936045646667,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.6337362690234948,
+      "words": null
+    },
+    {
+      "text": "over in the SMBH mass function. In this seenario, black",
+      "quad": [
+        [
+          407.368,
+          563.531
+        ],
+        [
+          634.39,
+          561.192
+        ],
+        [
+          634.535,
+          575.208
+        ],
+        [
+          407.512,
+          577.547
+        ]
+      ],
+      "bbox": {
+        "x": 407.368,
+        "y": 561.192,
+        "width": 227.16699999999997,
+        "height": 16.355000000000018
+      },
+      "detection_score": 0.9847127199172974,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.971953682392436,
+      "words": null
+    },
+    {
+      "text": "x exp",
+      "quad": [
+        [
+          690.494,
+          566.494
+        ],
+        [
+          713.958,
+          566.494
+        ],
+        [
+          713.958,
+          579.232
+        ],
+        [
+          690.494,
+          579.232
+        ]
+      ],
+      "bbox": {
+        "x": 690.494,
+        "y": 566.494,
+        "width": 23.463999999999942,
+        "height": 12.737999999999943
+      },
+      "detection_score": 0.9827388525009155,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.7818017607835673,
+      "words": null
+    },
+    {
+      "text": "holes of all masses grow at the same time. The mea-",
+      "quad": [
+        [
+          406.851,
+          573.679
+        ],
+        [
+          634.417,
+          573.679
+        ],
+        [
+          634.417,
+          587.054
+        ],
+        [
+          406.851,
+          587.054
+        ]
+      ],
+      "bbox": {
+        "x": 406.851,
+        "y": 573.679,
+        "width": 227.56600000000003,
+        "height": 13.375
+      },
+      "detection_score": 0.908817708492279,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9525956193774751,
+      "words": null
+    },
+    {
+      "text": "(14)",
+      "quad": [
+        [
+          855.31,
+          585.042
+        ],
+        [
+          873.5,
+          585.042
+        ],
+        [
+          873.5,
+          597.958
+        ],
+        [
+          855.31,
+          597.958
+        ]
+      ],
+      "bbox": {
+        "x": 855.31,
+        "y": 585.042,
+        "width": 18.190000000000055,
+        "height": 12.91599999999994
+      },
+      "detection_score": 0.8929915428161621,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9921662226052989,
+      "words": null
+    },
+    {
+      "text": "sured quasar luminosity function, however, has a break",
+      "quad": [
+        [
+          406.851,
+          583.768
+        ],
+        [
+          636.786,
+          583.768
+        ],
+        [
+          636.786,
+          597.321
+        ],
+        [
+          406.851,
+          597.321
+        ]
+      ],
+      "bbox": {
+        "x": 406.851,
+        "y": 583.768,
+        "width": 229.93499999999995,
+        "height": 13.552999999999997
+      },
+      "detection_score": 0.933361828327179,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9733077606760101,
+      "words": null
+    },
+    {
+      "text": "that evolves over time, mostly decreasing with redshift.",
+      "quad": [
+        [
+          408.163,
+          593.846
+        ],
+        [
+          634.276,
+          594.557
+        ],
+        [
+          634.235,
+          607.484
+        ],
+        [
+          408.122,
+          606.773
+        ]
+      ],
+      "bbox": {
+        "x": 408.122,
+        "y": 593.846,
+        "width": 226.15399999999994,
+        "height": 13.638000000000034
+      },
+      "detection_score": 0.988158643245697,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9637076174590626,
+      "words": null
+    },
+    {
+      "text": "As in Refs. 2H [20 the adopt the velocity disper-",
+      "quad": [
+        [
+          646.882,
+          604.6
+        ],
+        [
+          872.769,
+          603.35
+        ],
+        [
+          872.846,
+          617.174
+        ],
+        [
+          646.958,
+          618.425
+        ]
+      ],
+      "bbox": {
+        "x": 646.882,
+        "y": 603.35,
+        "width": 225.96400000000006,
+        "height": 15.074999999999932
+      },
+      "detection_score": 0.928585410118103,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8541072262632594,
+      "words": null
+    },
+    {
+      "text": "This implies that more massive black holes assemble their",
+      "quad": [
+        [
+          408.734,
+          604.864
+        ],
+        [
+          637.419,
+          604.332
+        ],
+        [
+          637.451,
+          617.955
+        ],
+        [
+          408.766,
+          618.487
+        ]
+      ],
+      "bbox": {
+        "x": 408.734,
+        "y": 604.332,
+        "width": 228.71700000000004,
+        "height": 14.154999999999973
+      },
+      "detection_score": 0.9523791670799255,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.976753678085768,
+      "words": null
+    },
+    {
+      "text": "We therefore use",
+      "quad": [
+        [
+          793.22,
+          615.768
+        ],
+        [
+          872.685,
+          615.768
+        ],
+        [
+          872.685,
+          626.595
+        ],
+        [
+          793.22,
+          626.595
+        ]
+      ],
+      "bbox": {
+        "x": 793.22,
+        "y": 615.768,
+        "width": 79.46499999999992,
+        "height": 10.826999999999998
+      },
+      "detection_score": 0.9910612106323242,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9221864172796651,
+      "words": null
+    },
+    {
+      "text": "sion funetion as the mass peoy.",
+      "quad": [
+        [
+          647.488,
+          615.768
+        ],
+        [
+          799.69,
+          615.768
+        ],
+        [
+          799.69,
+          627.869
+        ],
+        [
+          647.488,
+          627.869
+        ]
+      ],
+      "bbox": {
+        "x": 647.488,
+        "y": 615.768,
+        "width": 152.202,
+        "height": 12.100999999999999
+      },
+      "detection_score": 0.9741327166557312,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8989736653060407,
+      "words": null
+    },
+    {
+      "text": "mass earlier on.",
+      "quad": [
+        [
+          408.646,
+          616.004
+        ],
+        [
+          472.938,
+          615.301
+        ],
+        [
+          473.068,
+          627.178
+        ],
+        [
+          408.776,
+          627.881
+        ]
+      ],
+      "bbox": {
+        "x": 408.646,
+        "y": 615.301,
+        "width": 64.42199999999997,
+        "height": 12.579999999999927
+      },
+      "detection_score": 0.994503378868103,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9459540124897678,
+      "words": null
+    },
+    {
+      "text": "X - o/200km s-1 in Eq. I and the M - o relation",
+      "quad": [
+        [
+          647.516,
+          626.209
+        ],
+        [
+          873.767,
+          624.935
+        ],
+        [
+          873.841,
+          637.958
+        ],
+        [
+          647.589,
+          639.232
+        ]
+      ],
+      "bbox": {
+        "x": 647.516,
+        "y": 624.935,
+        "width": 226.32500000000005,
+        "height": 14.297000000000025
+      },
+      "detection_score": 0.8907871842384338,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8734641050128413,
+      "words": null
+    },
+    {
+      "text": "SMBH growth from accretion can thus be modelled",
+      "quad": [
+        [
+          418.154,
+          625.892
+        ],
+        [
+          636.145,
+          624.863
+        ],
+        [
+          636.213,
+          639.231
+        ],
+        [
+          418.222,
+          640.26
+        ]
+      ],
+      "bbox": {
+        "x": 418.154,
+        "y": 624.863,
+        "width": 218.05899999999997,
+        "height": 15.396999999999935
+      },
+      "detection_score": 0.9079475998878479,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9808748643028723,
+      "words": null
+    },
+    {
+      "text": "froen Ref. (31], which correspouds to o, = 8.32 ± 0.05,",
+      "quad": [
+        [
+          647.549,
+          636.405
+        ],
+        [
+          872.779,
+          635.697
+        ],
+        [
+          872.822,
+          649.183
+        ],
+        [
+          647.591,
+          649.891
+        ]
+      ],
+      "bbox": {
+        "x": 647.549,
+        "y": 635.697,
+        "width": 225.27300000000002,
+        "height": 14.19399999999996
+      },
+      "detection_score": 0.9323650002479553,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8451296737807904,
+      "words": null
+    },
+    {
+      "text": "by directly relating it to the observed QLF, We use the",
+      "quad": [
+        [
+          407.384,
+          636.137
+        ],
+        [
+          636.12,
+          634.231
+        ],
+        [
+          636.239,
+          648.534
+        ],
+        [
+          407.503,
+          650.44
+        ]
+      ],
+      "bbox": {
+        "x": 407.384,
+        "y": 634.231,
+        "width": 228.85500000000002,
+        "height": 16.20900000000006
+      },
+      "detection_score": 0.9255191683769226,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9444748508938962,
+      "words": null
+    },
+    {
+      "text": "6. =5.64±0.32, and te = 0.38. For the VDF, we choose",
+      "quad": [
+        [
+          648.184,
+          646.213
+        ],
+        [
+          874.865,
+          645.444
+        ],
+        [
+          874.909,
+          658.466
+        ],
+        [
+          648.228,
+          659.235
+        ]
+      ],
+      "bbox": {
+        "x": 648.184,
+        "y": 645.444,
+        "width": 226.72500000000002,
+        "height": 13.791000000000054
+      },
+      "detection_score": 0.9841077327728271,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.8586338065682887,
+      "words": null
+    },
+    {
+      "text": "bolometric QLF presented in Ref. 27, which is based on",
+      "quad": [
+        [
+          407.488,
+          646.494
+        ],
+        [
+          636.786,
+          646.494
+        ],
+        [
+          636.786,
+          659.232
+        ],
+        [
+          407.488,
+          659.232
+        ]
+      ],
+      "bbox": {
+        "x": 407.488,
+        "y": 646.494,
+        "width": 229.29799999999994,
+        "height": 12.737999999999943
+      },
+      "detection_score": 0.9891230463981628,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9523862405850266,
+      "words": null
+    }
+  ],
+  "width": 1280,
+  "height": 720,
+  "elapsed_seconds": 0.991951167,
+  "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
+  "warnings": [
+    "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied.",
+    "Skipped 2 line(s) classified as Cyrillic: recognizer not included in this model package.",
+    "Skipped 2 line(s) classified as Devanagari: recognizer not included in this model package.",
+    "Skipped 3 line(s) classified as Greek: recognizer not included in this model package."
+  ]
+}

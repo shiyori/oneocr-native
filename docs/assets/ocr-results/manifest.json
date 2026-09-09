@@ -1,0 +1,92 @@
+{
+  "recognition_confidence_min": 0.8,
+  "detection_score_min": 0.7,
+  "confidence_method": "ctc_token_geometric_mean",
+  "font_family": "Arial Unicode MS",
+  "examples": [
+    {
+      "name": "mixed",
+      "source": "testdata/720p/mixed-720p-a.png",
+      "source_sha256": "9953873133e8ae554c913973c1b52be0dcfe4d01547ed08aaca33d54f4606a3f",
+      "recognized_lines": 6,
+      "displayed_lines": 6,
+      "crop": [
+        25,
+        10,
+        629,
+        591
+      ],
+      "display_scale": 2,
+      "image_size": [
+        1208,
+        1162
+      ],
+      "boxes": "mixed-boxes.webp",
+      "text": "mixed-text.webp",
+      "result": "mixed.json"
+    },
+    {
+      "name": "book",
+      "source": "testdata/paddleocr/720p-book.png",
+      "source_sha256": "009492263d4c759a81f020f0351430fd35c0182fdca5aa4832d83e6704953950",
+      "recognized_lines": 48,
+      "displayed_lines": 46,
+      "crop": [
+        72,
+        0,
+        1208,
+        720
+      ],
+      "display_scale": 2,
+      "image_size": [
+        2272,
+        1440
+      ],
+      "boxes": "book-boxes.webp",
+      "text": "book-text.webp",
+      "result": "book.json"
+    },
+    {
+      "name": "formula",
+      "source": "testdata/paddleocr/720p-doc_with_formula.png",
+      "source_sha256": "4eebb48907a0da4961de648cbc43d20b0286540e220eb177b1b29ead1cd77810",
+      "recognized_lines": 94,
+      "displayed_lines": 76,
+      "crop": [
+        388,
+        7,
+        895,
+        678
+      ],
+      "display_scale": 2,
+      "image_size": [
+        1014,
+        1342
+      ],
+      "boxes": "formula-boxes.webp",
+      "text": "formula-text.webp",
+      "result": "formula.json"
+    },
+    {
+      "name": "table",
+      "source": "testdata/paddleocr/720p-medal_table.png",
+      "source_sha256": "c965c88510d86123bd259db1ab6f02a868a88978cefeac0e09b6459f1f755810",
+      "recognized_lines": 89,
+      "displayed_lines": 87,
+      "crop": [
+        347,
+        171,
+        931,
+        549
+      ],
+      "display_scale": 2,
+      "image_size": [
+        1168,
+        756
+      ],
+      "boxes": "table-boxes.webp",
+      "text": "table-text.webp",
+      "result": "table.json"
+    }
+  ]
+}

@@ -36,6 +36,46 @@ python -m oneocr_native recognize image.png
 python -m oneocr_native recognize --format json image.png
 ```
 
+## 测试结果
+
+OneOCR v0.1.2 对 `testdata` 中四张图片的实际输出。仅展示识别置信度 ≥ **0.80** 且检测分数 ≥ **0.70** 的结果。左图在原图上画框；右图保留原图，在同一位置叠加蓝色识别文字，并加局部浅色底以保持可读性。点击图片可查看高清图。
+
+两张图采用相同裁剪和坐标；外围留白同步裁去，未人工修正识别文字。置信度为未校准模型分数。
+
+### 中日韩英混排
+
+显示 6 / 6 条非空识别结果.
+
+| 原图 + 文本框 | 原图 + 蓝色识别文字 |
+|---|---|
+| [![中日韩英混排 — 原图 + 文本框](docs/assets/ocr-results/mixed-boxes.webp)](docs/assets/ocr-results/mixed-boxes.webp) | [![中日韩英混排 — 原图 + 蓝色识别文字](docs/assets/ocr-results/mixed-text.webp)](docs/assets/ocr-results/mixed-text.webp) |
+
+### 实拍书页
+
+显示 46 / 48 条非空识别结果.
+
+| 原图 + 文本框 | 原图 + 蓝色识别文字 |
+|---|---|
+| [![实拍书页 — 原图 + 文本框](docs/assets/ocr-results/book-boxes.webp)](docs/assets/ocr-results/book-boxes.webp) | [![实拍书页 — 原图 + 蓝色识别文字](docs/assets/ocr-results/book-text.webp)](docs/assets/ocr-results/book-text.webp) |
+
+### 公式文档
+
+显示 76 / 94 条非空识别结果.
+
+| 原图 + 文本框 | 原图 + 蓝色识别文字 |
+|---|---|
+| [![公式文档 — 原图 + 文本框](docs/assets/ocr-results/formula-boxes.webp)](docs/assets/ocr-results/formula-boxes.webp) | [![公式文档 — 原图 + 蓝色识别文字](docs/assets/ocr-results/formula-text.webp)](docs/assets/ocr-results/formula-text.webp) |
+
+### 中文表格
+
+显示 87 / 89 条非空识别结果.
+
+| 原图 + 文本框 | 原图 + 蓝色识别文字 |
+|---|---|
+| [![中文表格 — 原图 + 文本框](docs/assets/ocr-results/table-boxes.webp)](docs/assets/ocr-results/table-boxes.webp) | [![中文表格 — 原图 + 蓝色识别文字](docs/assets/ocr-results/table-text.webp)](docs/assets/ocr-results/table-text.webp) |
+
+[生成记录与复现方法](docs/assets/ocr-results/README.md) · [样本来源](testdata/paddleocr/README.md) · [第三方许可](testdata/paddleocr/UPSTREAM_LICENSE)
+
 ## 接入指南
 
 [下载与安装](docs/zh-CN/installation.md) · [Go 接入](docs/zh-CN/go.md) · [C 与 C++ 接入](docs/zh-CN/native.md) · [Python 接入](docs/zh-CN/python.md) · [Android 接入](docs/zh-CN/android.md) · [已有 ONNX Runtime](docs/zh-CN/runtime.md)

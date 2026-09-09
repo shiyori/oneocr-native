@@ -1,0 +1,213 @@
+{
+  "confidence": 0.9837005132364707,
+  "confidence_method": "ctc_token_geometric_mean",
+  "coordinate_space": "oriented_image",
+  "text": "屏幕文字识别测试2026\n日本語の文字認識テスト\n한국어 문자 인식 테스트\nEnglish OCR benchmark 1280 x 720\n数字0123456789 123.45\n中日韓English 日本語 한국어",
+  "lines": [
+    {
+      "text": "屏幕文字识别测试2026",
+      "quad": [
+        [
+          46.068,
+          28.236
+        ],
+        [
+          415.24,
+          29.138
+        ],
+        [
+          415.144,
+          68.507
+        ],
+        [
+          45.972,
+          67.606
+        ]
+      ],
+      "bbox": {
+        "x": 45.972,
+        "y": 28.236,
+        "width": 369.26800000000003,
+        "height": 40.271
+      },
+      "detection_score": 0.9952182173728943,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "CJK",
+      "confidence": 0.9991655387236036,
+      "words": null
+    },
+    {
+      "text": "日本語の文字認識テスト",
+      "quad": [
+        [
+          46.947,
+          129.584
+        ],
+        [
+          420.321,
+          128.084
+        ],
+        [
+          420.482,
+          168.284
+        ],
+        [
+          47.109,
+          169.783
+        ]
+      ],
+      "bbox": {
+        "x": 46.947,
+        "y": 128.084,
+        "width": 373.535,
+        "height": 41.698999999999984
+      },
+      "detection_score": 0.9770497679710388,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "CJK",
+      "confidence": 0.9987732584983072,
+      "words": null
+    },
+    {
+      "text": "한국어 문자 인식 테스트",
+      "quad": [
+        [
+          43.394,
+          226.446
+        ],
+        [
+          384.133,
+          226.446
+        ],
+        [
+          384.133,
+          267.659
+        ],
+        [
+          43.394,
+          267.659
+        ]
+      ],
+      "bbox": {
+        "x": 43.394,
+        "y": 226.446,
+        "width": 340.739,
+        "height": 41.212999999999994
+      },
+      "detection_score": 0.9965842366218567,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "CJK",
+      "confidence": 0.929403527297891,
+      "words": null
+    },
+    {
+      "text": "English OCR benchmark 1280 x 720",
+      "quad": [
+        [
+          43.582,
+          329.863
+        ],
+        [
+          610.211,
+          326.654
+        ],
+        [
+          610.448,
+          368.546
+        ],
+        [
+          43.819,
+          371.754
+        ]
+      ],
+      "bbox": {
+        "x": 43.582,
+        "y": 326.654,
+        "width": 566.866,
+        "height": 45.10000000000002
+      },
+      "detection_score": 0.9643396735191345,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "Latin",
+      "confidence": 0.9951057514349795,
+      "words": null
+    },
+    {
+      "text": "数字0123456789 123.45",
+      "quad": [
+        [
+          44.183,
+          428.289
+        ],
+        [
+          457.028,
+          428.289
+        ],
+        [
+          457.028,
+          467.659
+        ],
+        [
+          44.183,
+          467.659
+        ]
+      ],
+      "bbox": {
+        "x": 44.183,
+        "y": 428.289,
+        "width": 412.845,
+        "height": 39.370000000000005
+      },
+      "detection_score": 0.9962245225906372,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "CJK",
+      "confidence": 0.9966005336672791,
+      "words": null
+    },
+    {
+      "text": "中日韓English 日本語 한국어",
+      "quad": [
+        [
+          45.544,
+          528.891
+        ],
+        [
+          484.134,
+          525.453
+        ],
+        [
+          484.477,
+          569.123
+        ],
+        [
+          45.886,
+          572.561
+        ]
+      ],
+      "bbox": {
+        "x": 45.544,
+        "y": 525.453,
+        "width": 438.933,
+        "height": 47.10800000000006
+      },
+      "detection_score": 0.9814900755882263,
+      "vertical": false,
+      "rotated_180": false,
+      "script": "CJK",
+      "confidence": 0.9710621021727515,
+      "words": null
+    }
+  ],
+  "width": 1280,
+  "height": 720,
+  "elapsed_seconds": 0.241664709,
+  "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
+  "warnings": [
+    "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."
+  ]
+}

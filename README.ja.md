@@ -36,6 +36,46 @@ python -m oneocr_native recognize image.png
 python -m oneocr_native recognize --format json image.png
 ```
 
+## テスト結果
+
+`testdata` の4枚に対する OneOCR v0.1.2 の実際の出力です。認識信頼度 ≥ **0.80**、検出スコア ≥ **0.70** の結果のみ表示します。左は元画像に枠を描画し、右は元画像の同じ位置に青色の認識文字を重ねています。読みやすいよう文字部分に淡い背景を付けています。画像をクリックすると高解像度で確認できます。
+
+左右で座標と切り出し範囲は共通です。周囲の余白のみ同じ範囲で除去し、認識文字は手動修正していません。信頼度は未校正のモデルスコアです。
+
+### 中日韓英の混在
+
+空でない認識結果 6 件中 6 件を表示.
+
+| 元画像 + 検出枠 | 元画像 + 認識文字（青色） |
+|---|---|
+| [![中日韓英の混在 — 元画像 + 検出枠](docs/assets/ocr-results/mixed-boxes.webp)](docs/assets/ocr-results/mixed-boxes.webp) | [![中日韓英の混在 — 元画像 + 認識文字（青色）](docs/assets/ocr-results/mixed-text.webp)](docs/assets/ocr-results/mixed-text.webp) |
+
+### 書籍の実写
+
+空でない認識結果 48 件中 46 件を表示.
+
+| 元画像 + 検出枠 | 元画像 + 認識文字（青色） |
+|---|---|
+| [![書籍の実写 — 元画像 + 検出枠](docs/assets/ocr-results/book-boxes.webp)](docs/assets/ocr-results/book-boxes.webp) | [![書籍の実写 — 元画像 + 認識文字（青色）](docs/assets/ocr-results/book-text.webp)](docs/assets/ocr-results/book-text.webp) |
+
+### 数式を含む文書
+
+空でない認識結果 94 件中 76 件を表示.
+
+| 元画像 + 検出枠 | 元画像 + 認識文字（青色） |
+|---|---|
+| [![数式を含む文書 — 元画像 + 検出枠](docs/assets/ocr-results/formula-boxes.webp)](docs/assets/ocr-results/formula-boxes.webp) | [![数式を含む文書 — 元画像 + 認識文字（青色）](docs/assets/ocr-results/formula-text.webp)](docs/assets/ocr-results/formula-text.webp) |
+
+### 中国語の表
+
+空でない認識結果 89 件中 87 件を表示.
+
+| 元画像 + 検出枠 | 元画像 + 認識文字（青色） |
+|---|---|
+| [![中国語の表 — 元画像 + 検出枠](docs/assets/ocr-results/table-boxes.webp)](docs/assets/ocr-results/table-boxes.webp) | [![中国語の表 — 元画像 + 認識文字（青色）](docs/assets/ocr-results/table-text.webp)](docs/assets/ocr-results/table-text.webp) |
+
+[生成記録・再現方法](docs/assets/ocr-results/README.md) · [画像の出典](testdata/paddleocr/README.md) · [第三者ライセンス](testdata/paddleocr/UPSTREAM_LICENSE)
+
 ## 導入ガイド
 
 [インストール](docs/ja/installation.md) · [Go](docs/ja/go.md) · [C と C++](docs/ja/native.md) · [Python](docs/ja/python.md) · [Android](docs/ja/android.md) · [既存 ONNX Runtime](docs/ja/runtime.md)

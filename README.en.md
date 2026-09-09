@@ -36,6 +36,46 @@ python -m oneocr_native recognize image.png
 python -m oneocr_native recognize --format json image.png
 ```
 
+## Test results
+
+Actual OneOCR v0.1.2 output for four images from `testdata`. Only results with recognition confidence ≥ **0.80** and detection score ≥ **0.70** are shown. The left image adds boxes to the original; the right keeps the original image and overlays blue recognized text at the same positions, with a local light background for readability. Click either image for full resolution.
+
+Each pair uses the same crop and coordinates. Outer whitespace is trimmed equally; recognized text is not manually corrected. Confidence scores are uncalibrated.
+
+### CJK and English
+
+6 / 6 nonempty recognition results shown.
+
+| Original + boxes | Original + recognized text (blue) |
+|---|---|
+| [![CJK and English — Original + boxes](docs/assets/ocr-results/mixed-boxes.webp)](docs/assets/ocr-results/mixed-boxes.webp) | [![CJK and English — Original + recognized text (blue)](docs/assets/ocr-results/mixed-text.webp)](docs/assets/ocr-results/mixed-text.webp) |
+
+### Photographed book
+
+46 / 48 nonempty recognition results shown.
+
+| Original + boxes | Original + recognized text (blue) |
+|---|---|
+| [![Photographed book — Original + boxes](docs/assets/ocr-results/book-boxes.webp)](docs/assets/ocr-results/book-boxes.webp) | [![Photographed book — Original + recognized text (blue)](docs/assets/ocr-results/book-text.webp)](docs/assets/ocr-results/book-text.webp) |
+
+### Document with formulas
+
+76 / 94 nonempty recognition results shown.
+
+| Original + boxes | Original + recognized text (blue) |
+|---|---|
+| [![Document with formulas — Original + boxes](docs/assets/ocr-results/formula-boxes.webp)](docs/assets/ocr-results/formula-boxes.webp) | [![Document with formulas — Original + recognized text (blue)](docs/assets/ocr-results/formula-text.webp)](docs/assets/ocr-results/formula-text.webp) |
+
+### Chinese table
+
+87 / 89 nonempty recognition results shown.
+
+| Original + boxes | Original + recognized text (blue) |
+|---|---|
+| [![Chinese table — Original + boxes](docs/assets/ocr-results/table-boxes.webp)](docs/assets/ocr-results/table-boxes.webp) | [![Chinese table — Original + recognized text (blue)](docs/assets/ocr-results/table-text.webp)](docs/assets/ocr-results/table-text.webp) |
+
+[Generation record and reproduction](docs/assets/ocr-results/README.md) · [Sample provenance](testdata/paddleocr/README.md) · [Third-party license](testdata/paddleocr/UPSTREAM_LICENSE)
+
 ## Integration guides
 
 [Installation](docs/en/installation.md) · [Go](docs/en/go.md) · [C and C++](docs/en/native.md) · [Python](docs/en/python.md) · [Android](docs/en/android.md) · [Existing ONNX Runtime](docs/en/runtime.md)
