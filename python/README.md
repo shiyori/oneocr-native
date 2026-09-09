@@ -5,7 +5,7 @@
 Python 可在任意目录直接安装：
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr_native-0.1.0-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr_native-0.1.0-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 ```

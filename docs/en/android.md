@@ -6,7 +6,7 @@ Android API 26+; supported ABIs: `arm64-v8a` and `x86_64`.
 
 ## Complete AAR
 
-Download [oneocr-android-0.1.0.aar](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-0.1.0.aar) and place it in your app module's `libs` directory. Add to that module's `build.gradle.kts`:
+Download [oneocr-android-0.1.0.aar](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-0.1.0.aar) and place it in your app module's `libs` directory. Add to that module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
@@ -42,7 +42,7 @@ Do not recycle or modify an input bitmap/buffer until the call returns. Calls se
 
 ## Existing ORT / core AAR
 
-Use the [Core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-core-0.1.0.aar) with an existing host ORT. It contains OneOCR Java/JNI without the model or ORT. Save the default model as `src/main/assets/oneocr-cjk-en.ocrpack`, or prepare the app module using the Go-installed command:
+Use the [Core AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-core-0.1.0.aar) with an existing host ORT. It contains OneOCR Java/JNI without the model or ORT. Save the default model as `src/main/assets/oneocr-cjk-en.ocrpack`, or prepare the app module using the Go-installed command:
 
 ```sh
 go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.0
@@ -51,7 +51,7 @@ oneocr install --android-project /path/to/your-app/app
 
 The command places the default model under `src/main/assets` and installs native ORT libraries only when the module does not already provide or declare ORT. Existing files and compatible runtime dependencies are retained. Then reference the core AAR in `libs` using the same Gradle syntax as above. Use `--source /path/to/release-files --offline` for offline preparation.
 
-Use one OneOCR AAR per app. The [default model](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-model-cjk-en-0.1.0.ocrpack) is also available separately. See [runtime compatibility](runtime.md).
+Use one OneOCR AAR per app. The [default model](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-model-cjk-en-0.1.0.ocrpack) is also available separately. See [runtime compatibility](runtime.md).
 
 ---
 

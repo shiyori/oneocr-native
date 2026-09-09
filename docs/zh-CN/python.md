@@ -5,7 +5,7 @@
 支持 Python 3.11–3.13。直接安装 GitHub Release 中的 wheel，再准备模型和运行库。**以下命令可在任意目录运行**，无需克隆仓库。
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr_native-0.1.0-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr_native-0.1.0-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 ```
@@ -38,8 +38,8 @@ with OneOcrEngine(EngineConfig(threads=2)) as engine:
 
 Linux 可选下载完整包，其中包含默认模型以及 Python 3.11、3.12、3.13 的依赖 wheel。Windows/macOS 使用上文的通用 wheel，依赖按需下载：
 
-- [Linux x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-amd64-0.1.0.zip)
-- [Linux ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-arm64-0.1.0.zip)
+- [Linux x64](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-python-linux-amd64-0.1.0.zip)
+- [Linux ARM64](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-python-linux-arm64-0.1.0.zip)
 
 解压后，在任意目录通过路径运行包内安装脚本：
 

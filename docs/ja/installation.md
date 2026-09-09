@@ -4,7 +4,7 @@
 
 Go と Python は言語のパッケージマネージャーを使い、Android は AAR を取得します。Windows/macOS 専用の制品は公開しません。Linux のビルド済みパッケージは任意です。通常の導入に runtime パスは不要です。
 
-[GitHub Releases v0.1.0](https://github.com/shiyori/oneocr-native/releases/tag/v0.1.0)
+[GitHub Releases · Latest](https://github.com/shiyori/oneocr-native/releases/latest)
 
 ## Go
 
@@ -21,13 +21,13 @@ oneocr recognize image.png
 汎用 wheel は Python 3.11–3.13 に対応し、任意のディレクトリから導入できます。
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr_native-0.1.0-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr_native-0.1.0-py3-none-any.whl"
 python -m oneocr_native install
 ```
 
 ## Android
 
-[AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-0.1.0.aar) · [Core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-core-0.1.0.aar)
+[AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-0.1.0.aar) · [Core AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-core-0.1.0.aar)
 
 完全版 AAR は既定モデルと runtime を含みます。既存のホスト ORT があるアプリは Core AAR を使います。両方とも arm64-v8a / x86_64 を含み、Android API 26 以上が必要です。[Android の導入](android.md)を参照してください。
 
@@ -35,8 +35,8 @@ python -m oneocr_native install
 
 | | SDK | Core |
 |---|---|---|
-| Linux x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-linux-amd64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-linux-amd64-0.1.0.zip) |
-| Linux ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-linux-arm64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-linux-arm64-0.1.0.zip) |
+| Linux x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-sdk-linux-amd64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-core-linux-amd64-0.1.0.zip) |
+| Linux ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-sdk-linux-arm64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-core-linux-arm64-0.1.0.zip) |
 
 完全版には CLI、C/C++ ヘッダー、共有ライブラリー、既定モデル、ORT が含まれます。Core 版にはインターフェースと CLI のみが含まれ、モデルと ORT は含まれません。Linux のビルド環境は Ubuntu 22.04 です。Go の導入にこれらのパッケージは不要です。
 

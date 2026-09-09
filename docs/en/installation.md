@@ -4,7 +4,7 @@
 
 Go and Python use their language package managers; Android uses AAR downloads. No Windows/macOS platform-specific artifacts are published. Linux prebuilt packages are optional. Normal integration needs no runtime path.
 
-[GitHub Releases v0.1.0](https://github.com/shiyori/oneocr-native/releases/tag/v0.1.0)
+[GitHub Releases · Latest](https://github.com/shiyori/oneocr-native/releases/latest)
 
 ## Go
 
@@ -21,13 +21,13 @@ oneocr recognize image.png
 The universal wheel supports Python 3.11–3.13 and installs from any directory:
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr_native-0.1.0-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr_native-0.1.0-py3-none-any.whl"
 python -m oneocr_native install
 ```
 
 ## Android
 
-[AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-0.1.0.aar) · [Core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-core-0.1.0.aar)
+[AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-0.1.0.aar) · [Core AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-core-0.1.0.aar)
 
 The complete AAR includes the default model and runtime. Apps with an existing host ORT use the Core AAR. Both contain arm64-v8a / x86_64 and require Android API 26+. See [Android integration](android.md).
 
@@ -35,8 +35,8 @@ The complete AAR includes the default model and runtime. Apps with an existing h
 
 | | SDK | Core |
 |---|---|---|
-| Linux x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-linux-amd64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-linux-amd64-0.1.0.zip) |
-| Linux ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-linux-arm64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-linux-arm64-0.1.0.zip) |
+| Linux x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-sdk-linux-amd64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-core-linux-amd64-0.1.0.zip) |
+| Linux ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-sdk-linux-arm64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-core-linux-arm64-0.1.0.zip) |
 
 The complete package contains the CLI, C/C++ headers, shared library, default model and ORT. Core keeps the interfaces and CLI without the model or ORT. Linux builds use Ubuntu 22.04. Go integration does not require these packages.
 

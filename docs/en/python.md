@@ -5,7 +5,7 @@
 Python 3.11–3.13 is supported. Install the wheel directly from GitHub Releases, then prepare the model and runtime. **Run these commands from any directory**; no checkout is needed.
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr_native-0.1.0-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr_native-0.1.0-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 ```
@@ -38,8 +38,8 @@ with OneOcrEngine(EngineConfig(threads=2)) as engine:
 
 Linux users may download a complete package with the model and dependency wheels for Python 3.11, 3.12 and 3.13. Windows/macOS use the universal wheel above and prepare dependencies on demand:
 
-- [Linux x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-amd64-0.1.0.zip)
-- [Linux ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-arm64-0.1.0.zip)
+- [Linux x64](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-python-linux-amd64-0.1.0.zip)
+- [Linux ARM64](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-python-linux-arm64-0.1.0.zip)
 
 Extract it, then run its installer by path from any directory:
 

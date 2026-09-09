@@ -33,9 +33,10 @@ Android 需要 Android SDK、NDK 27+、JDK 17+ 和 CMake：
 python scripts/build_sdk.py --target android --output dist/release --android-sdk /path/to/android-sdk --android-ndk /path/to/ndk
 ```
 
-Release 工作流在仓库外验证消费者接入，同时执行运行库兼容检查、Python 3.11–3.13 测试、Android 两个 ABI 的实际 OCR，以及制品、许可证、链接校验。完整制品全部通过后才发布正式版本。研究资料和保留的开发模型不进入 Release。
+推送与 `version.json` 一致的版本标签（例如 `v0.1.0`）会自动执行 `release-publish`：构建 Android 完整/Core AAR、通用 Python 包和可选 Linux 包，运行 Linux 原生 ABI 冒烟测试，检查制品内容、许可证和校验和，再上传草稿并核对远端 SHA-256，最后发布为正式版并设为 Latest。每个平台的构建记录绑定同一源码提交，常规 CI 必须通过。下载文档默认使用 `releases/latest` 和 `latest/download`。
 
-在 Actions 页面手动触发 `release-build`（选择 `main`），或执行 `gh workflow run release-build.yml --ref main`。该耗时工作流不会随 push/PR 自动运行，也不会自动发布。通过后执行 `python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` 下载并验证这批制品。使用 `scripts/verify_android.py` 在 ARM64 设备上验证这些 AAR：完整包，以及宿主 ORT 1.26.0、1.29.0 的 Core 包。带注释的版本 tag 保存 JSON 回执，包含 `schema: oneocr.release-receipt.v1`、`version`、`commit`、`build_run_id` 和按完整包/1.26/1.29 顺序排列的三个 `android_arm64` 报告对象。tag 工作流核对所有报告与制品哈希，上传草稿并校验上传结果后发布，不在测试后重新构建。
+扩展验证通过 Actions 手动运行 `release-build`（选择 `main`），或执行 `gh workflow run release-build.yml --ref main`。它包含完整 OCR 对照、多运行库兼容、Python 多版本消费者和 Android 模拟器测试，不是常规 CI 或正式发布的前置任务。需要保留这些报告时，成功后运行 `python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS`。发布失败可在同一版本标签上重跑 `release-publish`；已公开且内容不同的制品不会被覆盖。
+
 
 [模型包格式](model-format.md)
 

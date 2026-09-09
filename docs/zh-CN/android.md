@@ -6,7 +6,7 @@
 
 ## 完整 AAR
 
-下载 [oneocr-android-0.1.0.aar](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-0.1.0.aar)，放入自己应用模块的 `libs` 目录，并在该模块的 `build.gradle.kts` 中添加：
+下载 [oneocr-android-0.1.0.aar](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-0.1.0.aar)，放入自己应用模块的 `libs` 目录，并在该模块的 `build.gradle.kts` 中添加：
 
 ```kotlin
 dependencies {
@@ -42,7 +42,7 @@ String line = engine.recognizeLine(OneOcr.Input.fromBitmap(lineBitmap), options)
 
 ## 已有 ORT / 精简 AAR
 
-已有宿主 ORT 时使用 [Core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-core-0.1.0.aar)。它只包含 OneOCR Java/JNI，不含模型或 ORT。可下载默认模型并以 `oneocr-cjk-en.ocrpack` 保存到 `src/main/assets`，或使用 Go 安装的命令准备应用模块：
+已有宿主 ORT 时使用 [Core AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-core-0.1.0.aar)。它只包含 OneOCR Java/JNI，不含模型或 ORT。可下载默认模型并以 `oneocr-cjk-en.ocrpack` 保存到 `src/main/assets`，或使用 Go 安装的命令准备应用模块：
 
 ```sh
 go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.0
@@ -51,7 +51,7 @@ oneocr install --android-project /path/to/your-app/app
 
 命令将默认模型放到 `src/main/assets`；只有模块没有提供或声明 ORT 时，才部署原生运行库。已有文件和兼容运行库依赖会保留。随后按上面的 Gradle 方式引用 `libs` 中的精简 AAR。离线准备可加 `--source /path/to/release-files --offline`。
 
-每个应用只使用一种 OneOCR AAR。默认模型可从 [Release](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-model-cjk-en-0.1.0.ocrpack) 单独下载。另见[运行库复用](runtime.md)。
+每个应用只使用一种 OneOCR AAR。默认模型可从 [Release](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-model-cjk-en-0.1.0.ocrpack) 单独下载。另见[运行库复用](runtime.md)。
 
 ---
 

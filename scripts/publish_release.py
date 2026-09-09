@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Publish only the exact successful CI artifacts named by an annotated-tag receipt."""
+"""Build records, audit and publication for exact assets from a tagged main commit."""
 from __future__ import annotations
+
 import argparse
 import json
 import re
@@ -8,10 +9,11 @@ import shutil
 import subprocess
 import tempfile
 from pathlib import Path
+
 from audit_release import audit, require
 from release_manifest import create, expected_assets
 from runtime_assets import digest
-from version import ROOT, VERSION, TAG, PYTHON_VERSION
+from version import PYTHON_VERSION, ROOT, TAG, VERSION
 
 REPOSITORY = "shiyori/oneocr-native"
 PLATFORMS = ("windows-amd64", "darwin-arm64", "linux-amd64", "linux-arm64")
@@ -91,18 +93,61 @@ def collect(run_id: str, commit: str, output: Path, reports: Path):
     require(one("android", "audit.json").get("passed") is True, "Android archive audit missing")
 
 
-def publish(receipt):
-    commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
-    require(receipt.get("schema") == "oneocr.release-receipt.v1" and receipt.get("version") == VERSION and receipt.get("commit") == commit, "tag receipt version/commit mismatch")
+BUILD_PLATFORMS = ("linux-amd64", "linux-arm64", "android")
+RECORD = "build-record.json"
+
+
+def current_commit():
+    return subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
+
+
+def record(directory: Path, platform: str):
+    require(platform in BUILD_PLATFORMS, "unsupported release build platform")
+    create(directory, partial=True)
+    audit(directory, partial=True)
+    names = {p.name for p in directory.iterdir() if p.is_file()} - {"release-manifest.json", "SHA256SUMS"}
+    require(all(expected_assets()[name][1] in {platform, ""} for name in names), "wrong platform asset")
+    (directory / RECORD).write_text(json.dumps({
+        "schema": "oneocr.build.v1", "version": VERSION, "commit": current_commit(), "platform": platform,
+        "assets": {name: digest(directory / name) for name in sorted(names)},
+    }, indent=2) + "\n", encoding="utf-8")
+
+
+def assemble(packages: Path, output: Path):
+    commit = current_commit()
+    require({p.name for p in packages.iterdir()} == {"release-assets-" + p for p in BUILD_PLATFORMS}, "missing or unexpected build artifact")
+    output.mkdir(parents=True, exist_ok=True)
+    require(not any(output.iterdir()), "asset output directory must be empty")
+    for platform in BUILD_PLATFORMS:
+        source = packages / ("release-assets-" + platform)
+        receipt = json.loads((source / RECORD).read_text(encoding="utf-8"))
+        require(receipt.get("schema") == "oneocr.build.v1" and receipt.get("commit") == commit and receipt.get("version") == VERSION and receipt.get("platform") == platform, "build record does not match tagged source/platform")
+        assets = receipt.get("assets", {})
+        require(isinstance(assets, dict) and assets, "empty build record")
+        require({p.name for p in source.iterdir()} == set(assets) | {RECORD, "release-manifest.json", "SHA256SUMS"}, "build record omits artifact files")
+        for name, checksum in assets.items():
+            require(name in expected_assets() and expected_assets()[name][1] in {platform, ""}, "unexpected build asset")
+            require(digest(source / name) == checksum, "build asset checksum mismatch")
+            destination = output / name
+            if destination.exists():
+                require(digest(destination) == checksum, "shared asset differs between platforms: " + name)
+            else:
+                shutil.copy2(source / name, destination)
+    create(output)
+    print(json.dumps(audit(output)))
+
+
+def publish(assets: Path):
+    commit = current_commit()
+    tagged = subprocess.check_output(["git", "rev-parse", TAG + "^{commit}"], cwd=ROOT, text=True).strip()
+    require(tagged == commit, "release tag does not match checked-out source")
+    require(subprocess.run(["git", "merge-base", "--is-ancestor", commit, "origin/main"], cwd=ROOT, check=False).returncode == 0, "formal releases must come from main")
+    require(re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", VERSION), "Latest requires a stable version")
+    runs = json.loads(gh("api", f"repos/{REPOSITORY}/actions/runs?head_sha={commit}&per_page=100"))["workflow_runs"]
+    require(any(run["head_sha"] == commit and run["path"] == ".github/workflows/ci.yml" and run["conclusion"] == "success" for run in runs), "regular CI has not passed for the tagged commit")
+    audit(assets)
     with tempfile.TemporaryDirectory(prefix="oneocr-publish-") as temporary:
-        temporary = Path(temporary)
-        assets = temporary / "assets"
-        collect(str(receipt["build_run_id"]), commit, assets, temporary / "reports")
-        arm = receipt.get("android_arm64", [])
-        require(isinstance(arm, list) and len(arm) == 3, "three actual ARM64 reports are required")
-        for report, host in zip(arm, (None, "1.26.0", "1.29.0"), strict=True):
-            android_report(report, "arm64-v8a", host, assets)
-        body = temporary / "release.md"
+        body = Path(temporary) / "release.md"
         body.write_text(f"""OneOCR {VERSION}
 
 Offline Chinese, Japanese, Korean and English OCR for Go, C, C++, Python and Android.
@@ -116,42 +161,57 @@ Offline Chinese, Japanese, Korean and English OCR for Go, C, C++, Python and And
 
 [简体中文](https://github.com/{REPOSITORY}/blob/{TAG}/README.md) · [English](https://github.com/{REPOSITORY}/blob/{TAG}/README.en.md) · [日本語](https://github.com/{REPOSITORY}/blob/{TAG}/README.ja.md)
 
-All assets passed independent consumer checks, ORT 1.26/1.29 CPU compatibility, original-API output comparisons and archive audits. Go module and command integration were tested from empty module caches. Both Android ABIs ran actual OCR and host-runtime coexistence checks on these exact AARs.
+Release assets were built from the tagged main commit and checked for completeness, checksums, required libraries and licenses. Linux builds ran native ABI smoke tests. The regular Go/Python CI passed for this commit; extended compatibility and OCR comparison suites remain available as a separate manual workflow.
 
 Verify downloads with `SHA256SUMS` and `release-manifest.json`. Code: AGPL-3.0-only. Review `Model-NOTICE.txt` for the separately provided model and bundled third-party notices.
 """, encoding="utf-8")
         existing = subprocess.run(["gh", "release", "view", TAG, "--repo", REPOSITORY, "--json", "isDraft,tagName"], text=True, capture_output=True, check=False)
-        if existing.returncode == 0:
-            require(json.loads(existing.stdout)["isDraft"] is True, "release is already published")
-        else:
-            gh("release", "create", TAG, "--repo", REPOSITORY, "--verify-tag", "--draft", "--title", f"OneOCR {VERSION}", "--notes-file", body)
         names = sorted([*expected_assets(), "release-manifest.json", "SHA256SUMS"])
+        if existing.returncode == 0 and not json.loads(existing.stdout)["isDraft"]:
+            verify_uploaded(assets, names)
+            gh("release", "edit", TAG, "--repo", REPOSITORY, "--prerelease=false", "--latest")
+            print(gh("release", "view", TAG, "--repo", REPOSITORY, "--json", "url,isDraft"))
+            return
+        if existing.returncode != 0:
+            gh("release", "create", TAG, "--repo", REPOSITORY, "--verify-tag", "--draft", "--title", f"OneOCR {VERSION}", "--notes-file", body)
         gh("release", "upload", TAG, "--repo", REPOSITORY, *[assets / n for n in names], "--clobber")
-        remote = json.loads(gh("api", f"repos/{REPOSITORY}/releases/tags/{TAG}"))
-        require({a["name"] for a in remote["assets"]} == set(names), "uploaded asset set differs")
-        for asset in remote["assets"]:
-            require(asset.get("digest") == "sha256:" + digest(assets / asset["name"]) and asset["size"] == (assets / asset["name"]).stat().st_size, "uploaded checksum differs")
+        verify_uploaded(assets, names)
         gh("release", "edit", TAG, "--repo", REPOSITORY, "--draft=false", "--prerelease=false", "--latest", "--notes-file", body)
         print(gh("release", "view", TAG, "--repo", REPOSITORY, "--json", "url,isDraft"))
+
+
+def verify_uploaded(assets, names):
+    remote = json.loads(gh("api", f"repos/{REPOSITORY}/releases/tags/{TAG}"))
+    require({a["name"] for a in remote["assets"]} == set(names), "uploaded asset set differs")
+    for asset in remote["assets"]:
+        require(asset.get("digest") == "sha256:" + digest(assets / asset["name"]) and asset["size"] == (assets / asset["name"]).stat().st_size, "uploaded checksum differs")
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
-    gather = commands.add_parser("collect")
+    gather = commands.add_parser("collect", help="collect a manually completed full validation run")
     gather.add_argument("--run-id", required=True)
     gather.add_argument("--output", type=Path, required=True)
     gather.add_argument("--reports", type=Path, required=True)
-    commands.add_parser("publish")
+    recording = commands.add_parser("record")
+    recording.add_argument("--dist", type=Path, required=True)
+    recording.add_argument("--platform", choices=BUILD_PLATFORMS, required=True)
+    assembling = commands.add_parser("assemble")
+    assembling.add_argument("--packages", type=Path, required=True)
+    assembling.add_argument("--output", type=Path, required=True)
+    publishing = commands.add_parser("publish")
+    publishing.add_argument("--dist", type=Path, required=True)
     args = parser.parse_args()
     if args.command == "collect":
-        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()
-        collect(args.run_id, commit, args.output, args.reports)
+        collect(args.run_id, current_commit(), args.output, args.reports)
+    elif args.command == "record":
+        record(args.dist, args.platform)
+    elif args.command == "assemble":
+        assemble(args.packages, args.output)
     else:
-        kind = subprocess.check_output(["git", "cat-file", "-t", TAG], cwd=ROOT, text=True).strip()
-        require(kind == "tag", "an annotated release receipt tag is required")
-        message = subprocess.check_output(["git", "for-each-ref", "--format=%(contents)", "refs/tags/" + TAG], cwd=ROOT, text=True)
-        publish(json.loads(message))
+        publish(args.dist.resolve())
+
 
 if __name__ == "__main__":
     main()

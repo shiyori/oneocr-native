@@ -33,9 +33,10 @@ Android には Android SDK、NDK 27 以上、JDK 17 以上、CMake が必要で�
 python scripts/build_sdk.py --target android --output dist/release --android-sdk /path/to/android-sdk --android-ndk /path/to/ndk
 ```
 
-Release ワークフローではチェックアウト外での利用、ランタイム互換性、Python 3.11–3.13、Android 両 ABI の実際の OCR、および制品・ライセンス・リンクを検証します。すべての制品が通過した場合にのみ正式リリースを公開します。研究資料と開発用に保持しているモデルは Release に含めません。
+`version.json` と一致するバージョンタグ（例：`v0.1.0`）を push すると `release-publish` が自動実行されます。Android 完全版/Core AAR、共通 Python パッケージ、任意の Linux パッケージをビルドし、Linux のネイティブ ABI スモークテストと内容・ライセンス・チェックサム検査を実行します。ドラフトへアップロードしてリモートの SHA-256 を照合した後、正式版として公開し Latest に設定します。各プラットフォームのビルド記録は同じソースコミットに結び付けられ、通常の CI 通過が必要です。ダウンロード文書は既定で `releases/latest` と `latest/download` を使います。
 
-Actions で `main` を選び `release-build` を手動実行するか、`gh workflow run release-build.yml --ref main` を実行します。この時間のかかるワークフローは push/PR では起動せず、自動公開もしません。成功後、`python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` で同じ制品を取得して検証します。ARM64 デバイス上で `scripts/verify_android.py` を使い、完全版とホスト ORT 1.26.0・1.29.0 を使う Core 版を検証します。注釈付きのバージョン tag には JSON 形式の記録を保存します。項目は `schema: oneocr.release-receipt.v1`、`version`、`commit`、`build_run_id`、完全版/1.26/1.29 の順に並べた三つの `android_arm64` レポートです。tag ワークフローが各レポートと制品のハッシュを照合し、ドラフトへのアップロードとハッシュ検証を経て公開します。テスト後の再ビルドは行いません。
+拡張検証は Actions で `main` の `release-build` を手動実行するか、`gh workflow run release-build.yml --ref main` で起動します。完全な OCR 比較、ランタイム互換性、複数 Python バージョンの利用テスト、Android エミュレーターテストを含み、通常 CI や正式公開の前提条件ではありません。成功後、必要に応じて `python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` でレポートを取得できます。公開失敗時は同じバージョンタグで `release-publish` を再実行できます。公開済みで内容が異なる制品は上書きしません。
+
 
 [モデルパッケージ形式](model-format.md)
 

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Audit the exact public asset set, archive records, licenses and localized links."""
 from __future__ import annotations
+
 import argparse
 import hashlib
 import json
@@ -8,9 +9,10 @@ import re
 import tarfile
 import zipfile
 from pathlib import Path, PurePosixPath
+
 from release_manifest import expected_assets
 from runtime_assets import digest
-from version import ROOT, VERSION, TAG
+from version import ROOT, TAG, VERSION
 
 
 def require(condition, message):
@@ -52,7 +54,7 @@ def audit_zip(path: Path, kind: str):
             require(any(n.endswith("licenses/ONNXRuntime-Header-LICENSE.txt") for n in names), "native SDK omits ORT header license")
         if kind == "python-wheel":
             metadata = archive.read(next(n for n in names if n.endswith(".dist-info/METADATA"))).decode()
-            require(not re.search(r"^Requires-Dist: onnxruntime", metadata, re.M | re.I), "core wheel forces a runtime")
+            require(not re.search(r"^Requires-Dist: onnxruntime", metadata, re.MULTILINE | re.IGNORECASE), "core wheel forces a runtime")
         if kind in {"android-full", "android-core"}:
             for abi in ("arm64-v8a", "x86_64"):
                 for lib in ("liboneocr.so", "liboneocr_jni.so"):
@@ -68,9 +70,10 @@ def audit_docs():
         content = path.read_text(encoding="utf-8")
         require("\ufffd" not in content, f"invalid UTF-8 text: {path}")
         for link in re.findall(r"\]\(([^)]+)\)", content):
-            release_base = "https://github.com/shiyori/oneocr-native/releases/download/"
-            if link.startswith(release_base):
-                require(link in {release_base + TAG + "/" + name for name in expected_assets()}, f"invalid Release asset link: {path}: {link}")
+            release_root = "https://github.com/shiyori/oneocr-native/releases/"
+            bases = (release_root + "download/" + TAG + "/", release_root + "latest/download/")
+            if link.startswith(release_root) and "/download/" in link:
+                require(link in {base + name for base in bases for name in expected_assets()}, f"invalid Release asset link: {path}: {link}")
             if "://" not in link and not link.startswith("#"):
                 require((path.parent / link.split("#")[0]).exists(), f"broken local link: {path}: {link}")
                 count += 1

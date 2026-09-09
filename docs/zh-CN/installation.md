@@ -4,7 +4,7 @@
 
 Go 和 Python 直接使用语言包管理器；Android 下载 AAR。Windows/macOS 不提供平台专属制品，Linux 可选下载预构建包。普通接入不需要 runtime 路径。
 
-[GitHub Releases v0.1.0](https://github.com/shiyori/oneocr-native/releases/tag/v0.1.0)
+[GitHub Releases · Latest](https://github.com/shiyori/oneocr-native/releases/latest)
 
 ## Go
 
@@ -21,13 +21,13 @@ oneocr recognize image.png
 通用 wheel 支持 Python 3.11–3.13，可在任意目录安装：
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr_native-0.1.0-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr_native-0.1.0-py3-none-any.whl"
 python -m oneocr_native install
 ```
 
 ## Android
 
-[AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-0.1.0.aar) · [Core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-core-0.1.0.aar)
+[AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-0.1.0.aar) · [Core AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-core-0.1.0.aar)
 
 完整 AAR 包含默认模型与 runtime；已有宿主 ORT 的应用使用 Core AAR。两者均包含 arm64-v8a / x86_64，最低 Android API 26。见 [Android 接入](android.md)。
 
@@ -35,8 +35,8 @@ python -m oneocr_native install
 
 | | SDK | Core |
 |---|---|---|
-| Linux x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-linux-amd64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-linux-amd64-0.1.0.zip) |
-| Linux ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-linux-arm64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-linux-arm64-0.1.0.zip) |
+| Linux x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-sdk-linux-amd64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-core-linux-amd64-0.1.0.zip) |
+| Linux ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-sdk-linux-arm64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-core-linux-arm64-0.1.0.zip) |
 
 完整包包含 CLI、C/C++ 头文件、共享库、默认模型和 ORT。Core 包保留接口和 CLI，不含模型与 ORT。Linux 使用 Ubuntu 22.04 构建基线。Go 接入不需要这些包。
 
