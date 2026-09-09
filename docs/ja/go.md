@@ -33,7 +33,7 @@ go run .
 
 Windows では SDK の `bin\oneocr.exe` を使用します。準備コマンドが Go モジュールを OneOCR の管理ディレクトリへ保存し、プロジェクトを設定します。クローンや `replace` パスの手入力は不要です。完全版に含まれる依存関係だけで処理するには `--offline` を追加します。ホストの ORT バインディングのバージョンは変更しません。
 
-コア版でも同じコマンドを使用でき、不足するモデルとランタイムを先に準備します。ソース依存関係を独自に管理するビルドシステム向けに、[Go ソースパッケージ](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-go-sdk-0.1.0-rc.1.zip) も用意しています。
+コア版でも同じコマンドを使用でき、不足するモデルとランタイムを先に準備します。ソース依存関係を独自に管理するビルドシステム向けに、[Go ソースパッケージ](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-go-sdk-0.1.0.zip) も用意しています。
 
 ## 入力と操作
 

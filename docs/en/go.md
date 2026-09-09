@@ -33,7 +33,7 @@ go run .
 
 On Windows use the SDK's `bin\oneocr.exe`. The setup command copies the Go module into OneOCR's managed installation and configures your project; you do not need a repository checkout or a hand-written `replace` path. Add `--offline` to use only the dependencies included in the complete SDK. This does not change your application's ORT binding dependency.
 
-With the core SDK, the same command prepares missing model/runtime resources first. The standalone [Go source package](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-go-sdk-0.1.0-rc.1.zip) is also available for build systems that manage source dependencies themselves.
+With the core SDK, the same command prepares missing model/runtime resources first. The standalone [Go source package](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-go-sdk-0.1.0.zip) is also available for build systems that manage source dependencies themselves.
 
 ## Inputs and operations
 

@@ -12,7 +12,7 @@ go test ./...
 go vet ./...
 ```
 
-`version.json` is the version source. Run `python scripts/version.py` after changing it. The native version is `0.1.0-rc.1` and the Python version is `0.1.0rc1`.
+`version.json` is the version source. Run `python scripts/version.py` after changing it. The native version is `0.1.0` and the Python version is `0.1.0`.
 
 Build desktop SDKs on the target architecture:
 
@@ -29,9 +29,9 @@ Android builds require the Android SDK, NDK 27+, JDK 17+ and CMake:
 python scripts/build_sdk.py --target android --output dist/release --android-sdk /path/to/android-sdk --android-ndk /path/to/ndk
 ```
 
-The release workflow runs consumer checks outside the checkout, runtime compatibility tests, Python 3.11–3.13 tests, both Android ABI OCR checks and archive/license/link validation. Only a complete passing asset set may publish the prerelease. Research files and the reserved development model are excluded from release assets.
+The release workflow runs consumer checks outside the checkout, runtime compatibility tests, Python 3.11–3.13 tests, both Android ABI OCR checks and archive/license/link validation. Only a complete passing asset set may publish the release. Research files and the reserved development model are excluded from release assets.
 
-Push a `codex/release-*` branch to run `release-build` without publishing. After it succeeds, `python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` downloads and verifies the exact artifacts. Run `scripts/verify_android.py` against those AARs on an ARM64 device: full package, then Core with host ORT 1.26.0 and 1.29.0. The annotated release tag contains a JSON receipt with `schema: oneocr.release-receipt.v1`, `version`, `commit`, `build_run_id`, and those three report objects in `android_arm64` (full/1.26/1.29 order). The tag workflow verifies all reports against the artifact hashes, uploads a draft, checks the uploaded hashes and publishes. It does not rebuild after testing.
+Push to `main` to run `release-build` without publishing. After it succeeds, `python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` downloads and verifies the exact artifacts. Run `scripts/verify_android.py` against those AARs on an ARM64 device: full package, then Core with host ORT 1.26.0 and 1.29.0. The annotated release tag contains a JSON receipt with `schema: oneocr.release-receipt.v1`, `version`, `commit`, `build_run_id`, and those three report objects in `android_arm64` (full/1.26/1.29 order). The tag workflow verifies all reports against the artifact hashes, uploads a draft, checks the uploaded hashes and publishes. It does not rebuild after testing.
 
 [Model package format](model-format.md)
 

@@ -92,6 +92,40 @@ def verify_native(dist: Path, root: Path, report: dict):
     finally:
         moved.rename(sdk)
     report["external_cmake_portable"] = True
+    c_app = root / "C application"
+    c_app.mkdir()
+    (c_app / "CMakeLists.txt").write_text('cmake_minimum_required(VERSION 3.22)\nproject(oneocr_c_consumer LANGUAGES C)\nfind_package(OneOCR CONFIG REQUIRED)\nadd_executable(oneocr-c main.c)\ntarget_link_libraries(oneocr-c PRIVATE OneOCR::oneocr)\noneocr_copy_dependencies(oneocr-c)\n',encoding="utf-8")
+    (c_app / "main.c").write_text('''#include "oneocr.h"
+#include <stdio.h>
+int main(void) {
+    char *error = NULL;
+    uint64_t engine = OneOCROpen(NULL, &error);
+    if (!engine) { if (error) fputs(error, stderr); OneOCRFree(error); return 1; }
+    OneOCRInput input = {0}; input.kind = ONEOCR_FILE; input.path = "image.png";
+    char *result = OneOCRRecognize(engine, &input, NULL, &error);
+    if (!result) { if (error) fputs(error, stderr); OneOCRFree(error); OneOCRClose(engine, NULL); return 2; }
+    puts(result); OneOCRFree(result);
+    if (OneOCRClose(engine, &error)) { OneOCRFree(error); return 3; }
+    return 0;
+}
+''',encoding="utf-8")
+    c_build = c_app / "build"
+    run("cmake","-S",c_app,"-B",c_build,f"-DCMAKE_PREFIX_PATH={sdk}","-DCMAKE_BUILD_TYPE=Release",cwd=work,env=env)
+    run("cmake","--build",c_build,"--config","Release",cwd=work,env=env)
+    c_bin = c_build / "Release" if (c_build / "Release").is_dir() else c_build
+    c_portable = root / "portable C application"
+    c_portable.mkdir()
+    for name in [f"oneocr-c{extension}","lib","models","licenses", *[p.name for p in c_bin.glob("*.dll")]]:
+        source = c_bin / name
+        if source.is_dir(): shutil.copytree(source,c_portable / name)
+        elif source.is_file(): shutil.copy2(source,c_portable / name)
+    shutil.copy2(image,work / "image.png")
+    sdk.rename(moved)
+    try:
+        check_text(run(c_portable / f"oneocr-c{extension}",cwd=work,env=env).stdout)
+    finally:
+        moved.rename(sdk)
+    report["external_c_portable"] = True
     app = root / "Go application"
     app.mkdir()
     (app / "main.go").write_text('''package main

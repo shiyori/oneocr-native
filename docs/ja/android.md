@@ -6,11 +6,11 @@ Android API 26 以上、ABI は `arm64-v8a` と `x86_64` に対応します。
 
 ## 完全版 AAR
 
-[oneocr-android-0.1.0-rc.1.aar](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-android-0.1.0-rc.1.aar) をアプリモジュールの `libs` ディレクトリへ置き、同モジュールの `build.gradle.kts` に追加します。
+[oneocr-android-0.1.0.aar](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-0.1.0.aar) をアプリモジュールの `libs` ディレクトリへ置き、同モジュールの `build.gradle.kts` に追加します。
 
 ```kotlin
 dependencies {
-    implementation(files("libs/oneocr-android-0.1.0-rc.1.aar"))
+    implementation(files("libs/oneocr-android-0.1.0.aar"))
 }
 ```
 
@@ -42,7 +42,7 @@ String line = engine.recognizeLine(OneOcr.Input.fromBitmap(lineBitmap), options)
 
 ## 既存 ORT / コア AAR
 
-アプリが既に ORT を提供する場合は[コア AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-android-core-0.1.0-rc.1.aar) を使用します。OneOCR の Java/JNI 層のみを含み、モデルと ORT は含みません。デスクトップ SDK のコマンドでアプリモジュールを準備します。
+アプリが既に ORT を提供する場合は[コア AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-core-0.1.0.aar) を使用します。OneOCR の Java/JNI 層のみを含み、モデルと ORT は含みません。デスクトップ SDK のコマンドでアプリモジュールを準備します。
 
 ```sh
 /path/to/sdk/bin/oneocr install --android-project /path/to/your-app/app
@@ -50,7 +50,7 @@ String line = engine.recognizeLine(OneOcr.Input.fromBitmap(lineBitmap), options)
 
 コマンドは既定モデルを `src/main/assets` へ配置します。モジュールが ORT を提供・宣言していない場合に限り、ネイティブランタイムを配置します。既存ファイルや互換ランタイム依存は保持されます。その後、上記と同じ Gradle 構文で `libs` 内のコア AAR を参照します。オフライン準備では `--source /path/to/release-files --offline` を追加できます。
 
-アプリには OneOCR AAR を一種類だけ追加します。[Android SDK ZIP](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-android-sdk-0.1.0-rc.1.zip) には両方の制品、本ガイド、Java サンプルが含まれます。[ランタイム互換性](runtime.md)も参照してください。
+アプリには OneOCR AAR を一種類だけ追加します。[Android SDK ZIP](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-sdk-0.1.0.zip) には両方の制品、本ガイド、Java サンプルが含まれます。[ランタイム互換性](runtime.md)も参照してください。
 
 ---
 

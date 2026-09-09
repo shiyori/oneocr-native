@@ -2,15 +2,15 @@
 
 [简体中文](../zh-CN/installation.md) | [English](../en/installation.md) | [日本語](../ja/installation.md)
 
-从 [GitHub Releases v0.1.0-rc.1](https://github.com/shiyori/oneocr-native/releases/tag/v0.1.0-rc.1) 下载，无需克隆源码。常规安装和识别都无需指定 runtime。
+从 [GitHub Releases v0.1.0](https://github.com/shiyori/oneocr-native/releases/tag/v0.1.0) 下载，无需克隆源码。常规安装和识别都无需指定 runtime。
 
 | 平台 | 完整离线包 | 精简包 |
 |---|---|---|
-| Windows x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-sdk-windows-amd64-0.1.0-rc.1.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-core-windows-amd64-0.1.0-rc.1.zip) |
-| macOS ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-sdk-darwin-arm64-0.1.0-rc.1.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-core-darwin-arm64-0.1.0-rc.1.zip) |
-| Linux x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-sdk-linux-amd64-0.1.0-rc.1.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-core-linux-amd64-0.1.0-rc.1.zip) |
-| Linux ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-sdk-linux-arm64-0.1.0-rc.1.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-core-linux-arm64-0.1.0-rc.1.zip) |
-| Android arm64-v8a / x86_64 | [AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-android-0.1.0-rc.1.aar) | [Core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-android-core-0.1.0-rc.1.aar) |
+| Windows x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-windows-amd64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-windows-amd64-0.1.0.zip) |
+| macOS ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-darwin-arm64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-darwin-arm64-0.1.0.zip) |
+| Linux x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-linux-amd64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-linux-amd64-0.1.0.zip) |
+| Linux ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-linux-arm64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-linux-arm64-0.1.0.zip) |
+| Android arm64-v8a / x86_64 | [AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-0.1.0.aar) | [Core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-core-0.1.0.aar) |
 
 
 完整桌面 SDK 包含 CLI、默认模型、ONNX Runtime、C/C++ 头文件、Go 源码、Go 离线依赖及本指南。精简包保留相同接入工具，省略模型和 ORT。桌面支持 Windows x64、macOS ARM64、Linux x64/ARM64；Linux 以 Ubuntu 22.04 为构建基线。Android 要求 API 26 及以上。

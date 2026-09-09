@@ -1,4 +1,4 @@
-"""Opt-in end-to-end regressions with the user's model; no bundled weights."""
+"""Opt-in end-to-end regressions for original models and packaged profiles."""
 
 import json
 import os
@@ -53,11 +53,22 @@ def engine():
 )
 def test_native_image_recognition(engine, name):
     root = Path(FIXTURES)
-    labels = {
-        case["file"]: case["text"] for case in json.loads((root / "annotations.json").read_text())
-    }
+    annotations = json.loads((root / "annotations.json").read_text())
+    labels = {case["file"]: case for case in annotations}
     result = engine.recognize(root / f"{name}.png")
-    assert result.text == labels[f"{name}.png"]
+    label = labels[f"{name}.png"]
+    expected = label["text"]
+    if name == "multilingual":
+        expected = "\n".join(case["text"] for case in annotations[:9]
+                             if case["script"] in engine.available_scripts)
+    elif name.startswith("columns"):
+        expected = "\n".join(["Hello World 123"] * 3
+                             + (["Привет мир 123"] * 3
+                                if "Cyrillic" in engine.available_scripts else []))
+    elif label.get("script", "Latin") not in engine.available_scripts:
+        expected = ""
+        assert any("unavailable" in warning for warning in result.warnings)
+    assert result.text == expected
     for line in result.lines:
         assert line.confidence is None
         assert len(line.quad) == 4
@@ -73,7 +84,9 @@ def test_rgba_and_path_inputs_agree(engine):
 
 
 def test_model_inventory_and_all_submodel_inference(engine):
-    assert set(engine.available_scripts) == {
+    from oneocr_native.cache import _audit_model
+
+    expected = {
         "Latin",
         "CJK",
         "Cyrillic",
@@ -84,10 +97,18 @@ def test_model_inventory_and_all_submodel_inference(engine):
         "Hebrew",
         "Tamil",
     }
+    resource_count, model_count = 67, 34
+    profile = getattr(engine.prepared, "info", {}).get("profile")
+    if profile == "cjk-en":
+        expected, resource_count, model_count = {"Latin", "CJK"}, 11, 4
+    elif profile == "extended":
+        expected, resource_count, model_count = {"Latin", "CJK", "Arabic", "Cyrillic"}, 20, 6
+    assert set(engine.available_scripts) == expected
     resources = engine.prepared.manifest["resources"]
     models = [entry for entry in resources if entry["file"].endswith(".onnx")]
-    assert len(resources) == 67 and len(models) == 34
-    assert all(entry["validation"]["cpu_smoke_inference"] == "passed" for entry in models)
+    assert len(resources) == resource_count and len(models) == model_count
+    for entry in models:
+        assert _audit_model(engine.prepared.read(entry.get("name", entry["file"])))["cpu_smoke_inference"] == "passed"
 
 
 def test_independent_stages(engine):

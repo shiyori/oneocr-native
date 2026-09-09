@@ -5,7 +5,7 @@
 Python 3.11–3.13 に対応します。GitHub Release の wheel を直接インストールしてからモデルとランタイムを準備します。**どのディレクトリからでも実行できます**。リポジトリのクローンは不要です。
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr_native-0.1.0rc1-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr_native-0.1.0-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 ```
@@ -38,10 +38,10 @@ with OneOcrEngine(EngineConfig(threads=2)) as engine:
 
 対象システムのパッケージをダウンロードします。モデルと Python 3.11、3.12、3.13 用の依存 wheel が含まれます。
 
-- [Windows x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-python-windows-amd64-0.1.0-rc.1.zip)
-- [macOS ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-python-darwin-arm64-0.1.0-rc.1.zip)
-- [Linux x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-python-linux-amd64-0.1.0-rc.1.zip)
-- [Linux ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-python-linux-arm64-0.1.0-rc.1.zip)
+- [Windows x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-windows-amd64-0.1.0.zip)
+- [macOS ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-darwin-arm64-0.1.0.zip)
+- [Linux x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-amd64-0.1.0.zip)
+- [Linux ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-arm64-0.1.0.zip)
 
 展開後、任意のディレクトリから同梱スクリプトをパスで指定して実行します。
 

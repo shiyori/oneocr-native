@@ -41,6 +41,8 @@ def main():
         run([sys.executable, ROOT / "scripts/api_reference.py", "--runtime", directory / library, "--output", crops], env, output / f"reference-{version}.log")
         run([sys.executable, ROOT / "scripts/python_reference.py", "--runtime-version", version, "--crops", crops, "--output", output / ("python-reference-" + version)], env, output / f"python-reference-{version}.log")
     run(["go", "vet", "./..."], env, output / "vet.log")
+    if target in {"windows-amd64", "linux-amd64"}:
+        run([sys.executable, ROOT / "scripts/verify_gpu_runtime.py", "--output", output], env, output / "gpu-install.log")
     (output / "native.json").write_text(json.dumps({"platform":target, "runtimes":["1.26.0", "1.29.0"], "go_race":True, "python_integration":True, "go_comparisons":1008, "python_comparisons":504, "passed":True}, indent=2) + "\n", encoding="utf-8")
 
 if __name__ == "__main__":

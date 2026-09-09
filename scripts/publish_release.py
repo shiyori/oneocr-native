@@ -35,6 +35,7 @@ def collect(run_id: str, commit: str, output: Path, reports: Path):
     metadata = json.loads(gh("api", f"repos/{REPOSITORY}/actions/runs/{run_id}"))
     require(metadata["head_sha"] == commit and metadata["status"] == "completed" and metadata["conclusion"] == "success", "build run is not a successful run of the tagged commit")
     require(metadata["path"] == ".github/workflows/release-build.yml", "wrong build workflow")
+    require(metadata["head_branch"] == "main", "formal releases require a tested main commit")
     jobs = json.loads(gh("api", f"repos/{REPOSITORY}/actions/runs/{run_id}/jobs?per_page=100"))["jobs"]
     required = {"android", *("desktop-" + p for p in PLATFORMS)}
     require({j["name"] for j in jobs if j["conclusion"] == "success"} >= required, "required build/test job missing")
@@ -63,9 +64,12 @@ def collect(run_id: str, commit: str, output: Path, reports: Path):
     for platform in PLATFORMS:
         native = one(platform, "native.json")
         require(native.get("platform") == platform and native.get("passed") is True and native.get("go_race") is True and native.get("python_integration") is True and native.get("runtimes") == ["1.26.0", "1.29.0"] and native.get("go_comparisons") == 1008 and native.get("python_comparisons") == 504, "native baseline report incomplete")
+        if platform in {"windows-amd64", "linux-amd64"}:
+            gpu = one(platform, "gpu.json")
+            require(gpu.get("platform") == platform and gpu.get("runtime") == "1.26.0" and all(gpu.get(k) is True for k in ("passed", "host_survived", "gpu_distribution_kept", "cpu_provider", "native_host_survived")), "existing GPU runtime compatibility checks missing")
         consumer = one(platform, "consumers.json")
         require(consumer.get("platform") == platform and consumer.get("version") == VERSION, "consumer platform/version mismatch")
-        for check in ("complete_cli_cpp", "external_cmake_portable", "offline_go_no_cache", "offline_core_install_repeat", "corrupt_release_rejected"):
+        for check in ("complete_cli_cpp", "external_cmake_portable", "external_c_portable", "offline_go_no_cache", "offline_core_install_repeat", "corrupt_release_rejected"):
             require(consumer.get(check) is True, "missing consumer check: " + check)
         for version in ("3.11", "3.12", "3.13"):
             checks = consumer.get("python", {}).get(version, {})
@@ -92,7 +96,7 @@ def publish(receipt):
         for report, host in zip(arm, (None, "1.26.0", "1.29.0"), strict=True):
             android_report(report, "arm64-v8a", host, assets)
         body = temporary / "release.md"
-        body.write_text(f"""OneOCR {VERSION} prerelease
+        body.write_text(f"""OneOCR {VERSION}
 
 Offline Chinese, Japanese, Korean and English OCR for Go, C, C++, Python and Android.
 
@@ -111,14 +115,14 @@ Verify downloads with `SHA256SUMS` and `release-manifest.json`. Code: AGPL-3.0-o
         if existing.returncode == 0:
             require(json.loads(existing.stdout)["isDraft"] is True, "release is already published")
         else:
-            gh("release", "create", TAG, "--repo", REPOSITORY, "--verify-tag", "--draft", "--prerelease", "--title", f"OneOCR {VERSION}", "--notes-file", body)
+            gh("release", "create", TAG, "--repo", REPOSITORY, "--verify-tag", "--draft", "--title", f"OneOCR {VERSION}", "--notes-file", body)
         names = sorted([*expected_assets(), "release-manifest.json", "SHA256SUMS"])
         gh("release", "upload", TAG, "--repo", REPOSITORY, *[assets / n for n in names], "--clobber")
         remote = json.loads(gh("api", f"repos/{REPOSITORY}/releases/tags/{TAG}"))
         require({a["name"] for a in remote["assets"]} == set(names), "uploaded asset set differs")
         for asset in remote["assets"]:
             require(asset.get("digest") == "sha256:" + digest(assets / asset["name"]) and asset["size"] == (assets / asset["name"]).stat().st_size, "uploaded checksum differs")
-        gh("release", "edit", TAG, "--repo", REPOSITORY, "--draft=false", "--prerelease", "--notes-file", body)
+        gh("release", "edit", TAG, "--repo", REPOSITORY, "--draft=false", "--prerelease=false", "--latest", "--notes-file", body)
         print(gh("release", "view", TAG, "--repo", REPOSITORY, "--json", "url,isDraft"))
 
 

@@ -33,7 +33,7 @@ go run .
 
 Windows 使用 SDK 的 `bin\oneocr.exe`。准备命令会将 Go 模块保存到 OneOCR 管理的安装目录，并配置当前项目，无需克隆仓库或手写 `replace` 路径。加上 `--offline` 即可只使用完整包内的依赖；宿主的 ORT 绑定版本不会被修改。
 
-精简包使用同样的命令，先补齐缺失的模型和运行库。自行管理源码依赖的构建系统也可下载独立的 [Go 源码包](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-go-sdk-0.1.0-rc.1.zip)。
+精简包使用同样的命令，先补齐缺失的模型和运行库。自行管理源码依赖的构建系统也可下载独立的 [Go 源码包](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-go-sdk-0.1.0.zip)。
 
 ## 输入与操作
 

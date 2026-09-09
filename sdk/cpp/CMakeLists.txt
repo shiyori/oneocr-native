@@ -22,6 +22,8 @@ if(BUILD_TESTING)
   target_compile_features(oneocr-abi-test PRIVATE cxx_std_17)
   target_include_directories(oneocr-abi-test PRIVATE ../include)
   target_link_libraries(oneocr-abi-test PRIVATE "${ONEOCR_LIBRARY}")
-  set_target_properties(oneocr-abi-test PROPERTIES BUILD_RPATH "${ONEOCR_LIBRARY_DIR}")
+  set_target_properties(oneocr-abi-test PROPERTIES
+    BUILD_RPATH "${ONEOCR_LIBRARY_DIR}"
+    BUILD_WITH_INSTALL_RPATH OFF)
   add_test(NAME abi-errors COMMAND oneocr-abi-test)
 endif()

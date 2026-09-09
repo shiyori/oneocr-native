@@ -5,7 +5,7 @@
 Python 可在任意目录直接安装：
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr_native-0.1.0rc1-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr_native-0.1.0-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 ```
@@ -18,6 +18,6 @@ with OneOcrEngine() as engine:
     print(result.text)
 ```
 
-[Python 接入](https://github.com/shiyori/oneocr-native/blob/v0.1.0-rc.1/docs/zh-CN/python.md) · [已有 ONNX Runtime](https://github.com/shiyori/oneocr-native/blob/v0.1.0-rc.1/docs/zh-CN/runtime.md)
+[Python 接入](https://github.com/shiyori/oneocr-native/blob/v0.1.0/docs/zh-CN/python.md) · [已有 ONNX Runtime](https://github.com/shiyori/oneocr-native/blob/v0.1.0/docs/zh-CN/runtime.md)
 
 [AGPL-3.0-only](LICENSE)

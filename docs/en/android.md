@@ -6,11 +6,11 @@ Android API 26+; supported ABIs: `arm64-v8a` and `x86_64`.
 
 ## Complete AAR
 
-Download [oneocr-android-0.1.0-rc.1.aar](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-android-0.1.0-rc.1.aar) and place it in your app module's `libs` directory. Add to that module's `build.gradle.kts`:
+Download [oneocr-android-0.1.0.aar](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-0.1.0.aar) and place it in your app module's `libs` directory. Add to that module's `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation(files("libs/oneocr-android-0.1.0-rc.1.aar"))
+    implementation(files("libs/oneocr-android-0.1.0.aar"))
 }
 ```
 
@@ -42,7 +42,7 @@ Do not recycle or modify an input bitmap/buffer until the call returns. Calls se
 
 ## Existing ORT / core AAR
 
-Use [the core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-android-core-0.1.0-rc.1.aar) when the app already provides ORT. It contains the OneOCR Java/JNI layer, with no model or ORT. Prepare the app module using the desktop SDK's command:
+Use [the core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-core-0.1.0.aar) when the app already provides ORT. It contains the OneOCR Java/JNI layer, with no model or ORT. Prepare the app module using the desktop SDK's command:
 
 ```sh
 /path/to/sdk/bin/oneocr install --android-project /path/to/your-app/app
@@ -50,7 +50,7 @@ Use [the core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0
 
 The command places the default model under `src/main/assets` and installs native ORT libraries only when the module does not already provide or declare ORT. Existing files and compatible runtime dependencies are retained. Then reference the core AAR in `libs` using the same Gradle syntax as above. Use `--source /path/to/release-files --offline` for offline preparation.
 
-Choose one OneOCR AAR per app. The [Android SDK ZIP](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0-rc.1/oneocr-android-sdk-0.1.0-rc.1.zip) includes both variants, these guides and a Java example. [Runtime compatibility](runtime.md).
+Choose one OneOCR AAR per app. The [Android SDK ZIP](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-sdk-0.1.0.zip) includes both variants, these guides and a Java example. [Runtime compatibility](runtime.md).
 
 ---
 
