@@ -50,15 +50,18 @@ def verify(dist: Path, runtime_cache: Path):
         work.mkdir()
         image = work / "image.png"
         shutil.copy2(ROOT / "testdata/CJK.png", image)
+        line_image = work / "line.png"
+        shutil.copy2(ROOT / "scripts/testdata/cjk-line.png", line_image)
         env = environment(root / "unused-home")
         cli = moved / "bin/oneocr"
         for operation in ("recognize", "detect", "recognize-line"):
-            result = json.loads(command(cli, operation, "--format", "json", image, work=work, env=env))
+            input_image = line_image if operation == "recognize-line" else image
+            result = json.loads(command(cli, operation, "--format", "json", input_image, work=work, env=env))
             if operation == "detect":
                 if not result["regions"]:
                     raise RuntimeError("complete package detector returned no regions")
             elif result["text"] != EXPECTED_TEXT:
-                raise RuntimeError("complete package OCR text mismatch")
+                raise RuntimeError(f"complete package {operation} text mismatch: {result['text']!r}")
         # Code users may obtain resources separately. Exercise the same installer
         # with just the command, model metadata and unmodified official ORT archive.
         installer_dir = root / "installer"
