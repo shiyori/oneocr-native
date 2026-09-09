@@ -11,7 +11,7 @@ import (
 )
 
 func TestUpstreamRuntimeAllowlist(t *testing.T) {
-	for _, platform := range []string{"darwin-arm64", "windows-amd64"} {
+	for _, platform := range []string{"darwin-arm64", "windows-amd64", "linux-amd64", "linux-arm64"} {
 		for _, malformed := range []string{"", "duplicate", "symlink", "missing-license"} {
 			t.Run(platform+"/"+malformed, func(t *testing.T) {
 				asset, err := upstreamRuntimeAsset(platform)
@@ -22,6 +22,8 @@ func TestUpstreamRuntimeAllowlist(t *testing.T) {
 				library := "lib/libonnxruntime." + ManagedRuntimeVersion + ".dylib"
 				if platform == "windows-amd64" {
 					library = "lib/onnxruntime.dll"
+				} else if strings.HasPrefix(platform, "linux-") {
+					library = "lib/libonnxruntime.so." + ManagedRuntimeVersion
 				}
 				names := []string{"../../escape", "./" + root + library, "./" + root + "ThirdPartyNotices.txt"}
 				if malformed != "missing-license" {

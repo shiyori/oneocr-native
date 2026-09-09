@@ -6,7 +6,7 @@ Go 1.24 以上と C コンパイラーが必要です。自分のプロジェク
 
 ```sh
 go mod init example.com/ocr-app
-go get github.com/shiyori/oneocr-native@v0.1.0
+go get github.com/shiyori/oneocr-native@v0.1.1
 ```
 
 既に `go.mod` がある場合は `go mod init` を省略してください。
@@ -42,7 +42,7 @@ go run .
 Go でコマンドをインストールした後、任意のディレクトリでリソースを準備して画像を認識できます。
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.0
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.1
 oneocr install
 oneocr recognize image.png
 ```

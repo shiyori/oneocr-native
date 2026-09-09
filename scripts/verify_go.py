@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Verify go get and go install from empty module caches, with no desktop SDK."""
 from __future__ import annotations
+
 import argparse
 import json
 import os
@@ -9,10 +10,11 @@ import subprocess
 import tempfile
 import zipfile
 from pathlib import Path
+
 from build_sdk import add_zip_file, copy_go, go_proxy
-from runtime_assets import current_platform, digest, PLATFORMS
-from verify_distributions import isolated, run, check_text
-from version import ROOT, VERSION, TAG, RUNTIME_VERSION
+from runtime_assets import PLATFORMS, current_platform, digest
+from verify_distributions import check_text, isolated, run
+from version import ROOT, RUNTIME_VERSION, TAG, VERSION
 
 APPLICATION = '''package main
 import("context";"fmt";"os";oneocr "github.com/shiyori/oneocr-native")
@@ -63,14 +65,10 @@ def main():
         proxy, checksum = prepare_proxy(root)
         resources = root / "resources"
         resources.mkdir()
-        for name in ("release-manifest.json", "SHA256SUMS", f"oneocr-model-cjk-en-{VERSION}.ocrpack"):
+        for name in ("release-manifest.json", "SHA256SUMS", "oneocr-cjk-en.ocrpack"):
             shutil.copy2(dist / name, resources / name)
-        if target.startswith("linux"):
-            name = f"oneocr-runtime-{RUNTIME_VERSION}-{target}.zip"
-            shutil.copy2(dist / name, resources / name)
-        else:
-            name = f"onnxruntime-{PLATFORMS[target]}-{RUNTIME_VERSION}" + (".zip" if target.startswith("windows") else ".tgz")
-            shutil.copy2(args.runtime_cache / name, resources / name)
+        name = f"onnxruntime-{PLATFORMS[target]}-{RUNTIME_VERSION}" + (".zip" if target.startswith("windows") else ".tgz")
+        shutil.copy2(args.runtime_cache / name, resources / name)
         app = root / "application"
         app.mkdir()
         (app / "main.go").write_text(APPLICATION, encoding="utf-8")

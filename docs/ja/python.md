@@ -5,7 +5,7 @@
 Python 3.11–3.13 に対応します。GitHub Release の wheel を直接インストールしてからモデルとランタイムを準備します。**どのディレクトリからでも実行できます**。リポジトリのクローンは不要です。
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr_native-0.1.0-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.1/oneocr_native-0.1.1-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 ```
@@ -34,21 +34,11 @@ with OneOcrEngine(EngineConfig(threads=2)) as engine:
 
 生成入口は `OneOcrEngine()` のみです。`EngineConfig` にはスレッド数、画像サイズ、キャッシュ、モデル設定がありますが、通常は指定不要です。Python パッケージは Go SDK を使用しません。
 
-## Linux の任意オフラインインストール
+## 上級設定：オフライン依存関係
 
-Linux ではモデルと Python 3.11、3.12、3.13 用の依存 wheel を含むパッケージを任意で利用できます。Windows/macOS は上記の汎用 wheel を使い、依存関係を必要に応じて取得します。
+Python はすべてのプラットフォームで共通 wheel を使います。`python -m oneocr_native install` で必要な依存関係を揃える方法を推奨します。Linux 専用の Python オフラインパッケージは公開しません。コマンドだけを使う場合は [Linux 完全実行パッケージ](installation.md)を選んでください。
 
-- [Linux x64](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-python-linux-amd64-0.1.0.zip)
-- [Linux ARM64](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-python-linux-arm64-0.1.0.zip)
-
-展開後、任意のディレクトリから同梱スクリプトをパスで指定して実行します。
-
-```sh
-python /path/to/oneocr-python/installation.py
-python -m oneocr_native recognize image.png
-```
-
-`installation.py` が現在の Python バージョンに対応する wheel を選び、オフラインでインストールします。既存の互換 ORT CPU/GPU パッケージは保持され、新しい環境には同梱 CPU ランタイムを導入します。モデル選択やランタイムパスの指定は不要です。
+オフラインのコード利用では、同じ OS・Python バージョンのオンライン環境で `pip download` を使って依存 wheel を準備し、Release またはソースリポジトリから既定モデルを取得できます。`python -m oneocr_native install --source /path/to/resources --offline` で導入します。依存 wheel は `wheelhouse/` または `wheelhouse/3.13/`、モデルは `models/oneocr-cjk-en.ocrpack` に配置してください。
 
 ## 既存の Python 環境
 

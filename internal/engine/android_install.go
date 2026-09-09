@@ -90,7 +90,7 @@ func InstallAndroid(options AndroidInstallOptions) (AndroidInstallation, error) 
 	}
 	source := releaseSource{directory: options.SourceDirectory, offline: options.Offline}
 	var manifest releaseManifest
-	if model == "" || len(missing) > 0 {
+	if model == "" {
 		manifest, err = source.manifest()
 		if err != nil {
 			return result, err
@@ -115,20 +115,9 @@ func InstallAndroid(options AndroidInstallOptions) (AndroidInstallation, error) 
 	}
 	copies := map[string]string{result.ModelPath: model}
 	if len(missing) > 0 {
-		asset, e := manifest.asset("runtime", "android")
+		directory, e := prepareAndroidRuntime(source, temporary)
 		if e != nil {
 			return result, e
-		}
-		archive, e := source.download(asset, temporary)
-		if e != nil {
-			return result, e
-		}
-		directory := filepath.Join(temporary, "runtime")
-		if err = os.Mkdir(directory, 0755); err != nil {
-			return result, err
-		}
-		if err = extractReleaseArchive(archive, directory); err != nil {
-			return result, err
 		}
 		for _, abi := range missing {
 			library := filepath.Join(directory, "jni", abi, "libonnxruntime.so")
@@ -242,4 +231,29 @@ func androidDeclaresRuntime(module, script string) bool {
 		}
 	}
 	return false
+}
+
+// Fetch the official Maven AAR; only the required native libraries are copied
+// into the application by InstallAndroid. The archive itself is SHA-256 pinned.
+func prepareAndroidRuntime(source releaseSource, temporary string) (string, error) {
+	if ManagedRuntimeVersion != "1.29.0" {
+		return "", fmt.Errorf("oneocr: upstream Android runtime catalog needs updating")
+	}
+	asset, err := upstreamRuntimeAsset("android")
+	if err != nil {
+		return "", err
+	}
+	source.baseURL = "https://repo.maven.apache.org/maven2/com/microsoft/onnxruntime/onnxruntime-android/" + ManagedRuntimeVersion + "/"
+	archive, err := source.download(asset, temporary)
+	if err != nil {
+		return "", err
+	}
+	directory := filepath.Join(temporary, "runtime")
+	if err = os.Mkdir(directory, 0755); err != nil {
+		return "", err
+	}
+	if err = extractReleaseArchive(archive, directory); err != nil {
+		return "", err
+	}
+	return directory, nil
 }

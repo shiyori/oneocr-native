@@ -2,7 +2,7 @@
 
 [简体中文](../zh-CN/native.md) | [English](../en/native.md) | [日本語](../ja/native.md)
 
-Linux 使用[完整 SDK](installation.md)，无需指定运行库路径。C++ 要求 C++17。Windows/macOS 如需 C/C++ 共享库，按[开发指南](development.md)自行构建；不发布平台专属包。
+C/C++ 属于代码集成方式。推荐从仓库构建包含模型和运行库的完整开发套件，详见[开发指南](development.md)；Release 中的 Linux 完整运行包用于直接运行命令，不包含开发头文件。C++ 要求 C++17。
 
 ## CMake 与 C++
 
@@ -36,7 +36,7 @@ cmake -S . -B build -DCMAKE_PREFIX_PATH=/path/to/sdk
 cmake --build build --config Release
 ```
 
-`oneocr_copy_dependencies` 会把 SDK 中的库和模型复制到可执行文件旁。精简包则使用 `bin/oneocr install` 准备好的资源。
+`oneocr_copy_dependencies` 会把本地完整开发套件中的库和模型复制到应用旁，运行时不需要手动指定路径。
 
 ```cpp
 oneocr::Options options;

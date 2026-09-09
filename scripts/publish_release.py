@@ -24,7 +24,7 @@ def gh(*args):
 
 
 def android_report(report, abi, host, assets):
-    name = f"oneocr-android-{'core-' if host else ''}{VERSION}.aar"
+    name = "oneocr-android-core.aar" if host else "oneocr-android.aar"
     require(report.get("ok") is True and report.get("abi") == abi and report.get("host_version") == host, "Android report failed or has wrong ABI/runtime mode")
     require(report.get("runtime") == (host or "1.29.0") and report.get("hardware_test") == 1, "Android runtime/hardware test missing")
     require(report.get("aar_name") == name and report.get("aar_sha256") == digest(assets / name), "Android report does not cover the release AAR")
@@ -76,13 +76,13 @@ def collect(run_id: str, commit: str, output: Path, reports: Path):
         for check in ("passed", "go_get", "library_install", "go_install", "cli_install", "empty_module_caches", "no_sdk", "no_replace", "host_binding_unchanged"):
             require(go.get(check) is True, "missing Go integration check: " + check)
         if platform.startswith("linux"):
-            for check in ("complete_cli_cpp", "external_cmake_portable", "external_c_portable", "offline_core_install_repeat", "corrupt_release_rejected"):
-                require(consumer.get(check) is True, "missing Linux consumer check: " + check)
+            for check in ("passed", "relocated", "offline", "upstream_install", "repeat"):
+                require(consumer.get("linux", {}).get(check) is True, "missing Linux consumer check: " + check)
         for version in ("3.11", "3.12", "3.13"):
             checks = consumer.get("python", {}).get(version, {})
-            preparation = "offline_install" if platform.startswith("linux") else "automatic_runtime_install"
+            preparation = "automatic_runtime_install"
             require(all(checks.get(k) is True for k in ("core_import_without_ort", preparation, "cli", "api", "repeat")), "Python consumer checks incomplete")
-        needed = {f"{prefix}-{platform}-{VERSION}.zip" for prefix in ("oneocr-sdk", "oneocr-core", "oneocr-python")} if platform.startswith("linux") else set()
+        needed = {f"oneocr-{platform}.zip"} if platform.startswith("linux") else set()
         needed.add(f"oneocr_native-{PYTHON_VERSION}-py3-none-any.whl")
         require(needed <= consumer.get("assets", {}).keys(), "consumer asset hashes missing")
         for name, checksum in consumer["assets"].items():
@@ -153,7 +153,8 @@ def publish(assets: Path):
 Offline Chinese, Japanese, Korean and English OCR for Go, C, C++, Python and Android.
 
 - Go integration through `go get` or `go install`, without a desktop SDK download.
-- Android full/Core AARs, a universal Python wheel, and optional Linux packages.
+- Recommended: the complete Android AAR or complete Linux package, with models and runtime included.
+- Code integration can prepare complete dependencies through the Go/Python installer. Core AAR is an advanced host-runtime option.
 - No Windows/macOS platform-specific artifacts; missing dependencies are prepared on demand.
 - Existing compatible ONNX Runtime 1.26+ can be reused; managed bundles include 1.29.0.
 - Windows x64, macOS ARM64, Linux x64/ARM64, Android ARM64/x86_64; Python 3.11–3.13.
@@ -161,7 +162,7 @@ Offline Chinese, Japanese, Korean and English OCR for Go, C, C++, Python and And
 
 [简体中文](https://github.com/{REPOSITORY}/blob/{TAG}/README.md) · [English](https://github.com/{REPOSITORY}/blob/{TAG}/README.en.md) · [日本語](https://github.com/{REPOSITORY}/blob/{TAG}/README.ja.md)
 
-Release assets were built from the tagged main commit and checked for completeness, checksums, required libraries and licenses. Linux builds ran native ABI smoke tests. The regular Go/Python CI passed for this commit; extended compatibility and OCR comparison suites remain available as a separate manual workflow.
+Release assets were built from the tagged main commit and checked for completeness, checksums, required libraries and licenses. Linux packages passed relocated offline OCR and installation checks. The regular Go/Python CI passed for this commit; extended compatibility and OCR comparison suites remain available as a separate manual workflow.
 
 Verify downloads with `SHA256SUMS` and `release-manifest.json`. Code: AGPL-3.0-only. Review `Model-NOTICE.txt` for the separately provided model and bundled third-party notices.
 """, encoding="utf-8")

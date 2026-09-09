@@ -5,7 +5,7 @@
 Python 3.11–3.13 is supported. Install the wheel directly from GitHub Releases, then prepare the model and runtime. **Run these commands from any directory**; no checkout is needed.
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr_native-0.1.0-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.1/oneocr_native-0.1.1-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 ```
@@ -34,21 +34,11 @@ with OneOcrEngine(EngineConfig(threads=2)) as engine:
 
 `OneOcrEngine()` is the single creation entry. `EngineConfig` contains optional thread, image-size, cache and model settings; normal use needs none of them. The Python package does not load the Go SDK.
 
-## Optional Linux offline installation
+## Advanced: offline dependencies
 
-Linux users may download a complete package with the model and dependency wheels for Python 3.11, 3.12 and 3.13. Windows/macOS use the universal wheel above and prepare dependencies on demand:
+Python uses the universal wheel on every platform. Run `python -m oneocr_native install` to prepare complete dependencies. Releases no longer provide a Linux-specific Python offline bundle; for command-line use, choose the [complete Linux runtime package](installation.md).
 
-- [Linux x64](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-python-linux-amd64-0.1.0.zip)
-- [Linux ARM64](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-python-linux-arm64-0.1.0.zip)
-
-Extract it, then run its installer by path from any directory:
-
-```sh
-python /path/to/oneocr-python/installation.py
-python -m oneocr_native recognize image.png
-```
-
-`installation.py` selects the current Python version's wheels and performs an offline installation. An existing compatible ORT CPU/GPU package is kept. A fresh environment receives the included CPU runtime. No model selection or runtime path is required.
+Offline code integration can use `pip download` on a connected system with the same platform and Python version to prepare dependency wheels, plus the default model from Releases or the source repository. Install prepared resources with `python -m oneocr_native install --source /path/to/resources --offline`; place wheels under `wheelhouse/` or `wheelhouse/3.13/` and the model at `models/oneocr-cjk-en.ocrpack`.
 
 ## Existing environments
 

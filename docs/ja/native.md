@@ -2,7 +2,7 @@
 
 [简体中文](../zh-CN/native.md) | [English](../en/native.md) | [日本語](../ja/native.md)
 
-Linux では[完全版 SDK](installation.md)を使用し、runtime パスは指定しません。C++17 が必要です。Windows/macOS の C/C++ 共有ライブラリーは[開発ガイド](development.md)に従ってローカルでビルドします。OS 別の制品は公開しません。
+C/C++ はコードからの利用方法です。[開発ガイド](development.md)に従って、モデルとランタイムを含む完全な開発キットをリポジトリからビルドする方法を推奨します。Release の Linux 完全実行パッケージはコマンド利用向けで、開発用ヘッダーは含みません。C++17 が必要です。
 
 ## CMake と C++
 
@@ -36,7 +36,7 @@ cmake -S . -B build -DCMAKE_PREFIX_PATH=/path/to/sdk
 cmake --build build --config Release
 ```
 
-`oneocr_copy_dependencies` が SDK 内のライブラリとモデルを実行ファイルの隣へ配置します。コア版は `bin/oneocr install` で準備したリソースを使用します。
+`oneocr_copy_dependencies` はローカルでビルドした完全キットのライブラリとモデルをアプリの隣にコピーするため、実行時のパス指定は不要です。
 
 ```cpp
 oneocr::Options options;

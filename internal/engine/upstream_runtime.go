@@ -13,8 +13,8 @@ import (
 	"strings"
 )
 
-// Pinned official ONNX Runtime v1.29.0 archives. SHA256 and sizes are from
-// github.com/microsoft/onnxruntime release metadata, not mutable latest URLs.
+// Pinned official ONNX Runtime v1.29.0 archives from GitHub Releases and
+// Maven Central. Sizes and SHA-256 identify the verified upstream files.
 func upstreamRuntimeAsset(platform string) (releaseAsset, error) {
 	switch platform {
 	case "windows-amd64":
@@ -23,6 +23,15 @@ func upstreamRuntimeAsset(platform string) (releaseAsset, error) {
 	case "darwin-arm64":
 		return releaseAsset{Name: "onnxruntime-osx-arm64-1.29.0.tgz", Kind: "runtime", Platform: platform,
 			Bytes: 41578864, SHA256: "d0706fc34f315d8c88639d0a8c81f2e09e815f282cabed3493c06a054352cf92"}, nil
+	case "android":
+		return releaseAsset{Name: "onnxruntime-android-1.29.0.aar", Kind: "runtime", Platform: platform,
+			Bytes: 51897836, SHA256: "e97540ca78fe36f6fe2013f82843414fb843b6c7681fb04644cba5e1406662dd"}, nil
+	case "linux-amd64":
+		return releaseAsset{Name: "onnxruntime-linux-x64-1.29.0.tgz", Kind: "runtime", Platform: platform,
+			Bytes: 11082880, SHA256: "c3fddc4f139a045b0c4902c57410f0694f1c2fdf9b6939fbe38b1aeae7cd14ba"}, nil
+	case "linux-arm64":
+		return releaseAsset{Name: "onnxruntime-linux-aarch64-1.29.0.tgz", Kind: "runtime", Platform: platform,
+			Bytes: 10027600, SHA256: "e1799098ebc054b370f6176a450f158720f297818c613e5dc99b92e2ec82346f"}, nil
 	default:
 		return releaseAsset{}, fmt.Errorf("oneocr: unsupported upstream runtime platform %s", platform)
 	}
@@ -59,6 +68,8 @@ func extractUpstreamRuntime(archive, directory, platform string) (string, error)
 	upstreamLibrary := "lib/libonnxruntime." + ManagedRuntimeVersion + ".dylib"
 	if platform == "windows-amd64" {
 		library, upstreamLibrary = "onnxruntime.dll", "lib/onnxruntime.dll"
+	} else if strings.HasPrefix(platform, "linux-") {
+		library, upstreamLibrary = "libonnxruntime.so", "lib/libonnxruntime.so."+ManagedRuntimeVersion
 	}
 	allowed := map[string]string{root + upstreamLibrary: library,
 		root + "LICENSE": "LICENSE", root + "ThirdPartyNotices.txt": "ThirdPartyNotices.txt"}

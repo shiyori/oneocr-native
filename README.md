@@ -8,20 +8,20 @@
 
 [GitHub Releases · Latest](https://github.com/shiyori/oneocr-native/releases/latest)
 
-| | 完整包 | 精简包 |
-|---|---|---|
-| Android arm64-v8a / x86_64 | [AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-0.1.0.aar) | [Core AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-core-0.1.0.aar) |
-| Linux x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-sdk-linux-amd64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-core-linux-amd64-0.1.0.zip) |
-| Linux ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-sdk-linux-arm64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-core-linux-arm64-0.1.0.zip) |
+| 平台 | 完整版（推荐） |
+|---|---|
+| Android arm64-v8a / x86_64 | [完整 AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android.aar) |
+| Linux x64 | [完整运行包](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-linux-amd64.zip) |
+| Linux ARM64 | [完整运行包](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-linux-arm64.zip) |
 
-Windows/macOS 使用 Go 模块、Go 命令或通用 Python wheel，依赖按需准备；不提供平台专属包。Linux 下载包是可选方式。
+推荐使用包含默认模型和运行库的完整包。Android Core AAR 仅供已有宿主 ORT 的进阶集成，见 [Android 指南](docs/zh-CN/android.md)。Windows/macOS 通过 Go 或 Python 准备完整依赖，不提供平台专属包。
 
 ## Go 接入
 
-代码接入使用 `go get github.com/shiyori/oneocr-native@v0.1.0`，详见 [Go 指南](docs/zh-CN/go.md)。命令行接入使用：
+代码接入使用 `go get github.com/shiyori/oneocr-native@v0.1.1`，详见 [Go 指南](docs/zh-CN/go.md)。命令行接入使用：
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.0
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.1
 oneocr install
 oneocr recognize image.png
 ```
@@ -29,7 +29,7 @@ oneocr recognize image.png
 ## Python
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr_native-0.1.0-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.1/oneocr_native-0.1.1-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 ```

@@ -1,26 +1,25 @@
 #!/usr/bin/env python3
 """Create the versioned release manifest and SHA256SUMS; require all assets by default."""
 from __future__ import annotations
+
 import argparse
 import json
 from pathlib import Path
+
 from build_sdk import copy, digest
-from version import ROOT, VERSION, PYTHON_VERSION, RUNTIME_VERSION
+from version import PYTHON_VERSION, ROOT, VERSION
 
 
 def expected_assets():
     assets = {}
     for platform in ("linux-amd64", "linux-arm64"):
-        for prefix, kind in (("oneocr-sdk", "sdk-full"), ("oneocr-core", "sdk-core"), ("oneocr-python", "python-offline")):
-            assets[f"{prefix}-{platform}-{VERSION}.zip"] = (kind, platform)
-        assets[f"oneocr-runtime-{RUNTIME_VERSION}-{platform}.zip"] = ("runtime", platform)
+        assets[f"oneocr-{platform}.zip"] = ("app-full", platform)
     assets.update({
         "Model-NOTICE.txt": ("model-notice", ""),
         "LICENSE": ("license", ""),
-        f"oneocr-android-{VERSION}.aar": ("android-full", "android"),
-        f"oneocr-android-core-{VERSION}.aar": ("android-core", "android"),
-        f"oneocr-runtime-{RUNTIME_VERSION}-android.zip": ("runtime", "android"),
-        f"oneocr-model-cjk-en-{VERSION}.ocrpack": ("model", ""),
+        "oneocr-android.aar": ("android-full", "android"),
+        "oneocr-android-core.aar": ("android-core", "android"),
+        "oneocr-cjk-en.ocrpack": ("model", ""),
         f"oneocr_native-{PYTHON_VERSION}-py3-none-any.whl": ("python-wheel", ""),
         f"oneocr_native-{PYTHON_VERSION}.tar.gz": ("python-sdist", ""),
     })
@@ -29,7 +28,7 @@ def expected_assets():
 
 def create(directory: Path, partial: bool = False):
     expected = expected_assets()
-    model = directory / f"oneocr-model-cjk-en-{VERSION}.ocrpack"
+    model = directory / "oneocr-cjk-en.ocrpack"
     copy(ROOT / "models/oneocr-cjk-en.ocrpack", model)
     copy(ROOT / "models/LICENSE", directory / "Model-NOTICE.txt")
     copy(ROOT / "LICENSE", directory / "LICENSE")

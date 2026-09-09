@@ -28,13 +28,17 @@ def audit_zip(path: Path, kind: str):
             parts = PurePosixPath(name).parts
             require(not name.startswith("/") and ".." not in parts and "\\" not in name, "unsafe archive path")
             require(not any(p in {"FORMAT.md", "ACCELERATION.md", ".git", "oneocr-extended.ocrpack"} for p in parts), f"private development file: {name}")
-        records = [n for n in names if PurePosixPath(n).name == "SDK.json"]
-        if kind in {"sdk-full", "sdk-core", "python-offline", "android-sdk"}:
+        records = [n for n in names if PurePosixPath(n).name in {"SDK.json", "PACKAGE.json"}]
+        if kind in {"sdk-full", "sdk-core", "python-offline", "android-sdk", "app-full"}:
             require(len(records) == 1, f"missing SDK record: {path.name}")
         for record_name in records:
             record = json.loads(archive.read(record_name))
-            require(record["version"] == VERSION and record["schema"] == "oneocr.sdk.v1", "invalid SDK record")
-            base = record_name.removesuffix("SDK.json")
+            schema = "oneocr.distribution.v1" if kind == "app-full" else "oneocr.sdk.v1"
+            require(record["version"] == VERSION and record["schema"] == schema, "invalid package record")
+            if kind == "app-full":
+                platform = expected_assets()[path.name][1]
+                require(record.get("platform") == platform and record.get("entrypoint") == "bin/oneocr" and record.get("runtime_included") is True and record.get("models_included") is True, "incomplete Linux package record")
+            base = record_name.removesuffix(PurePosixPath(record_name).name)
             listed = set()
             for entry in record["files"]:
                 name = base + entry["file"]
@@ -46,9 +50,15 @@ def audit_zip(path: Path, kind: str):
             require(listed == set(names) - {record_name}, "SDK record omits archive files")
         if kind in {"sdk-core", "android-core", "python-wheel"}:
             require(not any(n.endswith(".ocrpack") or re.search(r"(?:^|/)libonnxruntime[^/]*\.(?:so|dylib)$|(?:^|/)onnxruntime.dll$", n) for n in names), f"core includes model/runtime: {path.name}")
-        if kind in {"sdk-full", "android-full", "python-offline"}:
+        if kind in {"sdk-full", "android-full", "python-offline", "app-full"}:
             require(any(n.endswith("oneocr-cjk-en.ocrpack") for n in names), f"default model missing: {path.name}")
         require(any("LICENSE" in n or "NOTICE" in n for n in names), f"license missing: {path.name}")
+        if kind == "app-full":
+            cli = next((n for n in names if n.endswith("/bin/oneocr")), None)
+            require(cli is not None and (archive.getinfo(cli).external_attr >> 16) & 0o111, "complete package omits executable CLI")
+            require(any(n.endswith("/lib/libonnxruntime.so") for n in names), "complete package omits runtime")
+            require(not any(part in {"include", "examples", "wheelhouse", "cmake"} for n in names for part in PurePosixPath(n).parts), "complete package includes development-only files")
+            require(not any(n.endswith((".h", ".hpp", "/liboneocr.so")) for n in names), "complete package includes SDK payload")
         if kind in {"sdk-full", "sdk-core"}:
             require(any(n.endswith("include/oneocr.h") for n in names), "native SDK omits C header")
             require(any(n.endswith("licenses/ONNXRuntime-Header-LICENSE.txt") for n in names), "native SDK omits ORT header license")

@@ -5,9 +5,14 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing stable tag to publish with current release tooling
+        description: Stable tag to publish, or main for a build-only check
         required: true
         type: string
+      publish:
+        description: Publish the selected stable tag after verification
+        required: false
+        default: true
+        type: boolean
       build_run_id:
         description: Optional previous run whose completed build artifacts should be reused
         required: false
@@ -21,6 +26,8 @@ env:
   PYTHONUTF8: '1'
 jobs:
   version:
+    outputs:
+      build_run_id: ${{ steps.source.outputs.build_run_id }}
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
@@ -31,14 +38,32 @@ jobs:
         env:
           TOOLING_COMMIT: ${{ github.workflow_sha }}
         run: git show "${TOOLING_COMMIT}:scripts/publish_release.py" > scripts/publish_release.py
-      - name: Verify release tag
+      - name: Verify source and select existing build artifacts
+        id: source
         env:
           RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+          PUBLISH_RELEASE: ${{ github.event_name == 'push' || inputs.publish }}
+          BUILD_RUN_ID: ${{ inputs.build_run_id }}
         run: |
           python scripts/version.py --check
-          PYTHONPATH=scripts python -c 'import os; from version import TAG; assert os.environ["RELEASE_TAG"] == TAG, "Run this workflow on the version tag"'
+          PYTHONPATH=scripts python - <<'PYTHON'
+          import os, re, subprocess
+          from version import TAG
+          publishing = os.environ["PUBLISH_RELEASE"] == "true"
+          if publishing:
+              assert os.environ["RELEASE_TAG"] == TAG, "Select the version tag for publication"
+          run = os.environ.get("BUILD_RUN_ID", "")
+          if not run and publishing:
+              message = subprocess.check_output(["git", "for-each-ref", "--format=%(contents)", "refs/tags/" + TAG], text=True)
+              match = re.search(r"^OneOCR-Build-Run: ([0-9]+)$", message, re.MULTILINE)
+              if match:
+                  run = match.group(1)
+          assert not run or run.isascii() and run.isdigit(), "Invalid build run id"
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write("build_run_id=" + run + "\n")
+          PYTHON
   linux:
-    if: ${{ !inputs.build_run_id }}
+    if: ${{ needs.version.outputs.build_run_id == '' }}
     needs: version
     strategy:
       fail-fast: false
@@ -66,13 +91,23 @@ jobs:
         with:
           python-version: '3.13'
       - uses: astral-sh/setup-uv@v6
-      - name: Build Linux packages and run native ABI smoke tests
+      - name: Build complete Linux package and universal Python distribution
         run: |
           python scripts/version.py --check
-          python scripts/build_sdk.py --target desktop --output dist/assets
-          python scripts/build_python.py --output dist/assets
+          if [ -f scripts/build_linux.py ]; then
+            python scripts/build_linux.py --output dist/assets
+            python scripts/build_python.py --wheel-only --output dist/assets
+          else
+            python scripts/build_sdk.py --target desktop --output dist/assets
+            python scripts/build_python.py --output dist/assets
+          fi
       - name: Audit and record exact package files
         run: python scripts/publish_release.py record --dist dist/assets --platform ${{ matrix.platform }}
+      - name: Verify complete package and dependency installation offline
+        run: |
+          if [ -f scripts/verify_linux.py ]; then
+            python scripts/verify_linux.py --dist dist/assets --runtime-cache dist/assets/.upstream/downloads
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: release-assets-${{ matrix.platform }}
@@ -91,7 +126,7 @@ jobs:
           if-no-files-found: error
           retention-days: 14
   android:
-    if: ${{ !inputs.build_run_id }}
+    if: ${{ needs.version.outputs.build_run_id == '' }}
     needs: version
     runs-on: ubuntu-22.04
     timeout-minutes: 15
@@ -143,7 +178,7 @@ jobs:
           if-no-files-found: error
           retention-days: 14
   publish:
-    if: ${{ always() && needs.version.result == 'success' && (inputs.build_run_id || (needs.linux.result == 'success' && needs.android.result == 'success')) }}
+    if: ${{ always() && needs.version.result == 'success' && (needs.version.outputs.build_run_id || (needs.linux.result == 'success' && needs.android.result == 'success')) }}
     needs: [version, linux, android]
     runs-on: ubuntu-22.04
     timeout-minutes: 15
@@ -168,9 +203,10 @@ jobs:
         with:
           pattern: release-assets-*
           path: dist/packages
-          run-id: ${{ inputs.build_run_id || github.run_id }}
+          run-id: ${{ needs.version.outputs.build_run_id || github.run_id }}
           github-token: ${{ github.token }}
-      - name: Assemble same-commit assets and publish Latest
-        run: |
-          python scripts/publish_release.py assemble --packages dist/packages --output dist/release
-          python scripts/publish_release.py publish --dist dist/release
+      - name: Assemble and audit same-commit assets
+        run: python scripts/publish_release.py assemble --packages dist/packages --output dist/release
+      - name: Publish Latest
+        if: ${{ github.event_name == 'push' || inputs.publish }}
+        run: python scripts/publish_release.py publish --dist dist/release

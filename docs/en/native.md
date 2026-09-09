@@ -2,7 +2,7 @@
 
 [简体中文](../zh-CN/native.md) | [English](../en/native.md) | [日本語](../ja/native.md)
 
-On Linux, use the [complete SDK](installation.md) with no runtime path. C++ requires C++17. For C/C++ shared libraries on Windows/macOS, follow the [development guide](development.md) to build locally; no platform-specific packages are published.
+C/C++ is a code integration option. Build the complete development kit with model and runtime from the repository as described in the [development guide](development.md). The complete Linux Release package is for running the command and does not include development headers. C++ requires C++17.
 
 ## CMake and C++
 
@@ -36,7 +36,7 @@ cmake -S . -B build -DCMAKE_PREFIX_PATH=/path/to/sdk
 cmake --build build --config Release
 ```
 
-`oneocr_copy_dependencies` places the available SDK libraries and model beside your executable. The core SDK uses resources prepared by `bin/oneocr install`.
+`oneocr_copy_dependencies` copies libraries and the model from the locally built complete kit beside the application, so runtime paths need not be specified.
 
 ```cpp
 oneocr::Options options;

@@ -222,7 +222,7 @@ def build_android(args: argparse.Namespace) -> list[Path]:
         (stage / "R.txt").write_text("", encoding="utf-8")
         (stage / "proguard.txt").write_text("-keep class dev.oneocr.OneOcr { *; }\n-keep class dev.oneocr.OneOcr$* { *; }\n", encoding="utf-8")
         licenses(stage / "META-INF/oneocr/licenses", runtime_directory)
-        core = args.output / f"oneocr-android-core-{VERSION}.aar"
+        core = args.output / "oneocr-android-core.aar"
         archive(stage, core, include_root=False); outputs.append(core)
         runtime = temporary / "android-runtime"
         runtime.mkdir()
@@ -232,12 +232,9 @@ def build_android(args: argparse.Namespace) -> list[Path]:
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_bytes(upstream.read(f"jni/{abi}/libonnxruntime.so"))
                 copy(path, stage / "jni" / abi / path.name)
-        licenses(runtime / "licenses", runtime_directory)
         copy(ROOT / "models/oneocr-cjk-en.ocrpack", stage / "assets/oneocr-cjk-en.ocrpack")
-        complete = args.output / f"oneocr-android-{VERSION}.aar"
+        complete = args.output / "oneocr-android.aar"
         archive(stage, complete, include_root=False); outputs.append(complete)
-        runtime_zip = args.output / f"oneocr-runtime-{RUNTIME_VERSION}-android.zip"
-        archive(runtime, runtime_zip, include_root=False); outputs.append(runtime_zip)
         run("javac", "--release", "17", "-cp", os.pathsep.join([str(android_jar), str(stage / "classes.jar")]), "-d", temporary / "consumer", ROOT / "sdk/android/sdk-example/Example.java")
     return outputs
 

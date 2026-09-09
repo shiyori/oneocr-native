@@ -45,17 +45,17 @@ jobs:
           python -m pip install "./python[conversion]" pytest
       - name: Full CPU compatibility and original API comparisons
         run: python scripts/verify_native.py --output dist/reports/${{ matrix.platform }}
-      - name: Build optional Linux packages
+      - name: Build complete Linux packages
         if: startsWith(matrix.platform, 'linux-')
         run: |
-          python scripts/build_sdk.py --target desktop --output dist/assets
-          python scripts/build_python.py --output dist/assets
+          python scripts/build_linux.py --output dist/assets
+          python scripts/build_python.py --wheel-only --output dist/assets
       - name: Build universal Python distribution
         if: runner.os != 'Linux'
         run: python scripts/build_python.py --wheel-only --output dist/assets
       - name: Prepare resource metadata
         run: python scripts/release_manifest.py --dist dist/assets --partial
-      - name: Go module, Go command, Python and optional Linux consumers
+      - name: Go module, Go command, Python and complete Linux package consumers
         run: |
           python scripts/verify_distributions.py --dist dist/assets --report dist/reports/${{ matrix.platform }}/consumers.json
           python scripts/audit_release.py --dist dist/assets --partial --report dist/reports/${{ matrix.platform }}/audit.json
@@ -117,9 +117,9 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: |
-            python scripts/verify_android.py --aar dist/assets/oneocr-android-0.1.0.aar --abi x86_64 --report dist/reports/android/full.json
-            python scripts/verify_android.py --aar dist/assets/oneocr-android-core-0.1.0.aar --abi x86_64 --host-version 1.26.0 --report dist/reports/android/host126.json
-            python scripts/verify_android.py --aar dist/assets/oneocr-android-core-0.1.0.aar --abi x86_64 --host-version 1.29.0 --report dist/reports/android/host129.json
+            python scripts/verify_android.py --aar dist/assets/oneocr-android.aar --abi x86_64 --report dist/reports/android/full.json
+            python scripts/verify_android.py --aar dist/assets/oneocr-android-core.aar --abi x86_64 --host-version 1.26.0 --report dist/reports/android/host126.json
+            python scripts/verify_android.py --aar dist/assets/oneocr-android-core.aar --abi x86_64 --host-version 1.29.0 --report dist/reports/android/host129.json
       - uses: actions/upload-artifact@v4
         with:
           name: assets-android

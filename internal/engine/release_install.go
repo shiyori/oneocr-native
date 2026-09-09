@@ -167,16 +167,6 @@ func (s releaseSource) download(asset releaseAsset, directory string) (string, e
 	}
 	return destination, nil
 }
-func unpackRuntime(archive, directory, platform string) (string, error) {
-	if err := extractReleaseArchive(archive, directory); err != nil {
-		return "", err
-	}
-	record, err := readRuntimeManifest(directory, platform)
-	if err != nil {
-		return "", err
-	}
-	return filepath.Join(directory, record.Library), nil
-}
 func extractReleaseArchive(archive, directory string) error {
 	reader, err := zip.OpenReader(archive)
 	if err != nil {
@@ -296,7 +286,7 @@ func prepareInstallResources(options *InstallOptions, temporary string) error {
 	}
 	source := releaseSource{directory: options.SourceDirectory, offline: options.Offline}
 	var manifest releaseManifest
-	if options.ModelPath == "" || (!available && runtime.GOOS != "windows" && runtime.GOOS != "darwin") {
+	if options.ModelPath == "" {
 		manifest, err = source.manifest()
 		if err != nil {
 			return err
@@ -313,26 +303,8 @@ func prepareInstallResources(options *InstallOptions, temporary string) error {
 		}
 	}
 	if !available {
-		if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
-			options.RuntimeLibrary, err = prepareUpstreamRuntime(source, temporary, runtime.GOOS+"-"+runtime.GOARCH)
-			return err
-		}
-		asset, err := manifest.asset("runtime", runtime.GOOS+"-"+runtime.GOARCH)
-		if err != nil {
-			return err
-		}
-		archive, err := source.download(asset, temporary)
-		if err != nil {
-			return err
-		}
-		directory := filepath.Join(temporary, "runtime")
-		if err = os.Mkdir(directory, 0755); err != nil {
-			return err
-		}
-		options.RuntimeLibrary, err = unpackRuntime(archive, directory, runtime.GOOS+"-"+runtime.GOARCH)
-		if err != nil {
-			return err
-		}
+		options.RuntimeLibrary, err = prepareUpstreamRuntime(source, temporary, runtime.GOOS+"-"+runtime.GOARCH)
+		return err
 	}
 	return nil
 }
