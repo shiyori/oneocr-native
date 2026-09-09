@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 """Build complete and core SDKs for GitHub Releases."""
 from __future__ import annotations
+
 import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
 import zipfile
 from pathlib import Path
-from version import ROOT, VERSION, TAG, RUNTIME_VERSION
+
 from runtime_assets import current_platform, prepare
+from version import ROOT, RUNTIME_VERSION, TAG, VERSION
 
 
 def run(*args: str | Path, cwd: Path | None = None, env: dict | None = None) -> None:
@@ -62,6 +65,19 @@ def licenses(destination: Path, runtime_directory: Path | None = None) -> None:
 def copy_docs(destination: Path) -> None:
     for name in ("README.md", "README.en.md", "README.ja.md", "LICENSE", "THIRD_PARTY_NOTICES.md"):
         copy(ROOT / name, destination / name)
+        if name.endswith(".md"):
+            target = destination / name
+            text = target.read_text(encoding="utf-8")
+            captions = {"README.md": ("测试结果", "查看测试图片与识别结果"),
+                        "README.en.md": ("Test results", "View test images and recognition results"),
+                        "README.ja.md": ("テスト結果", "テスト画像と認識結果を見る")}
+            if name in captions:
+                heading, label = captions[name]
+                url = f"https://github.com/shiyori/oneocr-native/blob/{TAG}/{name}#" + heading.lower().replace(" ", "-")
+                text = re.sub(r"(?ms)^## " + re.escape(heading) + r"\n.*?(?=^## |\Z)",
+                              f"## {heading}\n\n[{label}]({url})\n\n", text)
+            text = text.replace("](testdata/", f"](https://github.com/shiyori/oneocr-native/blob/{TAG}/testdata/")
+            target.write_text(text, encoding="utf-8")
     for language in ("zh-CN", "en", "ja"):
         shutil.copytree(ROOT / "docs" / language, destination / "docs" / language, dirs_exist_ok=True)
 

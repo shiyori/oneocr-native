@@ -18,10 +18,10 @@
 
 ## Go 接入
 
-代码接入使用 `go get github.com/shiyori/oneocr-native@v0.1.2`，详见 [Go 指南](docs/zh-CN/go.md)。命令行接入使用：
+代码接入使用 `go get github.com/shiyori/oneocr-native@v0.1.3`，详见 [Go 指南](docs/zh-CN/go.md)。命令行接入使用：
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
 oneocr install
 oneocr recognize image.png
 oneocr recognize --format json image.png
@@ -30,7 +30,7 @@ oneocr recognize --format json image.png
 ## Python
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.2/oneocr_native-0.1.2-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.3/oneocr_native-0.1.3-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 python -m oneocr_native recognize --format json image.png
@@ -38,13 +38,13 @@ python -m oneocr_native recognize --format json image.png
 
 ## 测试结果
 
-OneOCR v0.1.2 对 `testdata` 中四张图片的实际输出。仅展示识别置信度 ≥ **0.80** 且检测分数 ≥ **0.70** 的结果。左图在原图上画框；右图保留原图，在同一位置叠加蓝色识别文字，并加局部浅色底以保持可读性。点击图片可查看高清图。
+OneOCR v0.1.3 对 `testdata` 中四张图片的实际输出。仅展示识别置信度 ≥ **0.70** 且检测分数 ≥ **0.70** 的结果。左图在原图上画框；右图保留原图，在同一位置叠加蓝色识别文字，并加局部浅色底以保持可读性。点击图片可查看高清图。
 
 两张图采用相同裁剪和坐标；外围留白同步裁去，未人工修正识别文字。置信度为未校准模型分数。
 
 ### 中日韩英混排
 
-显示 6 / 6 条非空识别结果.
+显示 6 / 6 条非空识别结果。
 
 | 原图 + 文本框 | 原图 + 蓝色识别文字 |
 |---|---|
@@ -52,7 +52,7 @@ OneOCR v0.1.2 对 `testdata` 中四张图片的实际输出。仅展示识别置
 
 ### 实拍书页
 
-显示 46 / 48 条非空识别结果.
+显示 47 / 48 条非空识别结果。
 
 | 原图 + 文本框 | 原图 + 蓝色识别文字 |
 |---|---|
@@ -60,7 +60,7 @@ OneOCR v0.1.2 对 `testdata` 中四张图片的实际输出。仅展示识别置
 
 ### 公式文档
 
-显示 76 / 94 条非空识别结果.
+显示 84 / 96 条非空识别结果。
 
 | 原图 + 文本框 | 原图 + 蓝色识别文字 |
 |---|---|
@@ -68,7 +68,7 @@ OneOCR v0.1.2 对 `testdata` 中四张图片的实际输出。仅展示识别置
 
 ### 中文表格
 
-显示 87 / 89 条非空识别结果.
+显示 96 / 96 条非空识别结果。
 
 | 原图 + 文本框 | 原图 + 蓝色识别文字 |
 |---|---|

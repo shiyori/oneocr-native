@@ -45,7 +45,7 @@ Do not recycle or modify an input bitmap/buffer until the call returns. Calls se
 Use the [Core AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-core.aar) with an existing host ORT. It contains OneOCR Java/JNI without the model or ORT. Save the default model as `src/main/assets/oneocr-cjk-en.ocrpack`, or prepare the app module using the Go-installed command:
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
 oneocr install --android-project /path/to/your-app/app
 ```
 

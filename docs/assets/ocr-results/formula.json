@@ -1,8 +1,8 @@
 {
-  "confidence": 0.9165858519953379,
+  "confidence": 0.9172425533561179,
   "confidence_method": "ctc_token_geometric_mean",
   "coordinate_space": "oriented_image",
-  "text": "3\na compilation of various multi-wavelength observations\nthat span IR, optical/UV, soft, and hard X-rays, and\nrepresents an update to Ref. 22. The QLF is fit by a\nwhere tg = oTc/4rGmp = 4.5 x 105yr is the Edding-\nton time, and ep Nace corresponds to the fraction of the\ndouble power-law\nmass that is radiated ns it falls into the black hole. The\nsfra\nmass that is added to the black hole A is therefore\ndlog1eI(L/T.) + (1./T.)T\nM = (1 -<)Mace. If we define the bolometric lumi-\nnosity function of quasars of L, f)dlogge L as the number\nAll results shown in this work correspond to \"global fit\ndensity of quasars per log luminosity, and we suppose\nA\" in Ref. 2n, in which the model parameters o., L.,\nthat a fraction o(M,t) of black holes is active at a time\n7, and 22 have a parametrized redshift dependence and\nt, then o(L,t) is related to the black hole mass function\nare simultaneously fit across all redshifts.\nEq- Dean be integrated over time, which results in\nvia\n(L,t)dlog1L = o(M,t)e(Mr,t)dM.\nx(01)叫림\nThe quantity 8 is the BH duty eyele, where (Ar(Mf,t)) =\nda2 DL1.AMd/t\n(1-6)\nwhere do is the mas function today. For a sufficiently\nhigh redshift z, e(Mf,z) is negligible compared to eo,\nwe can therefore rewrite the secoud term ou the left-hand\nLe., in the absence of mergers, the mass function today\nmust equal the accreted mass, We model the present-day\nside of Eq. Din terms of the quasar luminosity function\nmass function as in Refs. [5) [0], which we very briefly\nsummarize here.\nN (6)\nThe present-day SMBH mass function can be esti-\n7Te (o1)mh5\n3y/ePWY-7]7e\nand properties of the host galaxy (say, property X) and\nMultiplying by the mass and integrating the equation\ngalaxy catalogs, which give dn/dX. The scaling relation\nabove over time shows that the blaek hole mass density\nis direetly related to the integral of the quasar luminosity\nis expeased as\nfnction\nlog1g M = 0. + b, log1o X.\n(11)\nTV(V)JP- Wad\n€\nUsing the galaxy velocity dispersion as our fiducial proxy\nfor SMBH mass, we parametrize the velocity dispersion\ndhogno Lộ(T,=)T,\nfunction (VDF) as\nwhich is the Soltan argument (n.\n(12)\nNote that the radiative efficiency only changes an over-\nall amplitude of pau, while the Eddington ratio changes\nIncluding scatter in the relation between black hole mass\nboth the amplitude and the shape of the final SMBH\nand galaxy property leads to\nmass function, while keeping the total mass density fixed.\n(doP(log10 Mf|log1ø)dn\nAs a toy example consider a scenario in which the red-\n(CT)\nb(M)=\nshift evolution of the parameters is negligible, then the\nM log(10)\nquasar luminosity function (QL.F) is always given by a\ndouble power-law, with a break at a luminosity L,, The\nwhere p is assumed to be log-normal\ncorrespondling break in the SMBH mnass function will be\nM. - L,fg/X2 and the power-laws of dn/dlog M will\nP(log1gMf|10g3)=\nbe the same as o(L). Therefore, reducing (increasing) A\nincreases (reduces) the characteristic mass of the turn-\n1 (1og20M-6.-b. 10g10\nover in the SMBH mass function. In this seenario, black\nx exp\nholes of all masses grow at the same time. The mea-\n(14)\nsured quasar luminosity function, however, has a break\nthat evolves over time, mostly decreasing with redshift.\nAs in Refs. 2H [20 the adopt the velocity disper-\nThis implies that more massive black holes assemble their\nWe therefore use\nsion funetion as the mass peoy.\nmass earlier on.\nX - o/200km s-1 in Eq. I and the M - o relation\nSMBH growth from accretion can thus be modelled\nfroen Ref. (31], which correspouds to o, = 8.32 ± 0.05,\nby directly relating it to the observed QLF, We use the\n6. =5.64±0.32, and te = 0.38. For the VDF, we choose\nbolometric QLF presented in Ref. 27, which is based on",
+  "text": "3\na compilation of various multi-wavelength observations\nthat span IR, optical/UV, soft, and hard X-rays, and\nwhere tg = oTc/4rGmp = 4.5 x 105yr is the Edding-\nrepresents an update to Ref. 22. The QLF is fit by a\nton time, and ep Nace corresponds to the fraction of the\ndouble power-law\nmass that is radiated ns it falls into the black hole. The\nmass that is added to the black hole A is therefore\nsfra\ndlog1eI(L/T.) + (1./T.)T\nM = (1 -<)Mace. If we define the bolometric lumi-\nnosity function of quasars of L, f)dlogge L as the number\nAll results shown in this work correspond to \"global fit\ndensity of quasars per log luminosity, and we suppose\nA\" in Ref. 2n, in which the model parameters o., L.,\nthat a fraction o(M,t) of black holes is active at a time\n7, and 22 have a parametrized redshift dependence and\nt, then o(L,t) is related to the black hole mass function\nare simultaneously fit across all redshifts.\nvia\nEq- Dean be integrated over time, which results in\n(L,t)dlog1L = o(M,t)e(Mr,t)dM.\n(4)\nx(01)叫림\nThe quantity 8 is the BH duty eyele, where (Ar(Mf,t)) =\nda2 DL1.AMd/t\n(1-6)\nwhere do is the mas function today. For a sufficiently\nhigh redshift z, e(Mf,z) is negligible compared to eo,\nwe can therefore rewrite the secoud term ou the left-hand\nLe., in the absence of mergers, the mass function today\nside of Eq. Din terms of the quasar luminosity function\nmust equal the accreted mass, We model the present-day\nmass function as in Refs. [5) [0], which we very briefly\nsummarize here.\nN (6)\n7Te (o1)mh5\nThe present-day SMBH mass function can be esti-\n3y/ePWY-7]7e\nMultiplying by the mass and integrating the equation\nand properties of the host galaxy (say, property X) and\nabove over time shows that the blaek hole mass density\ngalaxy catalogs, which give dn/dX. The scaling relation\nis direetly related to the integral of the quasar luminosity\nis expeased as\nfnction\nlog1g M = 0. + b, log1o X.\n(11)\nTV(V)JP- Wad\nUsing the galaxy velocity dispersion as our fiducial proxy\nfor SMBH mass, we parametrize the velocity dispersion\ndhogno Lộ(T,=)T,\n(8)\nfunction (VDF) as\nwhich is the Soltan argument (n.\n(12)\nNote that the radiative efficiency only changes an over-\nall amplitude of pau, while the Eddington ratio changes\nIncluding scatter in the relation between black hole mass\nboth the amplitude and the shape of the final SMBH\nand galaxy property leads to\nmass function, while keeping the total mass density fixed.\nAs a toy example consider a scenario in which the red-\n(doP(log10 Mf|log1ø)dn\nshift evolution of the parameters is negligible, then the\nb(M)=\n(13)\nM log(10)\nquasar luminosity function (QL.F) is always given by a\ndouble power-law, with a break at a luminosity L,, The\nwhere p is assumed to be log-normal\ncorrespondling break in the SMBH mnass function will be\nM. - L,fg/X2 and the power-laws of dn/dlog M will\n1\nP(log1gMf|10g3)=\nbe the same as o(L). Therefore, reducing (increasing) A\nincreases (reduces) the characteristic mass of the turn-\n1 (1og20M-6.-b. 10g10\nover in the SMBH mass function. In this seenario, black\nx exp\nholes of all masses grow at the same time. The mea-\nsured quasar luminosity function, however, has a break\n(14)\nthat evolves over time, mostly decreasing with redshift.\nAs in Refs. 2H [20 the adopt the velocity disper-\nThis implies that more massive black holes assemble their\nmass earlier on.\nWe therefore use\nsion funetion as the mass peoy.\nX - o/200km s-1 in Eq. I and the M - o relation\nSMBH growth from accretion can thus be modelled\nby directly relating it to the observed QLF, We use the\nfroen Ref. (31], which correspouds to o, = 8.32 ± 0.05,\n6. =5.64±0.32, and te = 0.38. For the VDF, we choose\nbolometric QLF presented in Ref. 27, which is based on",
   "lines": [
     {
       "text": "3",
@@ -33,6 +33,7 @@
       "detection_score": 0.8960727453231812,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9945202618914557,
       "words": null
@@ -66,6 +67,7 @@
       "detection_score": 0.9683719873428345,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9763361935511254,
       "words": null
@@ -99,41 +101,9 @@
       "detection_score": 0.9478679299354553,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9710335150478585,
-      "words": null
-    },
-    {
-      "text": "represents an update to Ref. 22. The QLF is fit by a",
-      "quad": [
-        [
-          647.421,
-          68.73
-        ],
-        [
-          874.528,
-          67.383
-        ],
-        [
-          874.599,
-          79.408
-        ],
-        [
-          647.492,
-          80.756
-        ]
-      ],
-      "bbox": {
-        "x": 647.421,
-        "y": 67.383,
-        "width": 227.178,
-        "height": 13.373000000000005
-      },
-      "detection_score": 0.9245262145996094,
-      "vertical": false,
-      "rotated_180": false,
-      "script": "Latin",
-      "confidence": 0.9197563628470583,
       "words": null
     },
     {
@@ -165,8 +135,43 @@
       "detection_score": 0.9458967447280884,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8454693471580703,
+      "words": null
+    },
+    {
+      "text": "represents an update to Ref. 22. The QLF is fit by a",
+      "quad": [
+        [
+          647.421,
+          68.73
+        ],
+        [
+          874.528,
+          67.383
+        ],
+        [
+          874.599,
+          79.408
+        ],
+        [
+          647.492,
+          80.756
+        ]
+      ],
+      "bbox": {
+        "x": 647.421,
+        "y": 67.383,
+        "width": 227.178,
+        "height": 13.373000000000005
+      },
+      "detection_score": 0.9245262145996094,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9197563628470583,
       "words": null
     },
     {
@@ -198,6 +203,7 @@
       "detection_score": 0.9237638115882874,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9375095182996104,
       "words": null
@@ -231,6 +237,7 @@
       "detection_score": 0.9919325709342957,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9834128293148122,
       "words": null
@@ -264,41 +271,9 @@
       "detection_score": 0.9905678033828735,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9687603885022738,
-      "words": null
-    },
-    {
-      "text": "sfra",
-      "quad": [
-        [
-          718.315,
-          96.405
-        ],
-        [
-          733.601,
-          96.405
-        ],
-        [
-          733.601,
-          105.321
-        ],
-        [
-          718.315,
-          105.321
-        ]
-      ],
-      "bbox": {
-        "x": 718.315,
-        "y": 96.405,
-        "width": 15.285999999999945,
-        "height": 8.915999999999997
-      },
-      "detection_score": 0.9777715802192688,
-      "vertical": false,
-      "rotated_180": false,
-      "script": "Latin",
-      "confidence": 0.7921161379302913,
       "words": null
     },
     {
@@ -330,8 +305,43 @@
       "detection_score": 0.9667812585830688,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9644033849187236,
+      "words": null
+    },
+    {
+      "text": "sfra",
+      "quad": [
+        [
+          718.315,
+          96.405
+        ],
+        [
+          733.601,
+          96.405
+        ],
+        [
+          733.601,
+          105.321
+        ],
+        [
+          718.315,
+          105.321
+        ]
+      ],
+      "bbox": {
+        "x": 718.315,
+        "y": 96.405,
+        "width": 15.285999999999945,
+        "height": 8.915999999999997
+      },
+      "detection_score": 0.9777715802192688,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.7921161379302913,
       "words": null
     },
     {
@@ -363,6 +373,7 @@
       "detection_score": 0.9134842753410339,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.6035369494557957,
       "words": null
@@ -396,6 +407,7 @@
       "detection_score": 0.9713254570960999,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9018928982614947,
       "words": null
@@ -429,6 +441,7 @@
       "detection_score": 0.962619960308075,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8607414846113829,
       "words": null
@@ -462,6 +475,7 @@
       "detection_score": 0.9575155377388,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9710161681271671,
       "words": null
@@ -495,6 +509,7 @@
       "detection_score": 0.9508016109466553,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9895278750385081,
       "words": null
@@ -528,6 +543,7 @@
       "detection_score": 0.9212795495986938,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9362335918249844,
       "words": null
@@ -561,6 +577,7 @@
       "detection_score": 0.9911182522773743,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9572137807659921,
       "words": null
@@ -594,6 +611,7 @@
       "detection_score": 0.9702923893928528,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9267497609384004,
       "words": null
@@ -627,6 +645,7 @@
       "detection_score": 0.9424428939819336,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.950966615253471,
       "words": null
@@ -660,41 +679,9 @@
       "detection_score": 0.9631587266921997,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9648903708832003,
-      "words": null
-    },
-    {
-      "text": "Eq- Dean be integrated over time, which results in",
-      "quad": [
-        [
-          656.02,
-          166.501
-        ],
-        [
-          861.119,
-          165.041
-        ],
-        [
-          861.224,
-          179.861
-        ],
-        [
-          656.125,
-          181.321
-        ]
-      ],
-      "bbox": {
-        "x": 656.02,
-        "y": 165.041,
-        "width": 205.20400000000006,
-        "height": 16.28
-      },
-      "detection_score": 0.9545791745185852,
-      "vertical": false,
-      "rotated_180": false,
-      "script": "Latin",
-      "confidence": 0.9457937940961167,
       "words": null
     },
     {
@@ -726,8 +713,43 @@
       "detection_score": 0.9078373908996582,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9646034989254179,
+      "words": null
+    },
+    {
+      "text": "Eq- Dean be integrated over time, which results in",
+      "quad": [
+        [
+          656.02,
+          166.501
+        ],
+        [
+          861.119,
+          165.041
+        ],
+        [
+          861.224,
+          179.861
+        ],
+        [
+          656.125,
+          181.321
+        ]
+      ],
+      "bbox": {
+        "x": 656.02,
+        "y": 165.041,
+        "width": 205.20400000000006,
+        "height": 16.28
+      },
+      "detection_score": 0.9545791745185852,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9457937940961167,
       "words": null
     },
     {
@@ -759,8 +781,43 @@
       "detection_score": 0.9477934837341309,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.7336773628883402,
+      "words": null
+    },
+    {
+      "text": "(4)",
+      "quad": [
+        [
+          622.093,
+          179.067
+        ],
+        [
+          634.367,
+          179.067
+        ],
+        [
+          634.367,
+          192.693
+        ],
+        [
+          622.093,
+          192.693
+        ]
+      ],
+      "bbox": {
+        "x": 622.093,
+        "y": 179.067,
+        "width": 12.274000000000001,
+        "height": 13.626000000000005
+      },
+      "detection_score": 0.8921540379524231,
+      "vertical": true,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9948106666772168,
       "words": null
     },
     {
@@ -792,6 +849,7 @@
       "detection_score": 0.9047785997390747,
       "vertical": false,
       "rotated_180": true,
+      "rotation_degrees": 180,
       "script": "CJK",
       "confidence": 0.3411525238683846,
       "words": null
@@ -825,6 +883,7 @@
       "detection_score": 0.8966071605682373,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9044062216674889,
       "words": null
@@ -858,6 +917,7 @@
       "detection_score": 0.9044647216796875,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.4067898130815855,
       "words": null
@@ -891,6 +951,7 @@
       "detection_score": 0.8975433111190796,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.7798534988726579,
       "words": null
@@ -924,6 +985,7 @@
       "detection_score": 0.9551669955253601,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9316908309508368,
       "words": null
@@ -957,6 +1019,7 @@
       "detection_score": 0.9571628570556641,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8742168138077138,
       "words": null
@@ -990,6 +1053,7 @@
       "detection_score": 0.9069461226463318,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9207573545781269,
       "words": null
@@ -1023,41 +1087,9 @@
       "detection_score": 0.9521641135215759,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9749521368826254,
-      "words": null
-    },
-    {
-      "text": "must equal the accreted mass, We model the present-day",
-      "quad": [
-        [
-          647.488,
-          274.494
-        ],
-        [
-          873.78,
-          274.494
-        ],
-        [
-          873.78,
-          287.232
-        ],
-        [
-          647.488,
-          287.232
-        ]
-      ],
-      "bbox": {
-        "x": 647.488,
-        "y": 274.494,
-        "width": 226.29199999999992,
-        "height": 12.738
-      },
-      "detection_score": 0.9936907887458801,
-      "vertical": false,
-      "rotated_180": false,
-      "script": "Latin",
-      "confidence": 0.9790233423094379,
       "words": null
     },
     {
@@ -1089,8 +1121,43 @@
       "detection_score": 0.9464339017868042,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9556310974803676,
+      "words": null
+    },
+    {
+      "text": "must equal the accreted mass, We model the present-day",
+      "quad": [
+        [
+          647.488,
+          274.494
+        ],
+        [
+          873.78,
+          274.494
+        ],
+        [
+          873.78,
+          287.232
+        ],
+        [
+          647.488,
+          287.232
+        ]
+      ],
+      "bbox": {
+        "x": 647.488,
+        "y": 274.494,
+        "width": 226.29199999999992,
+        "height": 12.738
+      },
+      "detection_score": 0.9936907887458801,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9790233423094379,
       "words": null
     },
     {
@@ -1122,6 +1189,7 @@
       "detection_score": 0.933256983757019,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8976414416867432,
       "words": null
@@ -1155,6 +1223,7 @@
       "detection_score": 0.8780583739280701,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8690898558414826,
       "words": null
@@ -1188,41 +1257,9 @@
       "detection_score": 0.8117595314979553,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.6803421145166678,
-      "words": null
-    },
-    {
-      "text": "The present-day SMBH mass function can be esti-",
-      "quad": [
-        [
-          656.761,
-          306.226
-        ],
-        [
-          874.861,
-          304.214
-        ],
-        [
-          874.996,
-          318.751
-        ],
-        [
-          656.895,
-          320.763
-        ]
-      ],
-      "bbox": {
-        "x": 656.761,
-        "y": 304.214,
-        "width": 218.235,
-        "height": 16.548999999999978
-      },
-      "detection_score": 0.920865535736084,
-      "vertical": false,
-      "rotated_180": false,
-      "script": "Latin",
-      "confidence": 0.9686816732202893,
       "words": null
     },
     {
@@ -1254,8 +1291,43 @@
       "detection_score": 0.8967686295509338,
       "vertical": false,
       "rotated_180": true,
+      "rotation_degrees": 180,
       "script": "CJK",
       "confidence": 0.5467102943378368,
+      "words": null
+    },
+    {
+      "text": "The present-day SMBH mass function can be esti-",
+      "quad": [
+        [
+          656.761,
+          306.226
+        ],
+        [
+          874.861,
+          304.214
+        ],
+        [
+          874.996,
+          318.751
+        ],
+        [
+          656.895,
+          320.763
+        ]
+      ],
+      "bbox": {
+        "x": 656.761,
+        "y": 304.214,
+        "width": 218.235,
+        "height": 16.548999999999978
+      },
+      "detection_score": 0.920865535736084,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9686816732202893,
       "words": null
     },
     {
@@ -1287,41 +1359,9 @@
       "detection_score": 0.926690936088562,
       "vertical": false,
       "rotated_180": true,
+      "rotation_degrees": 180,
       "script": "Latin",
       "confidence": 0.5141140492341031,
-      "words": null
-    },
-    {
-      "text": "and properties of the host galaxy (say, property X) and",
-      "quad": [
-        [
-          646.494,
-          325.857
-        ],
-        [
-          873.5,
-          325.857
-        ],
-        [
-          873.5,
-          339.232
-        ],
-        [
-          646.494,
-          339.232
-        ]
-      ],
-      "bbox": {
-        "x": 646.494,
-        "y": 325.857,
-        "width": 227.00599999999997,
-        "height": 13.375
-      },
-      "detection_score": 0.9898110628128052,
-      "vertical": false,
-      "rotated_180": false,
-      "script": "Latin",
-      "confidence": 0.9718715854211107,
       "words": null
     },
     {
@@ -1353,41 +1393,43 @@
       "detection_score": 0.9546696543693542,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.987978313749603,
       "words": null
     },
     {
-      "text": "galaxy catalogs, which give dn/dX. The scaling relation",
+      "text": "and properties of the host galaxy (say, property X) and",
       "quad": [
         [
-          647.406,
-          337.896
+          646.494,
+          325.857
         ],
         [
-          874.148,
-          336.261
+          873.5,
+          325.857
         ],
         [
-          874.249,
-          350.186
+          873.5,
+          339.232
         ],
         [
-          647.506,
-          351.821
+          646.494,
+          339.232
         ]
       ],
       "bbox": {
-        "x": 647.406,
-        "y": 336.261,
-        "width": 226.84300000000007,
-        "height": 15.560000000000002
+        "x": 646.494,
+        "y": 325.857,
+        "width": 227.00599999999997,
+        "height": 13.375
       },
-      "detection_score": 0.8919551968574524,
+      "detection_score": 0.9898110628128052,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
-      "confidence": 0.9825943172296104,
+      "confidence": 0.9718715854211107,
       "words": null
     },
     {
@@ -1419,8 +1461,43 @@
       "detection_score": 0.9864398837089539,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9683377866162157,
+      "words": null
+    },
+    {
+      "text": "galaxy catalogs, which give dn/dX. The scaling relation",
+      "quad": [
+        [
+          647.406,
+          337.896
+        ],
+        [
+          874.148,
+          336.261
+        ],
+        [
+          874.249,
+          350.186
+        ],
+        [
+          647.506,
+          351.821
+        ]
+      ],
+      "bbox": {
+        "x": 647.406,
+        "y": 336.261,
+        "width": 226.84300000000007,
+        "height": 15.560000000000002
+      },
+      "detection_score": 0.8919551968574524,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9825943172296104,
       "words": null
     },
     {
@@ -1452,6 +1529,7 @@
       "detection_score": 0.9390311241149902,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9741374908214603,
       "words": null
@@ -1485,6 +1563,7 @@
       "detection_score": 0.9238400459289551,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8617451286595412,
       "words": null
@@ -1518,6 +1597,7 @@
       "detection_score": 0.8906804919242859,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9684895845297905,
       "words": null
@@ -1551,6 +1631,7 @@
       "detection_score": 0.9661874175071716,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.676097486241485,
       "words": null
@@ -1584,6 +1665,7 @@
       "detection_score": 0.9380332827568054,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9944417255758073,
       "words": null
@@ -1617,41 +1699,9 @@
       "detection_score": 0.9259400367736816,
       "vertical": false,
       "rotated_180": true,
+      "rotation_degrees": 180,
       "script": "Latin",
       "confidence": 0.5219489250402382,
-      "words": null
-    },
-    {
-      "text": "€",
-      "quad": [
-        [
-          622.125,
-          379.498
-        ],
-        [
-          633.393,
-          380.04
-        ],
-        [
-          632.795,
-          392.472
-        ],
-        [
-          621.526,
-          391.93
-        ]
-      ],
-      "bbox": {
-        "x": 621.526,
-        "y": 379.498,
-        "width": 11.867000000000075,
-        "height": 12.97399999999999
-      },
-      "detection_score": 0.8862717151641846,
-      "vertical": true,
-      "rotated_180": false,
-      "script": "Latin",
-      "confidence": 0.2884372876200436,
       "words": null
     },
     {
@@ -1683,6 +1733,7 @@
       "detection_score": 0.9576964974403381,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9608556895507525,
       "words": null
@@ -1716,6 +1767,7 @@
       "detection_score": 0.9318045377731323,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9807248627123578,
       "words": null
@@ -1749,8 +1801,43 @@
       "detection_score": 0.8609965443611145,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.5962192576597746,
+      "words": null
+    },
+    {
+      "text": "(8)",
+      "quad": [
+        [
+          622.093,
+          402.58
+        ],
+        [
+          632.907,
+          402.58
+        ],
+        [
+          632.907,
+          415.933
+        ],
+        [
+          622.093,
+          415.933
+        ]
+      ],
+      "bbox": {
+        "x": 622.093,
+        "y": 402.58,
+        "width": 10.814000000000078,
+        "height": 13.353000000000009
+      },
+      "detection_score": 0.8934612274169922,
+      "vertical": true,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9870787016635773,
       "words": null
     },
     {
@@ -1782,6 +1869,7 @@
       "detection_score": 0.8864867687225342,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9802745850768866,
       "words": null
@@ -1815,6 +1903,7 @@
       "detection_score": 0.9264644980430603,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8369305426276927,
       "words": null
@@ -1848,6 +1937,7 @@
       "detection_score": 0.9141117930412292,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9918355431242801,
       "words": null
@@ -1881,6 +1971,7 @@
       "detection_score": 0.9650319218635559,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9773410394784012,
       "words": null
@@ -1914,6 +2005,7 @@
       "detection_score": 0.9501180648803711,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9468705502819246,
       "words": null
@@ -1947,6 +2039,7 @@
       "detection_score": 0.9595628380775452,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9703750805708552,
       "words": null
@@ -1980,6 +2073,7 @@
       "detection_score": 0.9900493621826172,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9746723176172256,
       "words": null
@@ -2013,6 +2107,7 @@
       "detection_score": 0.9701663851737976,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.956177507762722,
       "words": null
@@ -2046,41 +2141,9 @@
       "detection_score": 0.940004289150238,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.968545730760936,
-      "words": null
-    },
-    {
-      "text": "(doP(log10 Mf|log1ø)dn",
-      "quad": [
-        [
-          714.798,
-          486.456
-        ],
-        [
-          825.587,
-          481.951
-        ],
-        [
-          826.262,
-          498.55
-        ],
-        [
-          715.473,
-          503.054
-        ]
-      ],
-      "bbox": {
-        "x": 714.798,
-        "y": 481.951,
-        "width": 111.46399999999994,
-        "height": 21.102999999999952
-      },
-      "detection_score": 0.9274926781654358,
-      "vertical": false,
-      "rotated_180": false,
-      "script": "Latin",
-      "confidence": 0.6210304195931036,
       "words": null
     },
     {
@@ -2112,74 +2175,43 @@
       "detection_score": 0.8908568024635315,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9749230150044726,
       "words": null
     },
     {
-      "text": "(CT)",
+      "text": "(doP(log10 Mf|log1ø)dn",
       "quad": [
         [
-          852.405,
-          491.131
+          714.798,
+          486.456
         ],
         [
-          874.137,
-          491.131
+          825.587,
+          481.951
         ],
         [
-          874.137,
-          504.506
+          826.262,
+          498.55
         ],
         [
-          852.405,
-          504.506
+          715.473,
+          503.054
         ]
       ],
       "bbox": {
-        "x": 852.405,
-        "y": 491.131,
-        "width": 21.73199999999997,
-        "height": 13.375
+        "x": 714.798,
+        "y": 481.951,
+        "width": 111.46399999999994,
+        "height": 21.102999999999952
       },
-      "detection_score": 0.907183825969696,
-      "vertical": false,
-      "rotated_180": true,
-      "script": "Latin",
-      "confidence": 0.7923272679267302,
-      "words": null
-    },
-    {
-      "text": "b(M)=",
-      "quad": [
-        [
-          670.494,
-          490.494
-        ],
-        [
-          719.054,
-          490.494
-        ],
-        [
-          719.054,
-          505.958
-        ],
-        [
-          670.494,
-          505.958
-        ]
-      ],
-      "bbox": {
-        "x": 670.494,
-        "y": 490.494,
-        "width": 48.559999999999945,
-        "height": 15.463999999999999
-      },
-      "detection_score": 0.8734148144721985,
+      "detection_score": 0.9274926781654358,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
-      "confidence": 0.8360100167245114,
+      "confidence": 0.6210304195931036,
       "words": null
     },
     {
@@ -2211,8 +2243,77 @@
       "detection_score": 0.9733783006668091,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.980303846972351,
+      "words": null
+    },
+    {
+      "text": "b(M)=",
+      "quad": [
+        [
+          670.494,
+          490.494
+        ],
+        [
+          719.054,
+          490.494
+        ],
+        [
+          719.054,
+          505.958
+        ],
+        [
+          670.494,
+          505.958
+        ]
+      ],
+      "bbox": {
+        "x": 670.494,
+        "y": 490.494,
+        "width": 48.559999999999945,
+        "height": 15.463999999999999
+      },
+      "detection_score": 0.8734148144721985,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.8360100167245114,
+      "words": null
+    },
+    {
+      "text": "(13)",
+      "quad": [
+        [
+          852.405,
+          491.131
+        ],
+        [
+          874.137,
+          491.131
+        ],
+        [
+          874.137,
+          504.506
+        ],
+        [
+          852.405,
+          504.506
+        ]
+      ],
+      "bbox": {
+        "x": 852.405,
+        "y": 491.131,
+        "width": 21.73199999999997,
+        "height": 13.375
+      },
+      "detection_score": 0.907183825969696,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9951489495221656,
       "words": null
     },
     {
@@ -2244,6 +2345,7 @@
       "detection_score": 0.9274449348449707,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9095142888356741,
       "words": null
@@ -2277,6 +2379,7 @@
       "detection_score": 0.9629833102226257,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9493369242903016,
       "words": null
@@ -2310,6 +2413,7 @@
       "detection_score": 0.987747073173523,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9660727330486683,
       "words": null
@@ -2343,6 +2447,7 @@
       "detection_score": 0.9908787608146667,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9703671861666169,
       "words": null
@@ -2376,6 +2481,7 @@
       "detection_score": 0.9077833890914917,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8909484071467284,
       "words": null
@@ -2409,8 +2515,43 @@
       "detection_score": 0.9303618669509888,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9222313859100413,
+      "words": null
+    },
+    {
+      "text": "1",
+      "quad": [
+        [
+          749.22,
+          533.679
+        ],
+        [
+          765.143,
+          533.679
+        ],
+        [
+          765.143,
+          543.411
+        ],
+        [
+          749.22,
+          543.411
+        ]
+      ],
+      "bbox": {
+        "x": 749.22,
+        "y": 533.679,
+        "width": 15.923000000000002,
+        "height": 9.731999999999971
+      },
+      "detection_score": 0.8392103910446167,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9653529486583989,
       "words": null
     },
     {
@@ -2442,6 +2583,7 @@
       "detection_score": 0.9739875793457031,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.6579057463141209,
       "words": null
@@ -2475,6 +2617,7 @@
       "detection_score": 0.9879534244537354,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9402091045406301,
       "words": null
@@ -2508,6 +2651,7 @@
       "detection_score": 0.9646297097206116,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9709344694968648,
       "words": null
@@ -2541,6 +2685,7 @@
       "detection_score": 0.8985936045646667,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.6337362690234948,
       "words": null
@@ -2574,6 +2719,7 @@
       "detection_score": 0.9847127199172974,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.971953682392436,
       "words": null
@@ -2607,6 +2753,7 @@
       "detection_score": 0.9827388525009155,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.7818017607835673,
       "words": null
@@ -2640,41 +2787,9 @@
       "detection_score": 0.908817708492279,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9525956193774751,
-      "words": null
-    },
-    {
-      "text": "(14)",
-      "quad": [
-        [
-          855.31,
-          585.042
-        ],
-        [
-          873.5,
-          585.042
-        ],
-        [
-          873.5,
-          597.958
-        ],
-        [
-          855.31,
-          597.958
-        ]
-      ],
-      "bbox": {
-        "x": 855.31,
-        "y": 585.042,
-        "width": 18.190000000000055,
-        "height": 12.91599999999994
-      },
-      "detection_score": 0.8929915428161621,
-      "vertical": false,
-      "rotated_180": false,
-      "script": "Latin",
-      "confidence": 0.9921662226052989,
       "words": null
     },
     {
@@ -2706,8 +2821,43 @@
       "detection_score": 0.933361828327179,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9733077606760101,
+      "words": null
+    },
+    {
+      "text": "(14)",
+      "quad": [
+        [
+          855.31,
+          585.042
+        ],
+        [
+          873.5,
+          585.042
+        ],
+        [
+          873.5,
+          597.958
+        ],
+        [
+          855.31,
+          597.958
+        ]
+      ],
+      "bbox": {
+        "x": 855.31,
+        "y": 585.042,
+        "width": 18.190000000000055,
+        "height": 12.91599999999994
+      },
+      "detection_score": 0.8929915428161621,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9921662226052989,
       "words": null
     },
     {
@@ -2739,6 +2889,7 @@
       "detection_score": 0.988158643245697,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9637076174590626,
       "words": null
@@ -2772,6 +2923,7 @@
       "detection_score": 0.928585410118103,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8541072262632594,
       "words": null
@@ -2805,8 +2957,43 @@
       "detection_score": 0.9523791670799255,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.976753678085768,
+      "words": null
+    },
+    {
+      "text": "mass earlier on.",
+      "quad": [
+        [
+          408.646,
+          616.004
+        ],
+        [
+          472.938,
+          615.301
+        ],
+        [
+          473.068,
+          627.178
+        ],
+        [
+          408.776,
+          627.881
+        ]
+      ],
+      "bbox": {
+        "x": 408.646,
+        "y": 615.301,
+        "width": 64.42199999999997,
+        "height": 12.579999999999927
+      },
+      "detection_score": 0.994503378868103,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9459540124897678,
       "words": null
     },
     {
@@ -2838,6 +3025,7 @@
       "detection_score": 0.9910612106323242,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9221864172796651,
       "words": null
@@ -2871,41 +3059,9 @@
       "detection_score": 0.9741327166557312,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8989736653060407,
-      "words": null
-    },
-    {
-      "text": "mass earlier on.",
-      "quad": [
-        [
-          408.646,
-          616.004
-        ],
-        [
-          472.938,
-          615.301
-        ],
-        [
-          473.068,
-          627.178
-        ],
-        [
-          408.776,
-          627.881
-        ]
-      ],
-      "bbox": {
-        "x": 408.646,
-        "y": 615.301,
-        "width": 64.42199999999997,
-        "height": 12.579999999999927
-      },
-      "detection_score": 0.994503378868103,
-      "vertical": false,
-      "rotated_180": false,
-      "script": "Latin",
-      "confidence": 0.9459540124897678,
       "words": null
     },
     {
@@ -2937,6 +3093,7 @@
       "detection_score": 0.8907871842384338,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8734641050128413,
       "words": null
@@ -2970,41 +3127,9 @@
       "detection_score": 0.9079475998878479,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9808748643028723,
-      "words": null
-    },
-    {
-      "text": "froen Ref. (31], which correspouds to o, = 8.32 ± 0.05,",
-      "quad": [
-        [
-          647.549,
-          636.405
-        ],
-        [
-          872.779,
-          635.697
-        ],
-        [
-          872.822,
-          649.183
-        ],
-        [
-          647.591,
-          649.891
-        ]
-      ],
-      "bbox": {
-        "x": 647.549,
-        "y": 635.697,
-        "width": 225.27300000000002,
-        "height": 14.19399999999996
-      },
-      "detection_score": 0.9323650002479553,
-      "vertical": false,
-      "rotated_180": false,
-      "script": "Latin",
-      "confidence": 0.8451296737807904,
       "words": null
     },
     {
@@ -3036,8 +3161,43 @@
       "detection_score": 0.9255191683769226,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9444748508938962,
+      "words": null
+    },
+    {
+      "text": "froen Ref. (31], which correspouds to o, = 8.32 ± 0.05,",
+      "quad": [
+        [
+          647.549,
+          636.405
+        ],
+        [
+          872.779,
+          635.697
+        ],
+        [
+          872.822,
+          649.183
+        ],
+        [
+          647.591,
+          649.891
+        ]
+      ],
+      "bbox": {
+        "x": 647.549,
+        "y": 635.697,
+        "width": 225.27300000000002,
+        "height": 14.19399999999996
+      },
+      "detection_score": 0.9323650002479553,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.8451296737807904,
       "words": null
     },
     {
@@ -3069,6 +3229,7 @@
       "detection_score": 0.9841077327728271,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8586338065682887,
       "words": null
@@ -3102,6 +3263,7 @@
       "detection_score": 0.9891230463981628,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9523862405850266,
       "words": null
@@ -3109,7 +3271,7 @@
   ],
   "width": 1280,
   "height": 720,
-  "elapsed_seconds": 0.991951167,
+  "elapsed_seconds": 1.39302025,
   "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
   "warnings": [
     "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied.",

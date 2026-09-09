@@ -42,6 +42,7 @@ Go の `Result` は JSON tag を持ち、`json.NewEncoder(writer).Encode(result)
       "detection_score": 0.9947,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "words": null
     }
   ],
@@ -60,6 +61,10 @@ Go の `Result` は JSON tag を持ち、`json.NewEncoder(writer).Encode(result)
 `detection_score` は検出モデルの独立したスコアです。`words` は `null` のままで、行単位の枠を提供しますが単語・文字単位の座標アラインメントは未実装です。`warnings` には元の拒否・校正モデルを使用しないことなどの実行上の制限を保持します。
 
 `Detect` は `coordinate_space`、`regions`、画像サイズ、処理時間、モデルハッシュを返し、各 region は `quad`、`bbox`、`score`、`vertical` を含みます。`RecognizeLine` は `text`、`confidence`、`confidence_method`、`script`、`rotated_180`、クロップ画像サイズ、処理時間、モデルハッシュを返します。検出を行わないため、行枠や検出スコアは含みません。
+
+短い領域では、同じページ内の信頼できる長いテキストの方向を参照し、単独の数字を縦書きと誤判定して回転したり、`6/9` を反転したりすることを抑えます。文字体系が未確定の場合は、検出スコアが条件を満たし、Latin/CJK 両認識器の短い数字の読みが一致して確認スコアを満たす場合に限って補完します。ページの方向情報がない単独の短い数字では、反転の根拠が弱い場合は入力方向を保ちます。
+
+`rotation_degrees` は、認識前の補正済みクロップに適用した**時計回り**の回転角度 `0/90/180/270` です。認識文字を `quad` に戻して描画する際は逆変換を使用します。`vertical` は検出方向、`rotated_180` は半回転の互換情報を保持します。短い領域の実際の補正には `rotation_degrees` を使用してください。
 
 [Go](go.md) · [C/C++](native.md) · [Python](python.md) · [Android](android.md)
 

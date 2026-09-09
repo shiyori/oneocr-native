@@ -30,6 +30,27 @@ def command(executable, *args, work, env):
     return result.stdout
 
 
+def verify_table_result(result):
+    labels = json.loads((ROOT / "scripts/testdata/medal-table-numbers.json").read_text())
+    if len(result["lines"]) != 96:
+        raise RuntimeError("table regression: missing recognized cells")
+    cells = {}
+    for line in result["lines"]:
+        x = sum(p[0] for p in line["quad"]) / 4
+        y = sum(p[1] for p in line["quad"]) / 4
+        row = round((y - labels["row_origin"]) / labels["row_step"])
+        column = min(range(6), key=lambda i: abs(x - labels["column_centers"][i]))
+        if (row, column) in cells or not 0 <= row <= 15:
+            raise RuntimeError("table regression: duplicate or misplaced cell")
+        cells[row, column] = line["text"]
+        if line["rotation_degrees"] not in (0, 90, 180, 270):
+            raise RuntimeError("invalid crop rotation metadata")
+    for row, values in enumerate(labels["rows"], 1):
+        for column, expected in zip(labels["columns"], values):
+            if cells.get((row, column)) != str(expected):
+                raise RuntimeError(f"table regression at row {row}, column {column}: {cells.get((row, column))!r} != {expected}")
+
+
 def verify(dist: Path, runtime_cache: Path):
     target = current_platform()
     if not target.startswith("linux-"):
@@ -74,6 +95,9 @@ def verify(dist: Path, runtime_cache: Path):
                     for line in result["lines"]
                 )):
                     raise RuntimeError("incomplete recognition JSON line information")
+        table = work / "table.png"
+        shutil.copy2(ROOT / "testdata/paddleocr/720p-medal_table.png", table)
+        verify_table_result(json.loads(command(cli, "recognize", "--format", "json", table, work=work, env=env)))
         # Code users may obtain resources separately. Exercise the same installer
         # with just the command, model metadata and unmodified official ORT archive.
         installer_dir = root / "installer"

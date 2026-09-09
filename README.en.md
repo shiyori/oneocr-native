@@ -18,10 +18,10 @@ Use complete packages with the default model and runtime included. Core AAR is a
 
 ## Go integration
 
-For code integration, use `go get github.com/shiyori/oneocr-native@v0.1.2`; see the [Go guide](docs/en/go.md). Install the CLI with:
+For code integration, use `go get github.com/shiyori/oneocr-native@v0.1.3`; see the [Go guide](docs/en/go.md). Install the CLI with:
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
 oneocr install
 oneocr recognize image.png
 oneocr recognize --format json image.png
@@ -30,7 +30,7 @@ oneocr recognize --format json image.png
 ## Python
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.2/oneocr_native-0.1.2-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.3/oneocr_native-0.1.3-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 python -m oneocr_native recognize --format json image.png
@@ -38,7 +38,7 @@ python -m oneocr_native recognize --format json image.png
 
 ## Test results
 
-Actual OneOCR v0.1.2 output for four images from `testdata`. Only results with recognition confidence ≥ **0.80** and detection score ≥ **0.70** are shown. The left image adds boxes to the original; the right keeps the original image and overlays blue recognized text at the same positions, with a local light background for readability. Click either image for full resolution.
+Actual OneOCR v0.1.3 output for four images from `testdata`. Only results with recognition confidence ≥ **0.70** and detection score ≥ **0.70** are shown. The left image adds boxes to the original; the right keeps the original image and overlays blue recognized text at the same positions, with a local light background for readability. Click either image for full resolution.
 
 Each pair uses the same crop and coordinates. Outer whitespace is trimmed equally; recognized text is not manually corrected. Confidence scores are uncalibrated.
 
@@ -52,7 +52,7 @@ Each pair uses the same crop and coordinates. Outer whitespace is trimmed equall
 
 ### Photographed book
 
-46 / 48 nonempty recognition results shown.
+47 / 48 nonempty recognition results shown.
 
 | Original + boxes | Original + recognized text (blue) |
 |---|---|
@@ -60,7 +60,7 @@ Each pair uses the same crop and coordinates. Outer whitespace is trimmed equall
 
 ### Document with formulas
 
-76 / 94 nonempty recognition results shown.
+84 / 96 nonempty recognition results shown.
 
 | Original + boxes | Original + recognized text (blue) |
 |---|---|
@@ -68,7 +68,7 @@ Each pair uses the same crop and coordinates. Outer whitespace is trimmed equall
 
 ### Chinese table
 
-87 / 89 nonempty recognition results shown.
+96 / 96 nonempty recognition results shown.
 
 | Original + boxes | Original + recognized text (blue) |
 |---|---|

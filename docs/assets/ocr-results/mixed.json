@@ -33,6 +33,7 @@
       "detection_score": 0.9952182173728943,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "CJK",
       "confidence": 0.9991655387236036,
       "words": null
@@ -66,6 +67,7 @@
       "detection_score": 0.9770497679710388,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "CJK",
       "confidence": 0.9987732584983072,
       "words": null
@@ -99,6 +101,7 @@
       "detection_score": 0.9965842366218567,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "CJK",
       "confidence": 0.929403527297891,
       "words": null
@@ -132,6 +135,7 @@
       "detection_score": 0.9643396735191345,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9951057514349795,
       "words": null
@@ -165,6 +169,7 @@
       "detection_score": 0.9962245225906372,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "CJK",
       "confidence": 0.9966005336672791,
       "words": null
@@ -198,6 +203,7 @@
       "detection_score": 0.9814900755882263,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "CJK",
       "confidence": 0.9710621021727515,
       "words": null
@@ -205,7 +211,7 @@
   ],
   "width": 1280,
   "height": 720,
-  "elapsed_seconds": 0.241664709,
+  "elapsed_seconds": 0.265968375,
   "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
   "warnings": [
     "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."

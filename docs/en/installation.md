@@ -27,10 +27,10 @@ The complete Android AAR includes arm64-v8a / x86_64 and requires API 26+. Add i
 
 ### Go
 
-Run `go get github.com/shiyori/oneocr-native@v0.1.2` in your project, use `oneocr.Install` to prepare complete dependencies, then call `oneocr.Open`. For the command line:
+Run `go get github.com/shiyori/oneocr-native@v0.1.3` in your project, use `oneocr.Install` to prepare complete dependencies, then call `oneocr.Open`. For the command line:
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
 oneocr install
 oneocr recognize image.png
 oneocr recognize --format json image.png
@@ -41,7 +41,7 @@ oneocr recognize --format json image.png
 Python 3.11–3.13 uses the universal wheel. The preparation command supplies the model and any missing runtime:
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.2/oneocr_native-0.1.2-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.3/oneocr_native-0.1.3-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 python -m oneocr_native recognize --format json image.png

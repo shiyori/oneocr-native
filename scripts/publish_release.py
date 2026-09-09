@@ -160,6 +160,8 @@ Offline Chinese, Japanese, Korean and English OCR for Go, C, C++, Python and And
 - Windows x64, macOS ARM64, Linux x64/ARM64, Android ARM64/x86_64; Python 3.11–3.13.
 - Three operations: recognize, detect and recognize-line. File, memory and native pixel inputs are documented per language.
 - Structured JSON: `oneocr recognize --format json image.png` includes line quadrilaterals, bounding boxes, detection scores and uncalibrated CTC recognition confidence. Go/Python and C/C++/Android expose the same result fields.
+- Compact table cells use reliable page orientation and conservative Latin/CJK numeric agreement to recover omitted digits and avoid weak direction flips. The medal-table regression checks all 75 numeric cells; the README gallery displays 96 cells with recognition and detection confidence thresholds of 0.70.
+- Recognition JSON includes `rotation_degrees`, the clockwise correction actually applied to each rectified crop, for accurate text overlays.
 
 [简体中文](https://github.com/{REPOSITORY}/blob/{TAG}/README.md) · [English](https://github.com/{REPOSITORY}/blob/{TAG}/README.en.md) · [日本語](https://github.com/{REPOSITORY}/blob/{TAG}/README.ja.md)
 

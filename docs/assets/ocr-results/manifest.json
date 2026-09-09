@@ -1,5 +1,5 @@
 {
-  "recognition_confidence_min": 0.8,
+  "recognition_confidence_min": 0.7,
   "detection_score_min": 0.7,
   "confidence_method": "ctc_token_geometric_mean",
   "font_family": "Arial Unicode MS",
@@ -30,7 +30,7 @@
       "source": "testdata/paddleocr/720p-book.png",
       "source_sha256": "009492263d4c759a81f020f0351430fd35c0182fdca5aa4832d83e6704953950",
       "recognized_lines": 48,
-      "displayed_lines": 46,
+      "displayed_lines": 47,
       "crop": [
         72,
         0,
@@ -50,8 +50,8 @@
       "name": "formula",
       "source": "testdata/paddleocr/720p-doc_with_formula.png",
       "source_sha256": "4eebb48907a0da4961de648cbc43d20b0286540e220eb177b1b29ead1cd77810",
-      "recognized_lines": 94,
-      "displayed_lines": 76,
+      "recognized_lines": 96,
+      "displayed_lines": 84,
       "crop": [
         388,
         7,
@@ -71,8 +71,8 @@
       "name": "table",
       "source": "testdata/paddleocr/720p-medal_table.png",
       "source_sha256": "c965c88510d86123bd259db1ab6f02a868a88978cefeac0e09b6459f1f755810",
-      "recognized_lines": 89,
-      "displayed_lines": 87,
+      "recognized_lines": 96,
+      "displayed_lines": 96,
       "crop": [
         347,
         171,

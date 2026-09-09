@@ -33,7 +33,7 @@ Android には Android SDK、NDK 27 以上、JDK 17 以上、CMake が必要で�
 python scripts/build_sdk.py --target android --output dist/release --android-sdk /path/to/android-sdk --android-ndk /path/to/ndk
 ```
 
-`version.json` と一致するバージョンタグ（例：`v0.1.2`）を push すると `release-publish` が自動実行されます。Android 完全版/Core AAR、共通 Python パッケージ、各アーキテクチャの Linux 完全パッケージをビルドし、移動後の Linux パッケージのオフライン OCR と公式依存関係のインストール検証と内容・ライセンス・チェックサム検査を実行します。ドラフトへアップロードしてリモートの SHA-256 を照合した後、正式版として公開し Latest に設定します。各プラットフォームのビルド記録は同じソースコミットに結び付けられ、通常の CI 通過が必要です。ダウンロード文書は既定で `releases/latest` と `latest/download` を使います。
+`version.json` と一致するバージョンタグ（例：`v0.1.3`）を push すると `release-publish` が自動実行されます。Android 完全版/Core AAR、共通 Python パッケージ、各アーキテクチャの Linux 完全パッケージをビルドし、移動後の Linux パッケージのオフライン OCR と公式依存関係のインストール検証と内容・ライセンス・チェックサム検査を実行します。ドラフトへアップロードしてリモートの SHA-256 を照合した後、正式版として公開し Latest に設定します。各プラットフォームのビルド記録は同じソースコミットに結び付けられ、通常の CI 通過が必要です。ダウンロード文書は既定で `releases/latest` と `latest/download` を使います。
 
 拡張検証は Actions で `main` の `release-build` を手動実行するか、`gh workflow run release-build.yml --ref main` で起動します。完全な OCR 比較、ランタイム互換性、複数 Python バージョンの利用テスト、Android エミュレーターテストを含み、通常 CI や正式公開の前提条件ではありません。成功後、必要に応じて `python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` でレポートを取得できます。公開失敗時は `main` から `release-publish` を手動実行し、`tag` に元のバージョンタグを指定します。現在の公開スクリプトで元のタグのソースを処理し、Go モジュールのタグは変更しません。公開済みで内容が異なる制品は上書きしません。 ビルドが成功し公開処理のみ失敗した場合は、`build_run_id` に元の実行 ID を指定すると、制品を再利用して検証と公開だけを再試行できます。
 

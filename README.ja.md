@@ -18,10 +18,10 @@
 
 ## Go の導入
 
-コードからの利用は `go get github.com/shiyori/oneocr-native@v0.1.2` を使用します。[Go ガイド](docs/ja/go.md)を参照してください。CLI は次の方法で導入します。
+コードからの利用は `go get github.com/shiyori/oneocr-native@v0.1.3` を使用します。[Go ガイド](docs/ja/go.md)を参照してください。CLI は次の方法で導入します。
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
 oneocr install
 oneocr recognize image.png
 oneocr recognize --format json image.png
@@ -30,7 +30,7 @@ oneocr recognize --format json image.png
 ## Python
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.2/oneocr_native-0.1.2-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.3/oneocr_native-0.1.3-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 python -m oneocr_native recognize --format json image.png
@@ -38,13 +38,13 @@ python -m oneocr_native recognize --format json image.png
 
 ## テスト結果
 
-`testdata` の4枚に対する OneOCR v0.1.2 の実際の出力です。認識信頼度 ≥ **0.80**、検出スコア ≥ **0.70** の結果のみ表示します。左は元画像に枠を描画し、右は元画像の同じ位置に青色の認識文字を重ねています。読みやすいよう文字部分に淡い背景を付けています。画像をクリックすると高解像度で確認できます。
+`testdata` の4枚に対する OneOCR v0.1.3 の実際の出力です。認識信頼度 ≥ **0.70**、検出スコア ≥ **0.70** の結果のみ表示します。左は元画像に枠を描画し、右は元画像の同じ位置に青色の認識文字を重ねています。読みやすいよう文字部分に淡い背景を付けています。画像をクリックすると高解像度で確認できます。
 
 左右で座標と切り出し範囲は共通です。周囲の余白のみ同じ範囲で除去し、認識文字は手動修正していません。信頼度は未校正のモデルスコアです。
 
 ### 中日韓英の混在
 
-空でない認識結果 6 件中 6 件を表示.
+空でない認識結果 6 件中 6 件を表示。
 
 | 元画像 + 検出枠 | 元画像 + 認識文字（青色） |
 |---|---|
@@ -52,7 +52,7 @@ python -m oneocr_native recognize --format json image.png
 
 ### 書籍の実写
 
-空でない認識結果 48 件中 46 件を表示.
+空でない認識結果 48 件中 47 件を表示。
 
 | 元画像 + 検出枠 | 元画像 + 認識文字（青色） |
 |---|---|
@@ -60,7 +60,7 @@ python -m oneocr_native recognize --format json image.png
 
 ### 数式を含む文書
 
-空でない認識結果 94 件中 76 件を表示.
+空でない認識結果 96 件中 84 件を表示。
 
 | 元画像 + 検出枠 | 元画像 + 認識文字（青色） |
 |---|---|
@@ -68,7 +68,7 @@ python -m oneocr_native recognize --format json image.png
 
 ### 中国語の表
 
-空でない認識結果 89 件中 87 件を表示.
+空でない認識結果 96 件中 96 件を表示。
 
 | 元画像 + 検出枠 | 元画像 + 認識文字（青色） |
 |---|---|

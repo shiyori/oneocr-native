@@ -6,7 +6,7 @@
 
 ```sh
 go mod init example.com/ocr-app
-go get github.com/shiyori/oneocr-native@v0.1.2
+go get github.com/shiyori/oneocr-native@v0.1.3
 ```
 
 已有 `go.mod` 时跳过 `go mod init`。
@@ -43,7 +43,7 @@ go run .
 通过 Go 安装命令后，可在任意目录准备资源并识别图片：
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
 oneocr install
 oneocr recognize image.png
 oneocr recognize --format json image.png

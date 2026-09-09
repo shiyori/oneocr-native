@@ -25,8 +25,14 @@ SCALE = 2
 
 
 def text_patch(line: dict, width: int, height: int, font_path: Path) -> Image.Image:
-    vertical = line["vertical"] and height > width
-    w, h = (height, width) if vertical else (width, height)
+    rotation = line.get("rotation_degrees")
+    if rotation is None:
+        rotation = 270 if line["vertical"] and height > width else 0
+        if line["rotated_180"]:
+            rotation = (rotation + 180) % 360
+    if rotation not in (0, 90, 180, 270):
+        raise ValueError("unsupported crop correction")
+    w, h = (height, width) if rotation % 180 else (width, height)
     font = ImageFont.truetype(str(font_path), max(6, round(h * 0.85)))
     bounds = font.getbbox(line["text"])
     patch = Image.new(
@@ -45,10 +51,13 @@ def text_patch(line: dict, width: int, height: int, font_path: Path) -> Image.Im
     tile.alpha_composite(
         patch, (max(0, (w - patch.width) // 2), max(0, (h - patch.height) // 2))
     )
-    if vertical:
-        tile = tile.transpose(Image.Transpose.ROTATE_270)
-    if line["rotated_180"]:
-        tile = tile.transpose(Image.Transpose.ROTATE_180)
+    inverse = {
+        90: Image.Transpose.ROTATE_90,
+        180: Image.Transpose.ROTATE_180,
+        270: Image.Transpose.ROTATE_270,
+    }
+    if rotation:
+        tile = tile.transpose(inverse[rotation])
     return tile
 
 
@@ -183,7 +192,7 @@ def main():
         help="local font supporting the sample writing systems",
     )
     parser.add_argument("--output", type=Path, default=ROOT / "docs/assets/ocr-results")
-    parser.add_argument("--min-confidence", type=float, default=0.80)
+    parser.add_argument("--min-confidence", type=float, default=0.70)
     parser.add_argument("--min-detection-score", type=float, default=0.70)
     render(parser.parse_args())
 

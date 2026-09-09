@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from threading import RLock
@@ -12,8 +13,17 @@ from PIL import Image, ImageOps
 from .config import CLASSIFIER_SCRIPTS
 from .detection import Detector
 from .errors import OneOcrError, UnsupportedModelError
-from .geometry import reading_order, rectify
+from .geometry import ordered_quad, reading_order, rectify
 from .recognition import CONFIDENCE_METHOD, Alphabet, Recognition, Recognizer, normalize_line
+from .routing import (
+    ascii_digits,
+    compact_quad,
+    numeric_consensus,
+    orientation_turns,
+    page_orientation,
+    quad_dimensions,
+    rotate_quarter,
+)
 from .runtime import session
 
 
@@ -28,6 +38,7 @@ class OcrLine:
     detection_score: float = 0.0
     vertical: bool = False
     rotated_180: bool = False
+    rotation_degrees: int = 0
 
 
 @dataclass(frozen=True)
@@ -79,9 +90,19 @@ class LineResult:
     confidence_method: str = CONFIDENCE_METHOD
     width: int = 0
     height: int = 0
+    rotation_degrees: int = 0
 
     def to_dict(self) -> dict:
         return asdict(self)
+
+
+@dataclass
+class _RegionRecognition:
+    line: OcrLine | None = None
+    recognition: Recognition = field(default_factory=Recognition)
+    script: str | None = None
+    angle: float = 0.0
+    anchor: bool = False
 
 
 def _quad_bounds(quad: list[list[float]]) -> dict[str, float]:
@@ -211,7 +232,71 @@ class OneOcrEngine:
         scores = values[0].reshape(-1)
         if len(scores) != len(CLASSIFIER_SCRIPTS) or not np.isfinite(scores).all():
             raise UnsupportedModelError("unexpected script classifier output")
-        return CLASSIFIER_SCRIPTS[int(scores.argmax())], float(values[1].reshape(-1)[0])
+        flip = values[1].reshape(-1)
+        if len(flip) != 1 or not np.isfinite(flip).all():
+            raise UnsupportedModelError("unexpected flip classifier output")
+        return CLASSIFIER_SCRIPTS[int(scores.argmax())], float(flip[0])
+
+    def _unknown_numeral(self, crop: np.ndarray) -> tuple[Recognition, str | None]:
+        if not {"Latin", "CJK"} <= self.characters.keys():
+            return Recognition(), None
+        latin = self._recognizer("Latin").run_scored(crop)
+        if not ascii_digits(latin.text) or latin.confidence is None or latin.confidence < 0.90:
+            return Recognition(), None
+        cjk = self._recognizer("CJK").run_scored(crop)
+        return (latin, "Latin") if numeric_consensus(latin, cjk) else (Recognition(), None)
+
+    def _recognize_region(
+        self, rgb: np.ndarray, detection, script: str | None, prior: float | None
+    ) -> _RegionRecognition:
+        compact = compact_quad(detection.quad)
+        width, height = quad_dimensions(detection.quad)
+        use_vertical = detection.vertical and (
+            not compact or (prior is None and max(width, height) > 1.5 * min(width, height))
+        )
+        crop = rectify(rgb, detection.quad, vertical=use_vertical)
+        quarter = int(use_vertical and max(2, round(height)) > max(2, round(width)))
+        if compact and prior is not None:
+            quarter = orientation_turns(detection.quad, prior)
+            crop = rotate_quarter(crop, quarter)
+        predicted, flip = self._classify(crop)
+        selected = script or predicted
+        if flip < 0 and (not compact or abs(flip) >= 2):
+            crop = cv2.rotate(crop, cv2.ROTATE_180)
+            quarter = (quarter + 2) % 4
+        result = _RegionRecognition(script=selected)
+        recognized = Recognition()
+        if selected is None:
+            if compact and detection.score >= 0.80:
+                recognized, selected = self._unknown_numeral(crop)
+        elif selected in self.characters:
+            recognized = self._recognizer(selected).run_scored(crop)
+        if not recognized.text:
+            return result
+        quad = detection.quad.astype(float).round(3).tolist()
+        result.line = OcrLine(
+            recognized.text,
+            quad,
+            selected,
+            confidence=recognized.confidence,
+            bbox=_quad_bounds(quad),
+            detection_score=float(detection.score),
+            vertical=bool(detection.vertical),
+            rotated_180=quarter >= 2,
+            rotation_degrees=(360 - quarter * 90) % 360,
+        )
+        result.recognition = recognized
+        q = ordered_quad(detection.quad)
+        edge = q[1] - q[0]
+        result.angle = math.atan2(float(edge[1]), float(edge[0])) + quarter * math.pi / 2
+        result.anchor = (
+            not compact
+            and abs(flip) >= 2
+            and len(recognized.text) >= 3
+            and recognized.confidence is not None
+            and recognized.confidence >= 0.80
+        )
+        return result
 
     def recognize(self, image: str | Path | Image.Image, *, script: str | None = None) -> OcrResult:
         """Recognize an image; optional script overrides automatic script selection.
@@ -265,9 +350,10 @@ class OneOcrEngine:
             start = perf_counter()
             pil, crop = _load_image(image)
             rotated = False
+            compact = max(crop.shape[:2]) <= 2 * min(crop.shape[:2])
             if not script:
                 script, flip = self._classify(crop)
-                if flip < 0:
+                if flip < 0 and (not compact or abs(flip) >= 2):
                     crop = cv2.rotate(crop, cv2.ROTATE_180)
                     rotated = True
             recognized = Recognition()
@@ -275,6 +361,8 @@ class OneOcrEngine:
                 if script not in self.characters:
                     raise ValueError(f"unavailable script {script!r}")
                 recognized = self._recognizer(script).run_scored(crop)
+            elif compact:
+                recognized, script = self._unknown_numeral(crop)
             return LineResult(
                 recognized.text,
                 script or "",
@@ -284,6 +372,7 @@ class OneOcrEngine:
                 confidence=recognized.confidence,
                 width=pil.width,
                 height=pil.height,
+                rotation_degrees=180 if rotated else 0,
             )
 
     def _recognize(self, image: str | Path | Image.Image, *, script: str | None) -> OcrResult:
@@ -299,44 +388,24 @@ class OneOcrEngine:
         quads = []
         angles = []
         unavailable = set()
-        for detection in detections:
-            crop = rectify(rgb, detection.quad, vertical=detection.vertical)
-            predicted, flip = self._classify(crop)
-            selected = script or predicted
-            if selected is None:
+        regions = [_RegionRecognition() for _ in detections]
+        for i, detection in enumerate(detections):
+            if not compact_quad(detection.quad):
+                regions[i] = self._recognize_region(rgb, detection, script, None)
+        prior = page_orientation([(r.angle, len(r.recognition.text)) for r in regions if r.anchor])
+        for i, detection in enumerate(detections):
+            if compact_quad(detection.quad):
+                regions[i] = self._recognize_region(rgb, detection, script, prior)
+            region = regions[i]
+            if region.line is None:
+                if region.script and region.script not in self.characters:
+                    unavailable.add(region.script)
                 continue
-            if selected not in self.characters:
-                unavailable.add(selected)
-                continue
-            if flip < 0:
-                crop = cv2.rotate(crop, cv2.ROTATE_180)
-            recognizer = self._recognizer(selected)
-            recognized = recognizer.run_scored(crop)
-            if not recognized.text:
-                continue
-            quad = detection.quad.astype(float).round(3).tolist()
-            lines.append(
-                OcrLine(
-                    recognized.text,
-                    quad,
-                    selected,
-                    confidence=recognized.confidence,
-                    bbox=_quad_bounds(quad),
-                    detection_score=float(detection.score),
-                    vertical=bool(detection.vertical),
-                    rotated_180=bool(flip < 0),
-                )
-            )
-            log_probability += recognized.log_probability
-            tokens += recognized.tokens
+            lines.append(region.line)
+            log_probability += region.recognition.log_probability
+            tokens += region.recognition.tokens
             quads.append(detection.quad)
-            q = detection.quad
-            # Rectification rotates tall vertical crops counterclockwise;
-            # a classifier flip changes the original-image reading vector.
-            tall = np.linalg.norm(q[3] - q[0]) > np.linalg.norm(q[1] - q[0])
-            vector = q[3] - q[0] if detection.vertical and tall else q[1] - q[0]
-            angle = np.arctan2(vector[1], vector[0]) + (np.pi if flip < 0 else 0)
-            angles.append(float(angle))
+            angles.append(region.angle)
         if angles:
             direction = np.angle(np.sum(np.exp(1j * np.asarray(angles))))
             transform = np.array(

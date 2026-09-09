@@ -33,6 +33,7 @@
       "detection_score": 0.8796022534370422,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8092263629753756,
       "words": null
@@ -66,6 +67,7 @@
       "detection_score": 0.8592538237571716,
       "vertical": false,
       "rotated_180": true,
+      "rotation_degrees": 180,
       "script": "Latin",
       "confidence": 0.6156489778052832,
       "words": null
@@ -99,6 +101,7 @@
       "detection_score": 0.9299658536911011,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9659227200425452,
       "words": null
@@ -132,6 +135,7 @@
       "detection_score": 0.917063295841217,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9443169435602156,
       "words": null
@@ -165,6 +169,7 @@
       "detection_score": 0.9273289442062378,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8878950453898593,
       "words": null
@@ -198,6 +203,7 @@
       "detection_score": 0.9264875054359436,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9744942046675543,
       "words": null
@@ -231,6 +237,7 @@
       "detection_score": 0.9381449818611145,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9949757010573587,
       "words": null
@@ -264,6 +271,7 @@
       "detection_score": 0.915857195854187,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9585035964731126,
       "words": null
@@ -297,6 +305,7 @@
       "detection_score": 0.929897129535675,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9805037098280225,
       "words": null
@@ -330,6 +339,7 @@
       "detection_score": 0.9195083379745483,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.940356222537493,
       "words": null
@@ -363,6 +373,7 @@
       "detection_score": 0.9367184042930603,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9789391237482933,
       "words": null
@@ -396,6 +407,7 @@
       "detection_score": 0.9449981451034546,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9927931074275171,
       "words": null
@@ -429,6 +441,7 @@
       "detection_score": 0.9148073792457581,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9929970806313513,
       "words": null
@@ -462,6 +475,7 @@
       "detection_score": 0.9276576042175293,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9930974203902497,
       "words": null
@@ -495,6 +509,7 @@
       "detection_score": 0.9804744720458984,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9925002482932844,
       "words": null
@@ -528,6 +543,7 @@
       "detection_score": 0.9229739904403687,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9517346191185708,
       "words": null
@@ -561,6 +577,7 @@
       "detection_score": 0.9260514378547668,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9716187387926812,
       "words": null
@@ -594,6 +611,7 @@
       "detection_score": 0.9466264843940735,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9120209934379551,
       "words": null
@@ -627,6 +645,7 @@
       "detection_score": 0.9381440281867981,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9916185760253211,
       "words": null
@@ -660,6 +679,7 @@
       "detection_score": 0.924277663230896,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9964720527137397,
       "words": null
@@ -693,6 +713,7 @@
       "detection_score": 0.9464865326881409,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9940002861440094,
       "words": null
@@ -726,6 +747,7 @@
       "detection_score": 0.937626302242279,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9930452734158192,
       "words": null
@@ -759,6 +781,7 @@
       "detection_score": 0.9359003901481628,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9879199619936895,
       "words": null
@@ -792,6 +815,7 @@
       "detection_score": 0.9387573003768921,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9806319244434323,
       "words": null
@@ -825,6 +849,7 @@
       "detection_score": 0.9433120489120483,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8635846615335896,
       "words": null
@@ -858,6 +883,7 @@
       "detection_score": 0.9443076848983765,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9097715972635028,
       "words": null
@@ -891,6 +917,7 @@
       "detection_score": 0.9523797035217285,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.7871269327893367,
       "words": null
@@ -924,6 +951,7 @@
       "detection_score": 0.9278101325035095,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9901655158647905,
       "words": null
@@ -957,6 +985,7 @@
       "detection_score": 0.9560202360153198,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9945905277431388,
       "words": null
@@ -990,6 +1019,7 @@
       "detection_score": 0.9479845762252808,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9925034640095478,
       "words": null
@@ -1023,6 +1053,7 @@
       "detection_score": 0.9457272291183472,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9942115716132185,
       "words": null
@@ -1056,6 +1087,7 @@
       "detection_score": 0.964699387550354,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9921299310850054,
       "words": null
@@ -1089,6 +1121,7 @@
       "detection_score": 0.9462711811065674,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9914462487613868,
       "words": null
@@ -1122,6 +1155,7 @@
       "detection_score": 0.9363178610801697,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9964667416348635,
       "words": null
@@ -1155,6 +1189,7 @@
       "detection_score": 0.9547522664070129,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "CJK",
       "confidence": 0.9468021550602994,
       "words": null
@@ -1188,6 +1223,7 @@
       "detection_score": 0.9511423110961914,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9238350211714557,
       "words": null
@@ -1221,6 +1257,7 @@
       "detection_score": 0.9592601656913757,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9897141956425475,
       "words": null
@@ -1254,6 +1291,7 @@
       "detection_score": 0.9593915343284607,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9819651404580432,
       "words": null
@@ -1287,6 +1325,7 @@
       "detection_score": 0.9519667029380798,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9886656937974634,
       "words": null
@@ -1320,6 +1359,7 @@
       "detection_score": 0.9386010766029358,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9712846811740152,
       "words": null
@@ -1353,6 +1393,7 @@
       "detection_score": 0.9665382504463196,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.8900449386384254,
       "words": null
@@ -1386,6 +1427,7 @@
       "detection_score": 0.8697983622550964,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9968810210246408,
       "words": null
@@ -1419,6 +1461,7 @@
       "detection_score": 0.9527440071105957,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9842893106872239,
       "words": null
@@ -1452,6 +1495,7 @@
       "detection_score": 0.9404813647270203,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9946082925316068,
       "words": null
@@ -1485,6 +1529,7 @@
       "detection_score": 0.9377797245979309,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9288244362088648,
       "words": null
@@ -1518,6 +1563,7 @@
       "detection_score": 0.9416436553001404,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9936517486326965,
       "words": null
@@ -1551,6 +1597,7 @@
       "detection_score": 0.8956806063652039,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "Latin",
       "confidence": 0.9964405073524834,
       "words": null
@@ -1584,6 +1631,7 @@
       "detection_score": 0.9003402590751648,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "script": "CJK",
       "confidence": 0.825227117358009,
       "words": null
@@ -1591,7 +1639,7 @@
   ],
   "width": 1280,
   "height": 720,
-  "elapsed_seconds": 0.568142834,
+  "elapsed_seconds": 0.742100625,
   "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
   "warnings": [
     "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."

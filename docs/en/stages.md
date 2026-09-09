@@ -42,6 +42,7 @@ Example full recognition result, with scores and duration rounded for display:
       "detection_score": 0.9947,
       "vertical": false,
       "rotated_180": false,
+      "rotation_degrees": 0,
       "words": null
     }
   ],
@@ -60,6 +61,10 @@ Coordinates are pixels in the EXIF-oriented input image, with the origin at its 
 `detection_score` is a separate detector score. `words` remains `null`: line boxes are provided, but word/character alignment is not implemented. `warnings` retains runtime limitations, including unused original rejection/calibration models.
 
 `Detect` returns `coordinate_space`, `regions`, image dimensions, duration and model hash; each region contains `quad`, `bbox`, `score`, `vertical`. `RecognizeLine` returns `text`, `confidence`, `confidence_method`, `script`, `rotated_180`, crop dimensions, duration and model hash. It does not run detection and has no line boxes or detection scores.
+
+Compact text regions use reliable longer text on the same page to resolve orientation, avoiding accidental vertical rotation of isolated digits and `6/9` flips. An undetermined script can trigger a guarded short-numeral fallback only when detector evidence and matching Latin/CJK recognition results satisfy the confirmation thresholds. Without page context, a cropped compact numeral preserves its input orientation when the flip evidence is weak.
+
+`rotation_degrees` reports the actual **clockwise** rotation applied to the rectified recognition crop: `0/90/180/270`. Apply the inverse transform to place recognized text back in `quad`. `vertical` retains detector direction information and `rotated_180` retains half-turn compatibility information; use `rotation_degrees` for the actual correction of compact regions.
 
 [Go](go.md) · [C/C++](native.md) · [Python](python.md) · [Android](android.md)
 

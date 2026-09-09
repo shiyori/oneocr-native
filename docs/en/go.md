@@ -6,7 +6,7 @@ Requires Go 1.24+ and a C compiler. Add the Go module to your own project; no de
 
 ```sh
 go mod init example.com/ocr-app
-go get github.com/shiyori/oneocr-native@v0.1.2
+go get github.com/shiyori/oneocr-native@v0.1.3
 ```
 
 Skip `go mod init` if the project already has `go.mod`.
@@ -43,7 +43,7 @@ go run .
 Install the command with Go, then prepare resources and recognize images from any directory:
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
 oneocr install
 oneocr recognize image.png
 oneocr recognize --format json image.png

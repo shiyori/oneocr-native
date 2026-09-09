@@ -3,6 +3,7 @@ package engine
 import (
 	"context"
 	"fmt"
+	"math"
 	"time"
 )
 
@@ -35,6 +36,7 @@ type LineResult struct {
 	Text             string   `json:"text"`
 	Script           string   `json:"script"`
 	Rotated180       bool     `json:"rotated_180"`
+	RotationDegrees  int      `json:"rotation_degrees"`
 	ElapsedSeconds   float64  `json:"elapsed_seconds"`
 	ModelSHA256      string   `json:"model_sha256"`
 }
@@ -59,6 +61,7 @@ func (e *Engine) recognizeLine(ctx context.Context, r raster, options Options) (
 	start := time.Now()
 	script := options.Script
 	rotated := false
+	compact := float64(max(r.width, r.height)) <= 2*float64(min(r.width, r.height))
 	if script == "" {
 		var flip float64
 		var err error
@@ -66,23 +69,32 @@ func (e *Engine) recognizeLine(ctx context.Context, r raster, options Options) (
 		if err != nil {
 			return LineResult{}, err
 		}
-		if script == "" {
-			return LineResult{ConfidenceMethod: RecognitionConfidenceMethod, Width: r.width, Height: r.height, ModelSHA256: e.bundle.SourceSHA256, ElapsedSeconds: time.Since(start).Seconds()}, nil
-		}
-		if flip < 0 {
+		if flip < 0 && (!compact || math.Abs(flip) >= 2) {
 			r = r.orient(3)
 			rotated = true
 		}
 	}
-	rec, err := e.getRecognizer(script)
+	var recognized recognitionResult
+	var err error
+	if script == "" {
+		if compact {
+			recognized, script, err = e.recognizeUnknownNumeral(ctx, r)
+		}
+	} else {
+		var rec *recognizer
+		rec, err = e.getRecognizer(script)
+		if err == nil {
+			recognized, err = rec.run(ctx, r)
+		}
+	}
 	if err != nil {
 		return LineResult{}, err
 	}
-	recognized, err := rec.run(ctx, r)
-	if err != nil {
-		return LineResult{}, err
+	rotation := 0
+	if rotated {
+		rotation = 180
 	}
-	return LineResult{Text: recognized.text, Confidence: recognized.confidence(), ConfidenceMethod: RecognitionConfidenceMethod, Width: r.width, Height: r.height, Script: script, Rotated180: rotated, ElapsedSeconds: time.Since(start).Seconds(), ModelSHA256: e.bundle.SourceSHA256}, nil
+	return LineResult{Text: recognized.text, Confidence: recognized.confidence(), ConfidenceMethod: RecognitionConfidenceMethod, Width: r.width, Height: r.height, Script: script, Rotated180: rotated, RotationDegrees: rotation, ElapsedSeconds: time.Since(start).Seconds(), ModelSHA256: e.bundle.SourceSHA256}, nil
 }
 
 // rgbRaster copies the buffer; callers may reuse it after the synchronous call.

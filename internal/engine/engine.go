@@ -179,7 +179,7 @@ func (e *Engine) classify(ctx context.Context, crop raster) (string, float64, er
 	}
 	scores := out["script_id_score"].data
 	flip := out["flip_score"].data
-	if len(scores) != 10 || len(flip) != 1 {
+	if len(scores) != 10 || len(flip) != 1 || math.IsNaN(float64(flip[0])) || math.IsInf(float64(flip[0]), 0) {
 		return "", 0, fmt.Errorf("unexpected script classifier output")
 	}
 	best := 0
@@ -226,63 +226,47 @@ func (e *Engine) recognize(ctx context.Context, r raster, options Options) (Resu
 	unsupported := map[string]int{}
 	quads := []Quad{}
 	angles := []float64{}
-	for _, d := range detections {
+	regions := make([]regionRecognition, len(detections))
+	// Read reliable long text first; only metadata is retained, not pixel crops.
+	for i, d := range detections {
 		if err = ctx.Err(); err != nil {
 			return Result{}, err
 		}
-		crop, err := rectify(r, d.quad, d.vertical)
-		if err != nil {
-			return Result{}, err
-		}
-		script, flip, err := e.classify(ctx, crop)
-		if err != nil {
-			return Result{}, err
-		}
-		if options.Script != "" {
-			script = options.Script
-		}
-		if script == "" {
+		if compactRegion(d.quad) {
 			continue
 		}
-		if _, ok := e.characters[script]; !ok {
-			unsupported[script]++
-			continue
-		}
-		if flip < 0 {
-			crop = crop.orient(3)
-		}
-		recognizer, err := e.getRecognizer(script)
+		regions[i], err = e.recognizeRegion(ctx, r, d, options, pageOrientation{})
 		if err != nil {
 			return Result{}, err
 		}
-		recognized, err := recognizer.run(ctx, crop)
-		if err != nil {
+	}
+	prior := inferPageOrientation(regions)
+	for i, d := range detections {
+		if err = ctx.Err(); err != nil {
 			return Result{}, err
 		}
-		if recognized.text == "" {
-			continue
-		}
-		quad := d.quad
-		for i := range quad {
-			for j := range quad[i] {
-				quad[i][j] = math.RoundToEven(quad[i][j]*1000) / 1000
+		if compactRegion(d.quad) {
+			regions[i], err = e.recognizeRegion(ctx, r, d, options, prior)
+			if err != nil {
+				return Result{}, err
 			}
 		}
-		lines = append(lines, Line{Text: recognized.text, Quad: quad, BBox: quadBounds(quad), Script: script,
-			Confidence: recognized.confidence(), DetectionScore: d.score, Vertical: d.vertical, Rotated180: flip < 0})
-		summary.logProbability += recognized.logProbability
-		summary.tokens += recognized.tokens
+		region := regions[i]
+		if region.recognition.text == "" {
+			if region.script != "" {
+				if _, ok := e.characters[region.script]; !ok {
+					unsupported[region.script]++
+				}
+			}
+			continue
+		}
+		lines = append(lines, region.line)
+		summary.logProbability += region.recognition.logProbability
+		summary.tokens += region.recognition.tokens
 		quads = append(quads, d.quad)
-		vector := sub(d.quad[1], d.quad[0])
-		if d.vertical && length(sub(d.quad[3], d.quad[0])) > length(vector) {
-			vector = sub(d.quad[3], d.quad[0])
-		}
-		angle := math.Atan2(vector[1], vector[0])
-		if flip < 0 {
-			angle += math.Pi
-		}
-		angles = append(angles, angle)
+		angles = append(angles, region.angle)
 	}
+
 	sin, cos := 0., 0.
 	for _, a := range angles {
 		sin += math.Sin(a)

@@ -18,15 +18,17 @@ type Box struct {
 // Line contains a recognized line and its geometry in the oriented input image.
 // Confidence is an uncalibrated CTC score; Words is nil until word alignment is supported.
 type Line struct {
-	Text           string   `json:"text"`
-	Quad           Quad     `json:"quad"`
-	BBox           Box      `json:"bbox"`
-	DetectionScore float64  `json:"detection_score"`
-	Vertical       bool     `json:"vertical"`
-	Rotated180     bool     `json:"rotated_180"`
-	Script         string   `json:"script"`
-	Confidence     *float64 `json:"confidence"`
-	Words          []Word   `json:"words"`
+	Text           string  `json:"text"`
+	Quad           Quad    `json:"quad"`
+	BBox           Box     `json:"bbox"`
+	DetectionScore float64 `json:"detection_score"`
+	Vertical       bool    `json:"vertical"`
+	Rotated180     bool    `json:"rotated_180"`
+	// RotationDegrees is the clockwise correction applied to the rectified crop.
+	RotationDegrees int      `json:"rotation_degrees"`
+	Script          string   `json:"script"`
+	Confidence      *float64 `json:"confidence"`
+	Words           []Word   `json:"words"`
 }
 type Word struct {
 	Text       string   `json:"text"`
