@@ -38,6 +38,8 @@ python -m oneocr_native recognize --format json image.png
 
 ## Test results
 
+[Complete PaddleOCR results: paired images and JSON for all 9 originals](docs/en/test-results.md)
+
 Actual OneOCR v0.1.3 output for four images from `testdata`. Only results with recognition confidence ≥ **0.70** and detection score ≥ **0.70** are shown. The left image adds boxes to the original; the right keeps the original image and overlays blue recognized text at the same positions, with a local light background for readability. Click either image for full resolution.
 
 Each pair uses the same crop and coordinates. Outer whitespace is trimmed equally; recognized text is not manually corrected. Confidence scores are uncalibrated.

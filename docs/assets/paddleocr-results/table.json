@@ -1,0 +1,423 @@
+{
+  "confidence": 0.9896650689131504,
+  "confidence_method": "ctc_token_geometric_mean",
+  "coordinate_space": "oriented_image",
+  "text": "Dres\nAbstr\ncludingGiv\n连续工作3\n2.72\nCRuncover\n取出来放在网上,没想\n江、鳌江等八大\nrSrivi\n$709.\nIngcubic\n$744.78",
+  "lines": [
+    {
+      "text": "Dres",
+      "quad": [
+        [
+          39.131,
+          41.042
+        ],
+        [
+          74.875,
+          41.042
+        ],
+        [
+          74.875,
+          55.69
+        ],
+        [
+          39.131,
+          55.69
+        ]
+      ],
+      "bbox": {
+        "x": 39.131,
+        "y": 41.042,
+        "width": 35.744,
+        "height": 14.647999999999996
+      },
+      "detection_score": 0.895034670829773,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9973912114424082,
+      "words": null
+    },
+    {
+      "text": "Abstr",
+      "quad": [
+        [
+          36.863,
+          71.768
+        ],
+        [
+          78.137,
+          71.768
+        ],
+        [
+          78.137,
+          88.964
+        ],
+        [
+          36.863,
+          88.964
+        ]
+      ],
+      "bbox": {
+        "x": 36.863,
+        "y": 71.768,
+        "width": 41.274,
+        "height": 17.195999999999998
+      },
+      "detection_score": 0.9481224417686462,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9966430817803349,
+      "words": null
+    },
+    {
+      "text": "cludingGiv",
+      "quad": [
+        [
+          16.869,
+          102.521
+        ],
+        [
+          96.153,
+          103.309
+        ],
+        [
+          95.97,
+          121.777
+        ],
+        [
+          16.685,
+          120.988
+        ]
+      ],
+      "bbox": {
+        "x": 16.685,
+        "y": 102.521,
+        "width": 79.468,
+        "height": 19.256
+      },
+      "detection_score": 0.9675692319869995,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9939115109237832,
+      "words": null
+    },
+    {
+      "text": "连续工作3",
+      "quad": [
+        [
+          124.183,
+          37.218
+        ],
+        [
+          198.652,
+          37.448
+        ],
+        [
+          198.591,
+          57.175
+        ],
+        [
+          124.122,
+          56.945
+        ]
+      ],
+      "bbox": {
+        "x": 124.122,
+        "y": 37.218,
+        "width": 74.52999999999999,
+        "height": 19.956999999999994
+      },
+      "detection_score": 0.9878162741661072,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9994143679344948,
+      "words": null
+    },
+    {
+      "text": "2.72",
+      "quad": [
+        [
+          144.299,
+          103.109
+        ],
+        [
+          176.982,
+          103.491
+        ],
+        [
+          176.789,
+          120.057
+        ],
+        [
+          144.105,
+          119.675
+        ]
+      ],
+      "bbox": {
+        "x": 144.105,
+        "y": 103.109,
+        "width": 32.87700000000001,
+        "height": 16.948000000000008
+      },
+      "detection_score": 0.968376100063324,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9764421111155261,
+      "words": null
+    },
+    {
+      "text": "CRuncover",
+      "quad": [
+        [
+          235.499,
+          6.628
+        ],
+        [
+          316.799,
+          8.455
+        ],
+        [
+          316.423,
+          25.178
+        ],
+        [
+          235.123,
+          23.35
+        ]
+      ],
+      "bbox": {
+        "x": 235.123,
+        "y": 6.628,
+        "width": 81.67599999999999,
+        "height": 18.55
+      },
+      "detection_score": 0.984209418296814,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9632208425374109,
+      "words": null
+    },
+    {
+      "text": "取出来放在网上,没想",
+      "quad": [
+        [
+          226.362,
+          36.075
+        ],
+        [
+          390.754,
+          34.965
+        ],
+        [
+          390.903,
+          56.959
+        ],
+        [
+          226.51,
+          58.068
+        ]
+      ],
+      "bbox": {
+        "x": 226.362,
+        "y": 34.965,
+        "width": 164.54100000000003,
+        "height": 23.102999999999994
+      },
+      "detection_score": 0.9638468027114868,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9987764561714105,
+      "words": null
+    },
+    {
+      "text": "江、鳌江等八大",
+      "quad": [
+        [
+          418.214,
+          35.768
+        ],
+        [
+          534.774,
+          35.768
+        ],
+        [
+          534.774,
+          56.964
+        ],
+        [
+          418.214,
+          56.964
+        ]
+      ],
+      "bbox": {
+        "x": 418.214,
+        "y": 35.768,
+        "width": 116.56,
+        "height": 21.195999999999998
+      },
+      "detection_score": 0.9781997203826904,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9963182641023498,
+      "words": null
+    },
+    {
+      "text": "rSrivi",
+      "quad": [
+        [
+          289.042,
+          72.405
+        ],
+        [
+          327.054,
+          72.405
+        ],
+        [
+          327.054,
+          87.69
+        ],
+        [
+          289.042,
+          87.69
+        ]
+      ],
+      "bbox": {
+        "x": 289.042,
+        "y": 72.405,
+        "width": 38.012,
+        "height": 15.284999999999997
+      },
+      "detection_score": 0.9550919532775879,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9734819467773898,
+      "words": null
+    },
+    {
+      "text": "$709.",
+      "quad": [
+        [
+          456.125,
+          71.768
+        ],
+        [
+          494.137,
+          71.768
+        ],
+        [
+          494.137,
+          87.869
+        ],
+        [
+          456.125,
+          87.869
+        ]
+      ],
+      "bbox": {
+        "x": 456.125,
+        "y": 71.768,
+        "width": 38.012,
+        "height": 16.101
+      },
+      "detection_score": 0.9488176107406616,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9934972800940411,
+      "words": null
+    },
+    {
+      "text": "Ingcubic",
+      "quad": [
+        [
+          277.857,
+          103.131
+        ],
+        [
+          338.774,
+          103.131
+        ],
+        [
+          338.774,
+          121.958
+        ],
+        [
+          277.857,
+          121.958
+        ]
+      ],
+      "bbox": {
+        "x": 277.857,
+        "y": 103.131,
+        "width": 60.91699999999997,
+        "height": 18.826999999999998
+      },
+      "detection_score": 0.9710251688957214,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9928047767697532,
+      "words": null
+    },
+    {
+      "text": "$744.78",
+      "quad": [
+        [
+          447.488,
+          102.494
+        ],
+        [
+          502.238,
+          102.494
+        ],
+        [
+          502.238,
+          119.232
+        ],
+        [
+          447.488,
+          119.232
+        ]
+      ],
+      "bbox": {
+        "x": 447.488,
+        "y": 102.494,
+        "width": 54.75,
+        "height": 16.738
+      },
+      "detection_score": 0.9873889088630676,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9975010794004785,
+      "words": null
+    }
+  ],
+  "width": 551,
+  "height": 132,
+  "elapsed_seconds": 0.1133635,
+  "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
+  "warnings": [
+    "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."
+  ]
+}

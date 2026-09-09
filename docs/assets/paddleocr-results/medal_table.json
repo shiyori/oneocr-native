@@ -1,0 +1,3279 @@
+{
+  "confidence": 0.9783395441714781,
+  "confidence_method": "ctc_token_geometric_mean",
+  "coordinate_space": "oriented_image",
+  "text": "名次\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n国家/地区\n中国(CHN)\n美国(USA)\n俄罗斯(RUS)\n英国(GBR)\n德国(GER)\n澳大利亚(AUS)\n韩国(KOR)\n日本(JPN)\n意大利(ITA)\n法国(FRA)\n荷兰(NED)\n乌克兰(UKR)\n肯尼亚(KEN)\n西班牙(ESP)\n牙买加(JAM)\n金牌\n48\n38\n24\n19\n16\n14\n13\n9\n8\n7\n7\n7\n5\n5\n5\n银牌\n22\n39\n13\n13\n11\n15\n11\n8\n9\n16\n5\n4\n4\n11\n4\n鋼牌\n30\n37\n23\n19\n14\n17\n8\n8\n10\n20\n4\n11\n6\n3\n2\n奖牌总数\n100\n112\n60\n51\n41\n46\n32\n25\n27\n43\n16\n22\n16\n19\n11",
+  "lines": [
+    {
+      "text": "名次",
+      "quad": [
+        [
+          18.036,
+          7.768
+        ],
+        [
+          37.423,
+          7.768
+        ],
+        [
+          37.423,
+          19.232
+        ],
+        [
+          18.036,
+          19.232
+        ]
+      ],
+      "bbox": {
+        "x": 18.036,
+        "y": 7.768,
+        "width": 19.387,
+        "height": 11.463999999999999
+      },
+      "detection_score": 0.9709742665290833,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9997849476582787,
+      "words": null
+    },
+    {
+      "text": "1",
+      "quad": [
+        [
+          25.286,
+          29.812
+        ],
+        [
+          31.665,
+          30.544
+        ],
+        [
+          30.595,
+          39.869
+        ],
+        [
+          24.217,
+          39.138
+        ]
+      ],
+      "bbox": {
+        "x": 24.217,
+        "y": 29.812,
+        "width": 7.448,
+        "height": 10.056999999999999
+      },
+      "detection_score": 0.8679683208465576,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9951771534886061,
+      "words": null
+    },
+    {
+      "text": "2",
+      "quad": [
+        [
+          24.405,
+          51.131
+        ],
+        [
+          31.869,
+          51.131
+        ],
+        [
+          31.869,
+          61.143
+        ],
+        [
+          24.405,
+          61.143
+        ]
+      ],
+      "bbox": {
+        "x": 24.405,
+        "y": 51.131,
+        "width": 7.463999999999999,
+        "height": 10.012
+      },
+      "detection_score": 0.9147000312805176,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9961152790398062,
+      "words": null
+    },
+    {
+      "text": "3",
+      "quad": [
+        [
+          25.098,
+          73.008
+        ],
+        [
+          31.931,
+          73.578
+        ],
+        [
+          31.232,
+          81.958
+        ],
+        [
+          24.399,
+          81.389
+        ]
+      ],
+      "bbox": {
+        "x": 24.399,
+        "y": 73.008,
+        "width": 7.532,
+        "height": 8.950000000000003
+      },
+      "detection_score": 0.9823466539382935,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.997580441931172,
+      "words": null
+    },
+    {
+      "text": "4",
+      "quad": [
+        [
+          24.863,
+          93.22
+        ],
+        [
+          32.512,
+          93.767
+        ],
+        [
+          31.757,
+          104.349
+        ],
+        [
+          24.107,
+          103.802
+        ]
+      ],
+      "bbox": {
+        "x": 24.107,
+        "y": 93.22,
+        "width": 8.405000000000001,
+        "height": 11.129000000000005
+      },
+      "detection_score": 0.86077880859375,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9963228143408734,
+      "words": null
+    },
+    {
+      "text": "5",
+      "quad": [
+        [
+          24.405,
+          114.494
+        ],
+        [
+          31.232,
+          114.494
+        ],
+        [
+          31.232,
+          125.143
+        ],
+        [
+          24.405,
+          125.143
+        ]
+      ],
+      "bbox": {
+        "x": 24.405,
+        "y": 114.494,
+        "width": 6.826999999999998,
+        "height": 10.649000000000001
+      },
+      "detection_score": 0.899013876914978,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9906197207393034,
+      "words": null
+    },
+    {
+      "text": "6",
+      "quad": [
+        [
+          24.46,
+          136.325
+        ],
+        [
+          31.296,
+          136.851
+        ],
+        [
+          30.595,
+          145.958
+        ],
+        [
+          23.759,
+          145.432
+        ]
+      ],
+      "bbox": {
+        "x": 23.759,
+        "y": 136.325,
+        "width": 7.536999999999999,
+        "height": 9.63300000000001
+      },
+      "detection_score": 0.9764643907546997,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9954917689872085,
+      "words": null
+    },
+    {
+      "text": "7",
+      "quad": [
+        [
+          23.589,
+          157.22
+        ],
+        [
+          31.869,
+          157.22
+        ],
+        [
+          31.869,
+          167.232
+        ],
+        [
+          23.589,
+          167.232
+        ]
+      ],
+      "bbox": {
+        "x": 23.589,
+        "y": 157.22,
+        "width": 8.280000000000001,
+        "height": 10.012
+      },
+      "detection_score": 0.852935791015625,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9951257863467927,
+      "words": null
+    },
+    {
+      "text": "8",
+      "quad": [
+        [
+          24.405,
+          177.857
+        ],
+        [
+          31.869,
+          177.857
+        ],
+        [
+          31.869,
+          189.143
+        ],
+        [
+          24.405,
+          189.143
+        ]
+      ],
+      "bbox": {
+        "x": 24.405,
+        "y": 177.857,
+        "width": 7.463999999999999,
+        "height": 11.286000000000001
+      },
+      "detection_score": 0.8901904225349426,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.8679391585888098,
+      "words": null
+    },
+    {
+      "text": "9",
+      "quad": [
+        [
+          24.863,
+          199.768
+        ],
+        [
+          32.231,
+          200.612
+        ],
+        [
+          31.135,
+          210.166
+        ],
+        [
+          23.768,
+          209.321
+        ]
+      ],
+      "bbox": {
+        "x": 23.768,
+        "y": 199.768,
+        "width": 8.463000000000001,
+        "height": 10.397999999999996
+      },
+      "detection_score": 0.990189790725708,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9964395330495818,
+      "words": null
+    },
+    {
+      "text": "10",
+      "quad": [
+        [
+          21.679,
+          221.22
+        ],
+        [
+          35.69,
+          221.22
+        ],
+        [
+          35.69,
+          231.869
+        ],
+        [
+          21.679,
+          231.869
+        ]
+      ],
+      "bbox": {
+        "x": 21.679,
+        "y": 221.22,
+        "width": 14.011,
+        "height": 10.649000000000001
+      },
+      "detection_score": 0.8854845762252808,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9952917637411159,
+      "words": null
+    },
+    {
+      "text": "11",
+      "quad": [
+        [
+          22.986,
+          241.85
+        ],
+        [
+          33.149,
+          242.372
+        ],
+        [
+          32.603,
+          253.002
+        ],
+        [
+          22.439,
+          252.48
+        ]
+      ],
+      "bbox": {
+        "x": 22.439,
+        "y": 241.85,
+        "width": 10.71,
+        "height": 11.152000000000015
+      },
+      "detection_score": 0.9450920820236206,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9948304026720889,
+      "words": null
+    },
+    {
+      "text": "12",
+      "quad": [
+        [
+          20.419,
+          263.017
+        ],
+        [
+          33.444,
+          262.609
+        ],
+        [
+          33.788,
+          273.584
+        ],
+        [
+          20.763,
+          273.993
+        ]
+      ],
+      "bbox": {
+        "x": 20.419,
+        "y": 262.609,
+        "width": 13.368999999999996,
+        "height": 11.384000000000015
+      },
+      "detection_score": 0.8872492909431458,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9970822418698893,
+      "words": null
+    },
+    {
+      "text": "13",
+      "quad": [
+        [
+          21.679,
+          285.042
+        ],
+        [
+          35.054,
+          285.042
+        ],
+        [
+          35.054,
+          295.869
+        ],
+        [
+          21.679,
+          295.869
+        ]
+      ],
+      "bbox": {
+        "x": 21.679,
+        "y": 285.042,
+        "width": 13.375000000000004,
+        "height": 10.827000000000055
+      },
+      "detection_score": 0.8901904225349426,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9968335660311903,
+      "words": null
+    },
+    {
+      "text": "14",
+      "quad": [
+        [
+          20.582,
+          306.013
+        ],
+        [
+          32.933,
+          305.007
+        ],
+        [
+          33.842,
+          316.181
+        ],
+        [
+          21.492,
+          317.187
+        ]
+      ],
+      "bbox": {
+        "x": 20.582,
+        "y": 305.007,
+        "width": 13.259999999999998,
+        "height": 12.180000000000007
+      },
+      "detection_score": 0.8797330260276794,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9949459678580584,
+      "words": null
+    },
+    {
+      "text": "15",
+      "quad": [
+        [
+          20.762,
+          327.131
+        ],
+        [
+          33.143,
+          327.131
+        ],
+        [
+          33.143,
+          337.321
+        ],
+        [
+          20.762,
+          337.321
+        ]
+      ],
+      "bbox": {
+        "x": 20.762,
+        "y": 327.131,
+        "width": 12.381,
+        "height": 10.190000000000055
+      },
+      "detection_score": 0.9424777030944824,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9820115467484807,
+      "words": null
+    },
+    {
+      "text": "国家/地区",
+      "quad": [
+        [
+          153.577,
+          7.131
+        ],
+        [
+          195.512,
+          7.131
+        ],
+        [
+          195.512,
+          18.595
+        ],
+        [
+          153.577,
+          18.595
+        ]
+      ],
+      "bbox": {
+        "x": 153.577,
+        "y": 7.131,
+        "width": 41.935,
+        "height": 11.463999999999999
+      },
+      "detection_score": 0.9941113591194153,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9946648160136371,
+      "words": null
+    },
+    {
+      "text": "中国(CHN)",
+      "quad": [
+        [
+          146.214,
+          27.946
+        ],
+        [
+          198.774,
+          27.946
+        ],
+        [
+          198.774,
+          40.685
+        ],
+        [
+          146.214,
+          40.685
+        ]
+      ],
+      "bbox": {
+        "x": 146.214,
+        "y": 27.946,
+        "width": 52.56,
+        "height": 12.739
+      },
+      "detection_score": 0.9064799547195435,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9855988849312824,
+      "words": null
+    },
+    {
+      "text": "美国(USA)",
+      "quad": [
+        [
+          146.851,
+          49.042
+        ],
+        [
+          197.78,
+          49.042
+        ],
+        [
+          197.78,
+          61.958
+        ],
+        [
+          146.851,
+          61.958
+        ]
+      ],
+      "bbox": {
+        "x": 146.851,
+        "y": 49.042,
+        "width": 50.929,
+        "height": 12.915999999999997
+      },
+      "detection_score": 0.9699283242225647,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9945419331344534,
+      "words": null
+    },
+    {
+      "text": "俄罗斯(RUS)",
+      "quad": [
+        [
+          142.494,
+          70.494
+        ],
+        [
+          200.786,
+          70.494
+        ],
+        [
+          200.786,
+          82.595
+        ],
+        [
+          142.494,
+          82.595
+        ]
+      ],
+      "bbox": {
+        "x": 142.494,
+        "y": 70.494,
+        "width": 58.292,
+        "height": 12.100999999999999
+      },
+      "detection_score": 0.9856145977973938,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9640330161928774,
+      "words": null
+    },
+    {
+      "text": "英国(GBR)",
+      "quad": [
+        [
+          146.214,
+          92.405
+        ],
+        [
+          196.786,
+          92.405
+        ],
+        [
+          196.786,
+          104.685
+        ],
+        [
+          146.214,
+          104.685
+        ]
+      ],
+      "bbox": {
+        "x": 146.214,
+        "y": 92.405,
+        "width": 50.572,
+        "height": 12.280000000000001
+      },
+      "detection_score": 0.8888833522796631,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9969195089245132,
+      "words": null
+    },
+    {
+      "text": "德国(GER)",
+      "quad": [
+        [
+          145.857,
+          113.042
+        ],
+        [
+          197.423,
+          113.042
+        ],
+        [
+          197.423,
+          125.958
+        ],
+        [
+          145.857,
+          125.958
+        ]
+      ],
+      "bbox": {
+        "x": 145.857,
+        "y": 113.042,
+        "width": 51.566,
+        "height": 12.915999999999997
+      },
+      "detection_score": 0.9667389392852783,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9975056380653514,
+      "words": null
+    },
+    {
+      "text": "澳大利亚(AUS)",
+      "quad": [
+        [
+          138.214,
+          133.679
+        ],
+        [
+          206.875,
+          133.679
+        ],
+        [
+          206.875,
+          147.054
+        ],
+        [
+          138.214,
+          147.054
+        ]
+      ],
+      "bbox": {
+        "x": 138.214,
+        "y": 133.679,
+        "width": 68.661,
+        "height": 13.375
+      },
+      "detection_score": 0.8896299600601196,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9685850576473899,
+      "words": null
+    },
+    {
+      "text": "韩国(KOR)",
+      "quad": [
+        [
+          146.851,
+          155.768
+        ],
+        [
+          197.423,
+          155.768
+        ],
+        [
+          197.423,
+          169.321
+        ],
+        [
+          146.851,
+          169.321
+        ]
+      ],
+      "bbox": {
+        "x": 146.851,
+        "y": 155.768,
+        "width": 50.572,
+        "height": 13.552999999999997
+      },
+      "detection_score": 0.8777984380722046,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9990314993604577,
+      "words": null
+    },
+    {
+      "text": "日本(JPN)",
+      "quad": [
+        [
+          146.643,
+          176.728
+        ],
+        [
+          198.03,
+          175.879
+        ],
+        [
+          198.259,
+          189.755
+        ],
+        [
+          146.872,
+          190.604
+        ]
+      ],
+      "bbox": {
+        "x": 146.643,
+        "y": 175.879,
+        "width": 51.615999999999985,
+        "height": 14.725000000000023
+      },
+      "detection_score": 0.9658434391021729,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9962130590398287,
+      "words": null
+    },
+    {
+      "text": "意大利(ITA)",
+      "quad": [
+        [
+          145.405,
+          198.223
+        ],
+        [
+          199.525,
+          198.615
+        ],
+        [
+          199.433,
+          211.348
+        ],
+        [
+          145.313,
+          210.955
+        ]
+      ],
+      "bbox": {
+        "x": 145.313,
+        "y": 198.223,
+        "width": 54.21200000000002,
+        "height": 13.125
+      },
+      "detection_score": 0.9558107852935791,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9803430158999314,
+      "words": null
+    },
+    {
+      "text": "法国(FRA)",
+      "quad": [
+        [
+          146.888,
+          220.162
+        ],
+        [
+          197.384,
+          219.132
+        ],
+        [
+          197.655,
+          232.422
+        ],
+        [
+          147.16,
+          233.452
+        ]
+      ],
+      "bbox": {
+        "x": 146.888,
+        "y": 219.132,
+        "width": 50.766999999999996,
+        "height": 14.319999999999993
+      },
+      "detection_score": 0.8767208456993103,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9977693399574136,
+      "words": null
+    },
+    {
+      "text": "荷兰(NED)",
+      "quad": [
+        [
+          146.036,
+          240.405
+        ],
+        [
+          198.137,
+          240.405
+        ],
+        [
+          198.137,
+          254.417
+        ],
+        [
+          146.036,
+          254.417
+        ]
+      ],
+      "bbox": {
+        "x": 146.036,
+        "y": 240.405,
+        "width": 52.101,
+        "height": 14.012
+      },
+      "detection_score": 0.958968460559845,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9882501397530548,
+      "words": null
+    },
+    {
+      "text": "乌克兰(UKR)",
+      "quad": [
+        [
+          142.214,
+          261.679
+        ],
+        [
+          203.512,
+          261.679
+        ],
+        [
+          203.512,
+          274.595
+        ],
+        [
+          142.214,
+          274.595
+        ]
+      ],
+      "bbox": {
+        "x": 142.214,
+        "y": 261.679,
+        "width": 61.298,
+        "height": 12.916000000000054
+      },
+      "detection_score": 0.9007617235183716,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9897304132777321,
+      "words": null
+    },
+    {
+      "text": "肯尼亚(KEN)",
+      "quad": [
+        [
+          142.227,
+          283.081
+        ],
+        [
+          200.891,
+          284.201
+        ],
+        [
+          200.639,
+          297.418
+        ],
+        [
+          141.975,
+          296.298
+        ]
+      ],
+      "bbox": {
+        "x": 141.975,
+        "y": 283.081,
+        "width": 58.916,
+        "height": 14.336999999999989
+      },
+      "detection_score": 0.9423239231109619,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9946663879631165,
+      "words": null
+    },
+    {
+      "text": "西班牙(ESP)",
+      "quad": [
+        [
+          142.214,
+          304.405
+        ],
+        [
+          201.423,
+          304.405
+        ],
+        [
+          201.423,
+          318.417
+        ],
+        [
+          142.214,
+          318.417
+        ]
+      ],
+      "bbox": {
+        "x": 142.214,
+        "y": 304.405,
+        "width": 59.209,
+        "height": 14.012
+      },
+      "detection_score": 0.9784253835678101,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9832950093539502,
+      "words": null
+    },
+    {
+      "text": "牙买加(JAM)",
+      "quad": [
+        [
+          142.851,
+          325.679
+        ],
+        [
+          201.78,
+          325.679
+        ],
+        [
+          201.78,
+          338.595
+        ],
+        [
+          142.851,
+          338.595
+        ]
+      ],
+      "bbox": {
+        "x": 142.851,
+        "y": 325.679,
+        "width": 58.929,
+        "height": 12.916000000000054
+      },
+      "detection_score": 0.9524737000465393,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9939955469413987,
+      "words": null
+    },
+    {
+      "text": "金牌",
+      "quad": [
+        [
+          314.611,
+          7.759
+        ],
+        [
+          333.129,
+          8.479
+        ],
+        [
+          332.733,
+          18.678
+        ],
+        [
+          314.214,
+          17.958
+        ]
+      ],
+      "bbox": {
+        "x": 314.214,
+        "y": 7.759,
+        "width": 18.91500000000002,
+        "height": 10.919
+      },
+      "detection_score": 0.9950916767120361,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9803562798486165,
+      "words": null
+    },
+    {
+      "text": "48",
+      "quad": [
+        [
+          316.226,
+          29.042
+        ],
+        [
+          329.78,
+          29.042
+        ],
+        [
+          329.78,
+          40.506
+        ],
+        [
+          316.226,
+          40.506
+        ]
+      ],
+      "bbox": {
+        "x": 316.226,
+        "y": 29.042,
+        "width": 13.553999999999974,
+        "height": 11.463999999999999
+      },
+      "detection_score": 0.8501906394958496,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9968813345481868,
+      "words": null
+    },
+    {
+      "text": "38",
+      "quad": [
+        [
+          316.409,
+          50.171
+        ],
+        [
+          331.581,
+          51.224
+        ],
+        [
+          330.873,
+          61.422
+        ],
+        [
+          315.701,
+          60.369
+        ]
+      ],
+      "bbox": {
+        "x": 315.701,
+        "y": 50.171,
+        "width": 15.879999999999995,
+        "height": 11.250999999999998
+      },
+      "detection_score": 0.9228699207305908,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.8413439274519403,
+      "words": null
+    },
+    {
+      "text": "24",
+      "quad": [
+        [
+          315.62,
+          71.055
+        ],
+        [
+          330.057,
+          71.742
+        ],
+        [
+          329.568,
+          82.009
+        ],
+        [
+          315.131,
+          81.321
+        ]
+      ],
+      "bbox": {
+        "x": 315.131,
+        "y": 71.055,
+        "width": 14.926000000000045,
+        "height": 10.953999999999994
+      },
+      "detection_score": 0.9830002784729004,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9964206630222852,
+      "words": null
+    },
+    {
+      "text": "19",
+      "quad": [
+        [
+          316.405,
+          93.042
+        ],
+        [
+          329.321,
+          93.042
+        ],
+        [
+          329.321,
+          103.869
+        ],
+        [
+          316.405,
+          103.869
+        ]
+      ],
+      "bbox": {
+        "x": 316.405,
+        "y": 93.042,
+        "width": 12.916000000000054,
+        "height": 10.826999999999998
+      },
+      "detection_score": 0.9235235452651978,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9955324394345293,
+      "words": null
+    },
+    {
+      "text": "16",
+      "quad": [
+        [
+          317.834,
+          114.003
+        ],
+        [
+          327.967,
+          113.24
+        ],
+        [
+          328.759,
+          123.767
+        ],
+        [
+          318.626,
+          124.53
+        ]
+      ],
+      "bbox": {
+        "x": 317.834,
+        "y": 113.24,
+        "width": 10.925000000000011,
+        "height": 11.290000000000006
+      },
+      "detection_score": 0.9470528364181519,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.8119047157037094,
+      "words": null
+    },
+    {
+      "text": "14",
+      "quad": [
+        [
+          316.863,
+          135.768
+        ],
+        [
+          331.512,
+          135.768
+        ],
+        [
+          331.512,
+          144.685
+        ],
+        [
+          316.863,
+          144.685
+        ]
+      ],
+      "bbox": {
+        "x": 316.863,
+        "y": 135.768,
+        "width": 14.649000000000001,
+        "height": 8.917000000000002
+      },
+      "detection_score": 0.9215627312660217,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9950718062247745,
+      "words": null
+    },
+    {
+      "text": "13",
+      "quad": [
+        [
+          317.042,
+          156.405
+        ],
+        [
+          329.78,
+          156.405
+        ],
+        [
+          329.78,
+          167.869
+        ],
+        [
+          317.042,
+          167.869
+        ]
+      ],
+      "bbox": {
+        "x": 317.042,
+        "y": 156.405,
+        "width": 12.738,
+        "height": 11.463999999999999
+      },
+      "detection_score": 0.8993406891822815,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9957090651622571,
+      "words": null
+    },
+    {
+      "text": "9",
+      "quad": [
+        [
+          320.413,
+          177.797
+        ],
+        [
+          327.747,
+          178.775
+        ],
+        [
+          326.34,
+          189.321
+        ],
+        [
+          319.007,
+          188.343
+        ]
+      ],
+      "bbox": {
+        "x": 319.007,
+        "y": 177.797,
+        "width": 8.740000000000009,
+        "height": 11.524000000000001
+      },
+      "detection_score": 0.8999942541122437,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9861127963709596,
+      "words": null
+    },
+    {
+      "text": "8",
+      "quad": [
+        [
+          319.61,
+          200.337
+        ],
+        [
+          327.306,
+          200.994
+        ],
+        [
+          326.595,
+          209.321
+        ],
+        [
+          318.9,
+          208.665
+        ]
+      ],
+      "bbox": {
+        "x": 318.9,
+        "y": 200.337,
+        "width": 8.406000000000006,
+        "height": 8.984000000000009
+      },
+      "detection_score": 0.9745036363601685,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9622660477067537,
+      "words": null
+    },
+    {
+      "text": "7",
+      "quad": [
+        [
+          318.952,
+          221.042
+        ],
+        [
+          328.506,
+          221.042
+        ],
+        [
+          328.506,
+          231.232
+        ],
+        [
+          318.952,
+          231.232
+        ]
+      ],
+      "bbox": {
+        "x": 318.952,
+        "y": 221.042,
+        "width": 9.553999999999974,
+        "height": 10.189999999999998
+      },
+      "detection_score": 0.8653540015220642,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9905512566254056,
+      "words": null
+    },
+    {
+      "text": "7",
+      "quad": [
+        [
+          320.343,
+          241.713
+        ],
+        [
+          329.003,
+          242.795
+        ],
+        [
+          327.683,
+          253.358
+        ],
+        [
+          319.023,
+          252.276
+        ]
+      ],
+      "bbox": {
+        "x": 319.023,
+        "y": 241.713,
+        "width": 9.979999999999961,
+        "height": 11.64500000000001
+      },
+      "detection_score": 0.8421515226364136,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9957802168812467,
+      "words": null
+    },
+    {
+      "text": "7",
+      "quad": [
+        [
+          319.787,
+          263.053
+        ],
+        [
+          328.525,
+          263.689
+        ],
+        [
+          327.869,
+          272.685
+        ],
+        [
+          319.131,
+          272.048
+        ]
+      ],
+      "bbox": {
+        "x": 319.131,
+        "y": 263.053,
+        "width": 9.394000000000005,
+        "height": 9.632000000000005
+      },
+      "detection_score": 0.9568566679954529,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9930708591490389,
+      "words": null
+    },
+    {
+      "text": "5",
+      "quad": [
+        [
+          321.543,
+          285.033
+        ],
+        [
+          327.292,
+          285.416
+        ],
+        [
+          326.595,
+          295.869
+        ],
+        [
+          320.846,
+          295.486
+        ]
+      ],
+      "bbox": {
+        "x": 320.846,
+        "y": 285.033,
+        "width": 6.4459999999999695,
+        "height": 10.836000000000013
+      },
+      "detection_score": 0.9529350996017456,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9521767792614372,
+      "words": null
+    },
+    {
+      "text": "5",
+      "quad": [
+        [
+          319.768,
+          305.22
+        ],
+        [
+          327.232,
+          305.22
+        ],
+        [
+          327.232,
+          317.143
+        ],
+        [
+          319.768,
+          317.143
+        ]
+      ],
+      "bbox": {
+        "x": 319.768,
+        "y": 305.22,
+        "width": 7.4640000000000555,
+        "height": 11.922999999999945
+      },
+      "detection_score": 0.8656807541847229,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9962656917676477,
+      "words": null
+    },
+    {
+      "text": "5",
+      "quad": [
+        [
+          319.131,
+          328.405
+        ],
+        [
+          325.958,
+          328.405
+        ],
+        [
+          325.958,
+          337.321
+        ],
+        [
+          319.131,
+          337.321
+        ]
+      ],
+      "bbox": {
+        "x": 319.131,
+        "y": 328.405,
+        "width": 6.827000000000055,
+        "height": 8.916000000000054
+      },
+      "detection_score": 0.9607782363891602,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9960719645017672,
+      "words": null
+    },
+    {
+      "text": "银牌",
+      "quad": [
+        [
+          366.869,
+          7.502
+        ],
+        [
+          386.931,
+          8.84
+        ],
+        [
+          386.249,
+          19.07
+        ],
+        [
+          366.187,
+          17.732
+        ]
+      ],
+      "bbox": {
+        "x": 366.187,
+        "y": 7.502,
+        "width": 20.74399999999997,
+        "height": 11.568000000000001
+      },
+      "detection_score": 0.9764643907546997,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.82406821009292,
+      "words": null
+    },
+    {
+      "text": "22",
+      "quad": [
+        [
+          369.503,
+          29.94
+        ],
+        [
+          382.577,
+          29.191
+        ],
+        [
+          383.11,
+          38.482
+        ],
+        [
+          370.036,
+          39.232
+        ]
+      ],
+      "bbox": {
+        "x": 369.503,
+        "y": 29.191,
+        "width": 13.607000000000028,
+        "height": 10.041
+      },
+      "detection_score": 0.9011707305908203,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9972658785815484,
+      "words": null
+    },
+    {
+      "text": "39",
+      "quad": [
+        [
+          368.125,
+          50.494
+        ],
+        [
+          383.69,
+          50.494
+        ],
+        [
+          383.69,
+          61.143
+        ],
+        [
+          368.125,
+          61.143
+        ]
+      ],
+      "bbox": {
+        "x": 368.125,
+        "y": 50.494,
+        "width": 15.564999999999998,
+        "height": 10.649000000000001
+      },
+      "detection_score": 0.9274449944496155,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9964621325264438,
+      "words": null
+    },
+    {
+      "text": "13",
+      "quad": [
+        [
+          370.245,
+          72.384
+        ],
+        [
+          382.619,
+          72.673
+        ],
+        [
+          382.41,
+          81.611
+        ],
+        [
+          370.036,
+          81.321
+        ]
+      ],
+      "bbox": {
+        "x": 370.036,
+        "y": 72.384,
+        "width": 12.583000000000027,
+        "height": 9.227000000000004
+      },
+      "detection_score": 0.9816930890083313,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9968366029846404,
+      "words": null
+    },
+    {
+      "text": "13",
+      "quad": [
+        [
+          371.627,
+          93.212
+        ],
+        [
+          383.507,
+          93.922
+        ],
+        [
+          382.91,
+          103.899
+        ],
+        [
+          371.03,
+          103.188
+        ]
+      ],
+      "bbox": {
+        "x": 371.03,
+        "y": 93.212,
+        "width": 12.477000000000032,
+        "height": 10.686999999999998
+      },
+      "detection_score": 0.8674453496932983,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9969290068112165,
+      "words": null
+    },
+    {
+      "text": "11",
+      "quad": [
+        [
+          369.927,
+          115.11
+        ],
+        [
+          381.066,
+          114.242
+        ],
+        [
+          381.811,
+          123.817
+        ],
+        [
+          370.673,
+          124.685
+        ]
+      ],
+      "bbox": {
+        "x": 369.927,
+        "y": 114.242,
+        "width": 11.883999999999958,
+        "height": 10.442999999999998
+      },
+      "detection_score": 0.8640468120574951,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9932048223299125,
+      "words": null
+    },
+    {
+      "text": "15",
+      "quad": [
+        [
+          369.399,
+          136.405
+        ],
+        [
+          383.054,
+          136.405
+        ],
+        [
+          383.054,
+          145.321
+        ],
+        [
+          369.399,
+          145.321
+        ]
+      ],
+      "bbox": {
+        "x": 369.399,
+        "y": 136.405,
+        "width": 13.654999999999973,
+        "height": 8.915999999999997
+      },
+      "detection_score": 0.9816930890083313,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9718355666768499,
+      "words": null
+    },
+    {
+      "text": "11",
+      "quad": [
+        [
+          371.588,
+          157.089
+        ],
+        [
+          381.419,
+          157.635
+        ],
+        [
+          380.897,
+          167.02
+        ],
+        [
+          371.067,
+          166.473
+        ]
+      ],
+      "bbox": {
+        "x": 371.067,
+        "y": 157.089,
+        "width": 10.351999999999975,
+        "height": 9.931000000000012
+      },
+      "detection_score": 0.8483633399009705,
+      "vertical": true,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.993980805719448,
+      "words": null
+    },
+    {
+      "text": "8",
+      "quad": [
+        [
+          371.66,
+          179.173
+        ],
+        [
+          380.334,
+          179.715
+        ],
+        [
+          379.763,
+          188.85
+        ],
+        [
+          371.089,
+          188.308
+        ]
+      ],
+      "bbox": {
+        "x": 371.089,
+        "y": 179.173,
+        "width": 9.245000000000005,
+        "height": 9.676999999999992
+      },
+      "detection_score": 0.9009775519371033,
+      "vertical": true,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9973139012626413,
+      "words": null
+    },
+    {
+      "text": "9",
+      "quad": [
+        [
+          372.93,
+          200.323
+        ],
+        [
+          382.305,
+          200.96
+        ],
+        [
+          381.78,
+          208.685
+        ],
+        [
+          372.405,
+          208.048
+        ]
+      ],
+      "bbox": {
+        "x": 372.405,
+        "y": 200.323,
+        "width": 9.900000000000034,
+        "height": 8.361999999999995
+      },
+      "detection_score": 0.9274450540542603,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9920646388056182,
+      "words": null
+    },
+    {
+      "text": "16",
+      "quad": [
+        [
+          371.131,
+          221.679
+        ],
+        [
+          382.417,
+          221.679
+        ],
+        [
+          382.417,
+          231.232
+        ],
+        [
+          371.131,
+          231.232
+        ]
+      ],
+      "bbox": {
+        "x": 371.131,
+        "y": 221.679,
+        "width": 11.286000000000001,
+        "height": 9.552999999999997
+      },
+      "detection_score": 0.9712356925010681,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.995301639943043,
+      "words": null
+    },
+    {
+      "text": "5",
+      "quad": [
+        [
+          373.684,
+          243.074
+        ],
+        [
+          380.157,
+          243.662
+        ],
+        [
+          379.306,
+          253.018
+        ],
+        [
+          372.833,
+          252.429
+        ]
+      ],
+      "bbox": {
+        "x": 372.833,
+        "y": 243.074,
+        "width": 7.323999999999955,
+        "height": 9.943999999999988
+      },
+      "detection_score": 0.8862688541412354,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9947168913103139,
+      "words": null
+    },
+    {
+      "text": "4",
+      "quad": [
+        [
+          374.051,
+          263.73
+        ],
+        [
+          382.968,
+          265.004
+        ],
+        [
+          381.78,
+          273.321
+        ],
+        [
+          372.863,
+          272.048
+        ]
+      ],
+      "bbox": {
+        "x": 372.863,
+        "y": 263.73,
+        "width": 10.105000000000018,
+        "height": 9.591000000000008
+      },
+      "detection_score": 0.8392103910446167,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9967705357804169,
+      "words": null
+    },
+    {
+      "text": "4",
+      "quad": [
+        [
+          374.315,
+          286.315
+        ],
+        [
+          379.293,
+          287.081
+        ],
+        [
+          378.019,
+          295.361
+        ],
+        [
+          373.042,
+          294.595
+        ]
+      ],
+      "bbox": {
+        "x": 373.042,
+        "y": 286.315,
+        "width": 6.251000000000033,
+        "height": 9.045999999999992
+      },
+      "detection_score": 0.9607782363891602,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9925070044466913,
+      "words": null
+    },
+    {
+      "text": "11",
+      "quad": [
+        [
+          371.946,
+          306.315
+        ],
+        [
+          382.308,
+          306.963
+        ],
+        [
+          381.66,
+          317.331
+        ],
+        [
+          371.298,
+          316.684
+        ]
+      ],
+      "bbox": {
+        "x": 371.298,
+        "y": 306.315,
+        "width": 11.009999999999991,
+        "height": 11.01600000000002
+      },
+      "detection_score": 0.8555501103401184,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9811412488602124,
+      "words": null
+    },
+    {
+      "text": "4",
+      "quad": [
+        [
+          374.335,
+          328.352
+        ],
+        [
+          381.799,
+          328.989
+        ],
+        [
+          381.143,
+          336.685
+        ],
+        [
+          373.679,
+          336.048
+        ]
+      ],
+      "bbox": {
+        "x": 373.679,
+        "y": 328.352,
+        "width": 8.120000000000005,
+        "height": 8.333000000000027
+      },
+      "detection_score": 0.8784258365631104,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9960201680742125,
+      "words": null
+    },
+    {
+      "text": "鋼牌",
+      "quad": [
+        [
+          419.488,
+          8.405
+        ],
+        [
+          440.149,
+          8.405
+        ],
+        [
+          440.149,
+          17.958
+        ],
+        [
+          419.488,
+          17.958
+        ]
+      ],
+      "bbox": {
+        "x": 419.488,
+        "y": 8.405,
+        "width": 20.661,
+        "height": 9.552999999999999
+      },
+      "detection_score": 0.9850918054580688,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.7044080597313336,
+      "words": null
+    },
+    {
+      "text": "30",
+      "quad": [
+        [
+          423.768,
+          30.315
+        ],
+        [
+          436.964,
+          30.315
+        ],
+        [
+          436.964,
+          39.232
+        ],
+        [
+          423.768,
+          39.232
+        ]
+      ],
+      "bbox": {
+        "x": 423.768,
+        "y": 30.315,
+        "width": 13.196000000000026,
+        "height": 8.916999999999998
+      },
+      "detection_score": 0.9091445803642273,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9971623609841155,
+      "words": null
+    },
+    {
+      "text": "37",
+      "quad": [
+        [
+          422.787,
+          51.079
+        ],
+        [
+          435.935,
+          50.537
+        ],
+        [
+          436.327,
+          60.048
+        ],
+        [
+          423.18,
+          60.59
+        ]
+      ],
+      "bbox": {
+        "x": 422.787,
+        "y": 50.537,
+        "width": 13.54000000000002,
+        "height": 10.053000000000004
+      },
+      "detection_score": 0.8921511769294739,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9981462404856568,
+      "words": null
+    },
+    {
+      "text": "23",
+      "quad": [
+        [
+          423.131,
+          72.405
+        ],
+        [
+          437.601,
+          72.405
+        ],
+        [
+          437.601,
+          81.958
+        ],
+        [
+          423.131,
+          81.958
+        ]
+      ],
+      "bbox": {
+        "x": 423.131,
+        "y": 72.405,
+        "width": 14.470000000000027,
+        "height": 9.552999999999997
+      },
+      "detection_score": 0.9869217872619629,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9960935407247242,
+      "words": null
+    },
+    {
+      "text": "19",
+      "quad": [
+        [
+          425.042,
+          93.679
+        ],
+        [
+          437.601,
+          93.679
+        ],
+        [
+          437.601,
+          103.869
+        ],
+        [
+          425.042,
+          103.869
+        ]
+      ],
+      "bbox": {
+        "x": 425.042,
+        "y": 93.679,
+        "width": 12.559000000000026,
+        "height": 10.189999999999998
+      },
+      "detection_score": 0.8941119313240051,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9955750933075262,
+      "words": null
+    },
+    {
+      "text": "14",
+      "quad": [
+        [
+          423.967,
+          115.023
+        ],
+        [
+          437.721,
+          114.247
+        ],
+        [
+          438.26,
+          123.796
+        ],
+        [
+          424.506,
+          124.572
+        ]
+      ],
+      "bbox": {
+        "x": 423.967,
+        "y": 114.247,
+        "width": 14.293000000000006,
+        "height": 10.325000000000003
+      },
+      "detection_score": 0.8921511769294739,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9966019822257578,
+      "words": null
+    },
+    {
+      "text": "17",
+      "quad": [
+        [
+          423.768,
+          135.768
+        ],
+        [
+          436.964,
+          135.768
+        ],
+        [
+          436.964,
+          145.321
+        ],
+        [
+          423.768,
+          145.321
+        ]
+      ],
+      "bbox": {
+        "x": 423.768,
+        "y": 135.768,
+        "width": 13.196000000000026,
+        "height": 9.552999999999997
+      },
+      "detection_score": 0.9490135312080383,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9951198988681885,
+      "words": null
+    },
+    {
+      "text": "8",
+      "quad": [
+        [
+          427.131,
+          157.679
+        ],
+        [
+          432.863,
+          157.679
+        ],
+        [
+          432.863,
+          166.595
+        ],
+        [
+          427.131,
+          166.595
+        ]
+      ],
+      "bbox": {
+        "x": 427.131,
+        "y": 157.679,
+        "width": 5.732000000000028,
+        "height": 8.915999999999997
+      },
+      "detection_score": 0.8960727453231812,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9788706929281067,
+      "words": null
+    },
+    {
+      "text": "8",
+      "quad": [
+        [
+          426.952,
+          179.131
+        ],
+        [
+          432.685,
+          179.131
+        ],
+        [
+          432.685,
+          188.506
+        ],
+        [
+          426.952,
+          188.506
+        ]
+      ],
+      "bbox": {
+        "x": 426.952,
+        "y": 179.131,
+        "width": 5.733000000000004,
+        "height": 9.375
+      },
+      "detection_score": 0.8980334997177124,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9774097027285915,
+      "words": null
+    },
+    {
+      "text": "10",
+      "quad": [
+        [
+          423.768,
+          200.405
+        ],
+        [
+          436.964,
+          200.405
+        ],
+        [
+          436.964,
+          209.321
+        ],
+        [
+          423.768,
+          209.321
+        ]
+      ],
+      "bbox": {
+        "x": 423.768,
+        "y": 200.405,
+        "width": 13.196000000000026,
+        "height": 8.915999999999997
+      },
+      "detection_score": 0.9280986785888672,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9945869953540506,
+      "words": null
+    },
+    {
+      "text": "20",
+      "quad": [
+        [
+          423.866,
+          221.294
+        ],
+        [
+          437.718,
+          220.542
+        ],
+        [
+          438.292,
+          231.126
+        ],
+        [
+          424.44,
+          231.877
+        ]
+      ],
+      "bbox": {
+        "x": 423.866,
+        "y": 220.542,
+        "width": 14.425999999999988,
+        "height": 11.335000000000008
+      },
+      "detection_score": 0.8575108647346497,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9957278653035451,
+      "words": null
+    },
+    {
+      "text": "4",
+      "quad": [
+        [
+          425.247,
+          241.817
+        ],
+        [
+          434.867,
+          242.323
+        ],
+        [
+          434.317,
+          252.772
+        ],
+        [
+          424.697,
+          252.266
+        ]
+      ],
+      "bbox": {
+        "x": 424.697,
+        "y": 241.817,
+        "width": 10.170000000000016,
+        "height": 10.954999999999984
+      },
+      "detection_score": 0.8915004730224609,
+      "vertical": true,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9967990231122689,
+      "words": null
+    },
+    {
+      "text": "11",
+      "quad": [
+        [
+          424.863,
+          264.405
+        ],
+        [
+          435.69,
+          264.405
+        ],
+        [
+          435.69,
+          272.685
+        ],
+        [
+          424.863,
+          272.685
+        ]
+      ],
+      "bbox": {
+        "x": 424.863,
+        "y": 264.405,
+        "width": 10.826999999999998,
+        "height": 8.28000000000003
+      },
+      "detection_score": 0.9359416961669922,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9932914909387912,
+      "words": null
+    },
+    {
+      "text": "6",
+      "quad": [
+        [
+          427.136,
+          285.606
+        ],
+        [
+          434.026,
+          286.065
+        ],
+        [
+          433.384,
+          295.691
+        ],
+        [
+          426.494,
+          295.232
+        ]
+      ],
+      "bbox": {
+        "x": 426.494,
+        "y": 285.606,
+        "width": 7.531999999999982,
+        "height": 10.08499999999998
+      },
+      "detection_score": 0.8862688541412354,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9947602489533676,
+      "words": null
+    },
+    {
+      "text": "3",
+      "quad": [
+        [
+          426.952,
+          306.494
+        ],
+        [
+          433.91,
+          307.074
+        ],
+        [
+          433.077,
+          317.069
+        ],
+        [
+          426.119,
+          316.49
+        ]
+      ],
+      "bbox": {
+        "x": 426.119,
+        "y": 306.494,
+        "width": 7.790999999999997,
+        "height": 10.574999999999989
+      },
+      "detection_score": 0.9039158225059509,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9979977456287749,
+      "words": null
+    },
+    {
+      "text": "2",
+      "quad": [
+        [
+          425.336,
+          326.806
+        ],
+        [
+          433.986,
+          327.315
+        ],
+        [
+          433.284,
+          339.256
+        ],
+        [
+          424.633,
+          338.747
+        ]
+      ],
+      "bbox": {
+        "x": 424.633,
+        "y": 326.806,
+        "width": 9.353000000000009,
+        "height": 12.449999999999989
+      },
+      "detection_score": 0.915683388710022,
+      "vertical": true,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9959689923473856,
+      "words": null
+    },
+    {
+      "text": "奖牌总数",
+      "quad": [
+        [
+          482.214,
+          7.131
+        ],
+        [
+          520.048,
+          7.131
+        ],
+        [
+          520.048,
+          17.958
+        ],
+        [
+          482.214,
+          17.958
+        ]
+      ],
+      "bbox": {
+        "x": 482.214,
+        "y": 7.131,
+        "width": 37.834,
+        "height": 10.826999999999998
+      },
+      "detection_score": 0.9912790656089783,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.7193414133650846,
+      "words": null
+    },
+    {
+      "text": "100",
+      "quad": [
+        [
+          493.399,
+          29.042
+        ],
+        [
+          512.149,
+          29.042
+        ],
+        [
+          512.149,
+          39.232
+        ],
+        [
+          493.399,
+          39.232
+        ]
+      ],
+      "bbox": {
+        "x": 493.399,
+        "y": 29.042,
+        "width": 18.75,
+        "height": 10.189999999999998
+      },
+      "detection_score": 0.9271649718284607,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9962287121591853,
+      "words": null
+    },
+    {
+      "text": "112",
+      "quad": [
+        [
+          492.762,
+          50.952
+        ],
+        [
+          510.875,
+          50.952
+        ],
+        [
+          510.875,
+          61.143
+        ],
+        [
+          492.762,
+          61.143
+        ]
+      ],
+      "bbox": {
+        "x": 492.762,
+        "y": 50.952,
+        "width": 18.113,
+        "height": 10.191000000000003
+      },
+      "detection_score": 0.9230333566665649,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9954173479341721,
+      "words": null
+    },
+    {
+      "text": "60",
+      "quad": [
+        [
+          496.275,
+          71.685
+        ],
+        [
+          510.07,
+          72.411
+        ],
+        [
+          509.563,
+          82.047
+        ],
+        [
+          495.768,
+          81.321
+        ]
+      ],
+      "bbox": {
+        "x": 495.768,
+        "y": 71.685,
+        "width": 14.302000000000021,
+        "height": 10.361999999999995
+      },
+      "detection_score": 0.9830002784729004,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9829698476370937,
+      "words": null
+    },
+    {
+      "text": "51",
+      "quad": [
+        [
+          494.952,
+          93.679
+        ],
+        [
+          508.964,
+          93.679
+        ],
+        [
+          508.964,
+          103.232
+        ],
+        [
+          494.952,
+          103.232
+        ]
+      ],
+      "bbox": {
+        "x": 494.952,
+        "y": 93.679,
+        "width": 14.012,
+        "height": 9.552999999999997
+      },
+      "detection_score": 0.8562037348747253,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9945284243682577,
+      "words": null
+    },
+    {
+      "text": "41",
+      "quad": [
+        [
+          496.226,
+          114.315
+        ],
+        [
+          508.327,
+          114.315
+        ],
+        [
+          508.327,
+          124.506
+        ],
+        [
+          496.226,
+          124.506
+        ]
+      ],
+      "bbox": {
+        "x": 496.226,
+        "y": 114.315,
+        "width": 12.100999999999999,
+        "height": 10.191000000000003
+      },
+      "detection_score": 0.8960728049278259,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9954120932381195,
+      "words": null
+    },
+    {
+      "text": "46",
+      "quad": [
+        [
+          495.768,
+          135.768
+        ],
+        [
+          510.238,
+          135.768
+        ],
+        [
+          510.238,
+          145.321
+        ],
+        [
+          495.768,
+          145.321
+        ]
+      ],
+      "bbox": {
+        "x": 495.768,
+        "y": 135.768,
+        "width": 14.470000000000027,
+        "height": 9.552999999999997
+      },
+      "detection_score": 0.9673141837120056,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9856397711323522,
+      "words": null
+    },
+    {
+      "text": "32",
+      "quad": [
+        [
+          495.768,
+          156.405
+        ],
+        [
+          510.417,
+          156.405
+        ],
+        [
+          510.417,
+          167.232
+        ],
+        [
+          495.768,
+          167.232
+        ]
+      ],
+      "bbox": {
+        "x": 495.768,
+        "y": 156.405,
+        "width": 14.649000000000001,
+        "height": 10.826999999999998
+      },
+      "detection_score": 0.8650924563407898,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9975591357769832,
+      "words": null
+    },
+    {
+      "text": "25",
+      "quad": [
+        [
+          495.074,
+          178.021
+        ],
+        [
+          508.366,
+          177.239
+        ],
+        [
+          509.023,
+          188.411
+        ],
+        [
+          495.732,
+          189.193
+        ]
+      ],
+      "bbox": {
+        "x": 495.074,
+        "y": 177.239,
+        "width": 13.949000000000012,
+        "height": 11.954000000000008
+      },
+      "detection_score": 0.9163339734077454,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9965632395833925,
+      "words": null
+    },
+    {
+      "text": "27",
+      "quad": [
+        [
+          495.594,
+          199.72
+        ],
+        [
+          508.791,
+          200.357
+        ],
+        [
+          508.327,
+          209.958
+        ],
+        [
+          495.131,
+          209.321
+        ]
+      ],
+      "bbox": {
+        "x": 495.131,
+        "y": 199.72,
+        "width": 13.660000000000025,
+        "height": 10.238
+      },
+      "detection_score": 0.9777715802192688,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9975542272899555,
+      "words": null
+    },
+    {
+      "text": "43",
+      "quad": [
+        [
+          496.405,
+          221.042
+        ],
+        [
+          508.964,
+          221.042
+        ],
+        [
+          508.964,
+          231.232
+        ],
+        [
+          496.405,
+          231.232
+        ]
+      ],
+      "bbox": {
+        "x": 496.405,
+        "y": 221.042,
+        "width": 12.559000000000026,
+        "height": 10.189999999999998
+      },
+      "detection_score": 0.8892099857330322,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9971830613558926,
+      "words": null
+    },
+    {
+      "text": "16",
+      "quad": [
+        [
+          496.226,
+          241.857
+        ],
+        [
+          508.964,
+          241.857
+        ],
+        [
+          508.964,
+          253.143
+        ],
+        [
+          496.226,
+          253.143
+        ]
+      ],
+      "bbox": {
+        "x": 496.226,
+        "y": 241.857,
+        "width": 12.738,
+        "height": 11.286000000000001
+      },
+      "detection_score": 0.8457462191581726,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9936217666646097,
+      "words": null
+    },
+    {
+      "text": "22",
+      "quad": [
+        [
+          495.589,
+          264.405
+        ],
+        [
+          509.601,
+          264.405
+        ],
+        [
+          509.601,
+          272.685
+        ],
+        [
+          495.589,
+          272.685
+        ]
+      ],
+      "bbox": {
+        "x": 495.589,
+        "y": 264.405,
+        "width": 14.012,
+        "height": 8.28000000000003
+      },
+      "detection_score": 0.9738500118255615,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9974320752913728,
+      "words": null
+    },
+    {
+      "text": "16",
+      "quad": [
+        [
+          497.042,
+          285.679
+        ],
+        [
+          509.143,
+          285.679
+        ],
+        [
+          509.143,
+          295.232
+        ],
+        [
+          497.042,
+          295.232
+        ]
+      ],
+      "bbox": {
+        "x": 497.042,
+        "y": 285.679,
+        "width": 12.100999999999999,
+        "height": 9.553000000000054
+      },
+      "detection_score": 0.8462691307067871,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9948643212508052,
+      "words": null
+    },
+    {
+      "text": "19",
+      "quad": [
+        [
+          497.22,
+          305.857
+        ],
+        [
+          507.869,
+          305.857
+        ],
+        [
+          507.869,
+          317.143
+        ],
+        [
+          497.22,
+          317.143
+        ]
+      ],
+      "bbox": {
+        "x": 497.22,
+        "y": 305.857,
+        "width": 10.649000000000001,
+        "height": 11.285999999999945
+      },
+      "detection_score": 0.9323470592498779,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9938532972118493,
+      "words": null
+    },
+    {
+      "text": "11",
+      "quad": [
+        [
+          497.998,
+          328.355
+        ],
+        [
+          508.228,
+          329.017
+        ],
+        [
+          507.69,
+          337.321
+        ],
+        [
+          497.46,
+          336.659
+        ]
+      ],
+      "bbox": {
+        "x": 497.46,
+        "y": 328.355,
+        "width": 10.768000000000029,
+        "height": 8.966000000000008
+      },
+      "detection_score": 0.9529350399971008,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9861581651890854,
+      "words": null
+    }
+  ],
+  "width": 550,
+  "height": 345,
+  "elapsed_seconds": 0.7058585,
+  "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
+  "warnings": [
+    "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."
+  ]
+}

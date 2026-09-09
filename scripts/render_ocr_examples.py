@@ -84,8 +84,17 @@ def render(args):
     if not 0 <= args.min_confidence <= 1 or not 0 <= args.min_detection_score <= 1:
         raise ValueError("confidence thresholds must be in [0, 1]")
     args.output.mkdir(parents=True, exist_ok=True)
+    cases = CASES
+    if args.suite == "paddleocr":
+        source_manifest = json.loads((ROOT / "testdata/paddleocr/manifest.json").read_text())
+        cases = []
+        for item in source_manifest["files"]:
+            source = "testdata/paddleocr/" + item["file"]
+            if hashlib.sha256((ROOT / source).read_bytes()).hexdigest() != item["sha256"]:
+                raise ValueError(f"original source hash mismatch: {source}")
+            cases.append((Path(item["file"]).stem, source))
     entries = []
-    for name, source in CASES:
+    for name, source in cases:
         command = [args.oneocr, "recognize", "--format", "json"]
         if args.home:
             command += ["--home", str(args.home)]
@@ -136,6 +145,8 @@ def render(args):
             min(original.width, math.ceil(max([content[2], *xs])) + 18),
             min(original.height, math.ceil(max([content[3], *ys])) + 18),
         ]
+        if args.suite == "paddleocr":
+            crop = [0, 0, original.width, original.height]
         scaled_crop = tuple(value * SCALE for value in crop)
         boxes = boxes.crop(scaled_crop)
         reconstructed = reconstructed.crop(scaled_crop)
@@ -150,6 +161,7 @@ def render(args):
             {
                 "name": name,
                 "source": source,
+                "source_size": list(original.size),
                 "source_sha256": hashlib.sha256(
                     (ROOT / source).read_bytes()
                 ).hexdigest(),
@@ -168,6 +180,7 @@ def render(args):
             flush=True,
         )
     metadata = {
+        "suite": args.suite,
         "recognition_confidence_min": args.min_confidence,
         "detection_score_min": args.min_detection_score,
         "confidence_method": "ctc_token_geometric_mean",
@@ -177,11 +190,17 @@ def render(args):
     (args.output / "manifest.json").write_text(
         json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
+    if args.suite == "paddleocr":
+        from paddleocr_results import write_pages
+
+        write_pages(metadata, args.output)
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--oneocr", default="oneocr", help="installed OneOCR CLI")
+    parser.add_argument("--suite", choices=("readme", "paddleocr"), default="readme",
+                        help="main README examples or all original PaddleOCR images")
     parser.add_argument(
         "--home", type=Path, help="already prepared OneOCR installation"
     )
@@ -191,10 +210,13 @@ def main():
         required=True,
         help="local font supporting the sample writing systems",
     )
-    parser.add_argument("--output", type=Path, default=ROOT / "docs/assets/ocr-results")
+    parser.add_argument("--output", type=Path)
     parser.add_argument("--min-confidence", type=float, default=0.70)
     parser.add_argument("--min-detection-score", type=float, default=0.70)
-    render(parser.parse_args())
+    args = parser.parse_args()
+    if args.output is None:
+        args.output = ROOT / "docs/assets" / ("paddleocr-results" if args.suite == "paddleocr" else "ocr-results")
+    render(args)
 
 
 if __name__ == "__main__":

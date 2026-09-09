@@ -1,0 +1,221 @@
+{
+  "confidence": 0.7512717994209182,
+  "confidence_method": "ctc_token_geometric_mean",
+  "coordinate_space": "oriented_image",
+  "text": "So(v)=.\nDO\n2z2\n2\ndw.\ndz 22 + w2)u+TŽ(u; 2)eicz",
+  "lines": [
+    {
+      "text": "So(v)=.",
+      "quad": [
+        [
+          0.295,
+          10.352
+        ],
+        [
+          61.749,
+          8.923
+        ],
+        [
+          62.26,
+          30.923
+        ],
+        [
+          0.807,
+          32.352
+        ]
+      ],
+      "bbox": {
+        "x": 0.295,
+        "y": 8.923,
+        "width": 61.964999999999996,
+        "height": 23.428999999999995
+      },
+      "detection_score": 0.8619979023933411,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.8701658164391168,
+      "words": null
+    },
+    {
+      "text": "DO",
+      "quad": [
+        [
+          131.131,
+          0
+        ],
+        [
+          158.875,
+          0
+        ],
+        [
+          158.875,
+          9.321
+        ],
+        [
+          131.131,
+          9.321
+        ]
+      ],
+      "bbox": {
+        "x": 131.131,
+        "y": 0,
+        "width": 27.744,
+        "height": 9.321
+      },
+      "detection_score": 0.8268855214118958,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.5329725294359571,
+      "words": null
+    },
+    {
+      "text": "2z2",
+      "quad": [
+        [
+          256.405,
+          0
+        ],
+        [
+          287.232,
+          0
+        ],
+        [
+          287.232,
+          16.964
+        ],
+        [
+          256.405,
+          16.964
+        ]
+      ],
+      "bbox": {
+        "x": 256.405,
+        "y": 0,
+        "width": 30.827000000000055,
+        "height": 16.964
+      },
+      "detection_score": 0.9025583267211914,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9613727751275333,
+      "words": null
+    },
+    {
+      "text": "2",
+      "quad": [
+        [
+          274.687,
+          0.527
+        ],
+        [
+          284.42,
+          0.527
+        ],
+        [
+          284.42,
+          11.233
+        ],
+        [
+          274.687,
+          11.233
+        ]
+      ],
+      "bbox": {
+        "x": 274.687,
+        "y": 0.527,
+        "width": 9.733000000000004,
+        "height": 10.706000000000001
+      },
+      "detection_score": 0.7254878878593445,
+      "vertical": true,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9921194793061651,
+      "words": null
+    },
+    {
+      "text": "dw.",
+      "quad": [
+        [
+          149.398,
+          7.12
+        ],
+        [
+          208.102,
+          5.897
+        ],
+        [
+          208.719,
+          35.499
+        ],
+        [
+          150.015,
+          36.722
+        ]
+      ],
+      "bbox": {
+        "x": 149.398,
+        "y": 5.897,
+        "width": 59.321,
+        "height": 30.825000000000003
+      },
+      "detection_score": 0.8419553637504578,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.7810055218158156,
+      "words": null
+    },
+    {
+      "text": "dz 22 + w2)u+TŽ(u; 2)eicz",
+      "quad": [
+        [
+          195.457,
+          9.885
+        ],
+        [
+          412.249,
+          4.499
+        ],
+        [
+          413.068,
+          37.479
+        ],
+        [
+          196.276,
+          42.865
+        ]
+      ],
+      "bbox": {
+        "x": 195.457,
+        "y": 4.499,
+        "width": 217.611,
+        "height": 38.366
+      },
+      "detection_score": 0.8887952566146851,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.7081971938026272,
+      "words": null
+    }
+  ],
+  "width": 448,
+  "height": 64,
+  "elapsed_seconds": 0.113559667,
+  "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
+  "warnings": [
+    "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied.",
+    "Skipped 1 line(s) classified as Cyrillic: recognizer not included in this model package.",
+    "Skipped 1 line(s) classified as Greek: recognizer not included in this model package."
+  ]
+}

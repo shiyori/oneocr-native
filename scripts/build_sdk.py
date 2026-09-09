@@ -63,6 +63,12 @@ def licenses(destination: Path, runtime_directory: Path | None = None) -> None:
 
 
 def copy_docs(destination: Path) -> None:
+    try:
+        docs_ref = subprocess.check_output(
+            ["git", "rev-parse", "--verify", "HEAD"], cwd=ROOT, text=True, stderr=subprocess.DEVNULL
+        ).strip()
+    except (OSError, subprocess.CalledProcessError):
+        docs_ref = TAG
     for name in ("README.md", "README.en.md", "README.ja.md", "LICENSE", "THIRD_PARTY_NOTICES.md"):
         copy(ROOT / name, destination / name)
         if name.endswith(".md"):
@@ -73,13 +79,18 @@ def copy_docs(destination: Path) -> None:
                         "README.ja.md": ("テスト結果", "テスト画像と認識結果を見る")}
             if name in captions:
                 heading, label = captions[name]
-                url = f"https://github.com/shiyori/oneocr-native/blob/{TAG}/{name}#" + heading.lower().replace(" ", "-")
+                url = f"https://github.com/shiyori/oneocr-native/blob/{docs_ref}/{name}#" + heading.lower().replace(" ", "-")
                 text = re.sub(r"(?ms)^## " + re.escape(heading) + r"\n.*?(?=^## |\Z)",
                               f"## {heading}\n\n[{label}]({url})\n\n", text)
-            text = text.replace("](testdata/", f"](https://github.com/shiyori/oneocr-native/blob/{TAG}/testdata/")
+            text = text.replace("](testdata/", f"](https://github.com/shiyori/oneocr-native/blob/{docs_ref}/testdata/")
             target.write_text(text, encoding="utf-8")
     for language in ("zh-CN", "en", "ja"):
         shutil.copytree(ROOT / "docs" / language, destination / "docs" / language, dirs_exist_ok=True)
+        results = destination / "docs" / language / "test-results.md"
+        if results.exists():
+            heading = results.read_text(encoding="utf-8").splitlines()[0]
+            url = f"https://github.com/shiyori/oneocr-native/blob/{docs_ref}/docs/{language}/test-results.md"
+            results.write_text(f"{heading}\n\n[{heading.removeprefix('# ')}]({url})\n", encoding="utf-8")
 
 
 def copy_go(destination: Path) -> None:

@@ -1,0 +1,234 @@
+{
+  "suite": "paddleocr",
+  "recognition_confidence_min": 0.7,
+  "detection_score_min": 0.7,
+  "confidence_method": "ctc_token_geometric_mean",
+  "font_family": "Arial Unicode MS",
+  "examples": [
+    {
+      "name": "book",
+      "source": "testdata/paddleocr/book.jpg",
+      "source_size": [
+        1100,
+        708
+      ],
+      "source_sha256": "782cc71a2730020ea8da815de3e40a964b7f150c183d1f8c01dd211de9dcbcc4",
+      "recognized_lines": 44,
+      "displayed_lines": 43,
+      "crop": [
+        0,
+        0,
+        1100,
+        708
+      ],
+      "display_scale": 2,
+      "image_size": [
+        2200,
+        1416
+      ],
+      "boxes": "book-boxes.webp",
+      "text": "book-text.webp",
+      "result": "book.json"
+    },
+    {
+      "name": "book_rot180",
+      "source": "testdata/paddleocr/book_rot180.jpg",
+      "source_size": [
+        1100,
+        708
+      ],
+      "source_sha256": "6fb6b8ea8836a0acb46762a85d2bcf97100e33f0c4b49dcfc0b97f5955f4e534",
+      "recognized_lines": 46,
+      "displayed_lines": 46,
+      "crop": [
+        0,
+        0,
+        1100,
+        708
+      ],
+      "display_scale": 2,
+      "image_size": [
+        2200,
+        1416
+      ],
+      "boxes": "book_rot180-boxes.webp",
+      "text": "book_rot180-text.webp",
+      "result": "book_rot180.json"
+    },
+    {
+      "name": "doc_with_formula",
+      "source": "testdata/paddleocr/doc_with_formula.png",
+      "source_size": [
+        816,
+        1056
+      ],
+      "source_sha256": "6b07d28527dc9e930804fa73df562f1a81599c6b8a1a8bbc2a80742fa9f26e80",
+      "recognized_lines": 116,
+      "displayed_lines": 102,
+      "crop": [
+        0,
+        0,
+        816,
+        1056
+      ],
+      "display_scale": 2,
+      "image_size": [
+        1632,
+        2112
+      ],
+      "boxes": "doc_with_formula-boxes.webp",
+      "text": "doc_with_formula-text.webp",
+      "result": "doc_with_formula.json"
+    },
+    {
+      "name": "formula",
+      "source": "testdata/paddleocr/formula.png",
+      "source_size": [
+        448,
+        64
+      ],
+      "source_sha256": "7885d4a349edcdfbfbc439305b8b554c2500f095949bc53d14835656b902dbcc",
+      "recognized_lines": 6,
+      "displayed_lines": 5,
+      "crop": [
+        0,
+        0,
+        448,
+        64
+      ],
+      "display_scale": 2,
+      "image_size": [
+        896,
+        128
+      ],
+      "boxes": "formula-boxes.webp",
+      "text": "formula-text.webp",
+      "result": "formula.json"
+    },
+    {
+      "name": "medal_table",
+      "source": "testdata/paddleocr/medal_table.png",
+      "source_size": [
+        550,
+        345
+      ],
+      "source_sha256": "6d50148ceccb2d5cecc50b084b5105e3167f2d55a8899b29e04c3ebe46e88fa8",
+      "recognized_lines": 96,
+      "displayed_lines": 96,
+      "crop": [
+        0,
+        0,
+        550,
+        345
+      ],
+      "display_scale": 2,
+      "image_size": [
+        1100,
+        690
+      ],
+      "boxes": "medal_table-boxes.webp",
+      "text": "medal_table-text.webp",
+      "result": "medal_table.json"
+    },
+    {
+      "name": "seal",
+      "source": "testdata/paddleocr/seal.png",
+      "source_size": [
+        640,
+        640
+      ],
+      "source_sha256": "be29cb91999450742958c62ead08f93825b92e5fa4290c063cc7991259da6c24",
+      "recognized_lines": 10,
+      "displayed_lines": 6,
+      "crop": [
+        0,
+        0,
+        640,
+        640
+      ],
+      "display_scale": 2,
+      "image_size": [
+        1280,
+        1280
+      ],
+      "boxes": "seal-boxes.webp",
+      "text": "seal-text.webp",
+      "result": "seal.json"
+    },
+    {
+      "name": "table",
+      "source": "testdata/paddleocr/table.jpg",
+      "source_size": [
+        551,
+        132
+      ],
+      "source_sha256": "acd113bb3a89b488941ee0962776a28e45897fa2802cd306ec3bb68d9043115c",
+      "recognized_lines": 12,
+      "displayed_lines": 12,
+      "crop": [
+        0,
+        0,
+        551,
+        132
+      ],
+      "display_scale": 2,
+      "image_size": [
+        1102,
+        264
+      ],
+      "boxes": "table-boxes.webp",
+      "text": "table-text.webp",
+      "result": "table.json"
+    },
+    {
+      "name": "textline",
+      "source": "testdata/paddleocr/textline.png",
+      "source_size": [
+        514,
+        64
+      ],
+      "source_sha256": "5362ba97741413494c507237b5096ef09ed575a501c4d9e68bfeffe17528a6ad",
+      "recognized_lines": 1,
+      "displayed_lines": 1,
+      "crop": [
+        0,
+        0,
+        514,
+        64
+      ],
+      "display_scale": 2,
+      "image_size": [
+        1028,
+        128
+      ],
+      "boxes": "textline-boxes.webp",
+      "text": "textline-text.webp",
+      "result": "textline.json"
+    },
+    {
+      "name": "textline_rot180",
+      "source": "testdata/paddleocr/textline_rot180.jpg",
+      "source_size": [
+        429,
+        48
+      ],
+      "source_sha256": "a642ee32c10f5660d34bd06212a8bfc46ce9f4ea0c09366a510db34f17642127",
+      "recognized_lines": 1,
+      "displayed_lines": 1,
+      "crop": [
+        0,
+        0,
+        429,
+        48
+      ],
+      "display_scale": 2,
+      "image_size": [
+        858,
+        96
+      ],
+      "boxes": "textline_rot180-boxes.webp",
+      "text": "textline_rot180-text.webp",
+      "result": "textline_rot180.json"
+    }
+  ]
+}

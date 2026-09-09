@@ -8,6 +8,7 @@
 - [Python](python.md)
 - [Android](android.md)
 - [認識操作](stages.md)
+- [PaddleOCR 元画像のテスト結果](test-results.md)
 - [既存の ONNX Runtime](runtime.md)
 - [開発ガイド](development.md)
 - [モデルパッケージ形式](model-format.md)

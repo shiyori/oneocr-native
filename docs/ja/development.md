@@ -16,7 +16,7 @@ go test ./...
 go vet ./...
 ```
 
-バージョンの管理元は `version.json` です。変更後に `python scripts/version.py` を実行します。ネイティブ版は `0.1.1`、Python 版は `0.1.1` です。
+バージョンの管理元は `version.json` です。変更後に `python scripts/version.py` を実行します。ネイティブ版と Python 版のバージョンはこのファイルから生成されます。
 
 対象の Linux アーキテクチャ上で完全実行パッケージと共通 Python パッケージをビルドします。
 

@@ -1,0 +1,49 @@
+{
+  "confidence": 0.9968948694770173,
+  "confidence_method": "ctc_token_geometric_mean",
+  "coordinate_space": "oriented_image",
+  "text": "绿洲仕格维花园公寓",
+  "lines": [
+    {
+      "text": "绿洲仕格维花园公寓",
+      "quad": [
+        [
+          0,
+          15.791
+        ],
+        [
+          510.493,
+          0
+        ],
+        [
+          512.256,
+          46.611
+        ],
+        [
+          0.801,
+          63
+        ]
+      ],
+      "bbox": {
+        "x": 0,
+        "y": 0,
+        "width": 512.256,
+        "height": 63
+      },
+      "detection_score": 0.9518396854400635,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9968948694770173,
+      "words": null
+    }
+  ],
+  "width": 514,
+  "height": 64,
+  "elapsed_seconds": 0.065763583,
+  "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
+  "warnings": [
+    "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."
+  ]
+}

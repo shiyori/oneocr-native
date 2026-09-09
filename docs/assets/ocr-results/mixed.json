@@ -211,7 +211,7 @@
   ],
   "width": 1280,
   "height": 720,
-  "elapsed_seconds": 0.265968375,
+  "elapsed_seconds": 0.376350625,
   "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
   "warnings": [
     "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."

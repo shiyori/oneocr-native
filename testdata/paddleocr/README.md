@@ -5,3 +5,5 @@ Source: [PaddlePaddle/PaddleOCR tests/test_files](https://github.com/PaddlePaddl
 The `720p-*.png` derivatives preserve aspect ratio, downscale only when necessary, and add white margins to 1280×720. No upscaling or stretching is applied. Derivative hashes are recorded separately.
 
 No official text ground truth was supplied alongside these files or in their directly associated tests. They support behavior and CPU/candidate comparisons; agreement is not an accuracy score. Books, tables, formulas and seals include content outside ordinary horizontal OCR coverage.
+
+[全部原图测试结果](../../docs/zh-CN/test-results.md) · [All original-image results](../../docs/en/test-results.md) · [元画像の全テスト結果](../../docs/ja/test-results.md)

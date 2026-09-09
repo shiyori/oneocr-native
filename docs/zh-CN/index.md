@@ -8,6 +8,7 @@
 - [Python 接入](python.md)
 - [Android 接入](android.md)
 - [识别操作](stages.md)
+- [PaddleOCR 原图测试结果](test-results.md)
 - [已有 ONNX Runtime](runtime.md)
 - [开发指南](development.md)
 - [模型包格式](model-format.md)

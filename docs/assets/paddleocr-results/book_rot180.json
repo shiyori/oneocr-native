@@ -1,0 +1,1580 @@
+{
+  "confidence": 0.9700840301662724,
+  "confidence_method": "ctc_token_geometric_mean",
+  "coordinate_space": "oriented_image",
+  "text": "chances of the\nchances of the lottery Ja\nt a bit fiddly so\nother prizes, but it all starts to g\nget a\n(How to work out\nwe'll move on to something else.\nfeatures you'll find at: www.murderousmaths.co.uk\nThe disappearing sum\nBumfoss\nIt's Friday evening. The lovely Veronica Gumfloss\ntender moment when each hopeful player closes his\nUnfortunately Veronica's parents heard them\nonly has time to kiss four out of the eleven of them\nif she's going to do it properly.\nWHICH FOUR DO I FANCY MOST?\naem but for goodness sake DON'T reach for the\ncalculator! The most brilliant thing about perms and\n94\nmeans that EVERYTHING ON THE BOTTOM\nALWAYS CANCELS OUT! It's probably the best fun\nyou'll ever have with a pencil so here we go...\n11! = 11×10×9×8×7x6×5x4x3x2x1\n4×3×2×1×7×6×5×4×3×2×1\n4!x7!\n(Before we continue, grab this book and show\nsomebody this sum. Rub their face on it if you need\nto and tell them that this is the sort of thing you do\nfor fun without a calculator these days because\nyou're so brilliant.)\nOff we go then. For starters we'll get rid of the 7!\nbit from top and bottom and get:\n11×10×9×8\n4×3x2x1\nPow! That's already got rid of more than half the\nnumbers. Next we'll see that the 4x2 on the bottom\ncancels out the 8 on top (and we don't need that\n\"x1\" on the bottom either). We're left with...\n11x10x9\n3\nThen the 3 on the bottom divides into the 9 on top\nleaving it as a 3 so all we've got now is:\nVeronica's choices=11x10x3\nLook! No bottom.\n95\n群",
+  "lines": [
+    {
+      "text": "chances of the",
+      "quad": [
+        [
+          593.801,
+          665.209
+        ],
+        [
+          686.591,
+          682.961
+        ],
+        [
+          682.334,
+          705.21
+        ],
+        [
+          589.544,
+          687.458
+        ]
+      ],
+      "bbox": {
+        "x": 589.544,
+        "y": 665.209,
+        "width": 97.04700000000003,
+        "height": 40.00100000000009
+      },
+      "detection_score": 0.8850306272506714,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9707668632128262,
+      "words": null
+    },
+    {
+      "text": "chances of the lottery Ja",
+      "quad": [
+        [
+          754.141,
+          691.628
+        ],
+        [
+          913.159,
+          680.23
+        ],
+        [
+          914.815,
+          703.335
+        ],
+        [
+          755.797,
+          707
+        ]
+      ],
+      "bbox": {
+        "x": 754.141,
+        "y": 680.23,
+        "width": 160.6740000000001,
+        "height": 26.769999999999982
+      },
+      "detection_score": 0.9299426078796387,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9470371109420042,
+      "words": null
+    },
+    {
+      "text": "t a bit fiddly so",
+      "quad": [
+        [
+          594.01,
+          647.68
+        ],
+        [
+          699.298,
+          665.437
+        ],
+        [
+          694.976,
+          691.068
+        ],
+        [
+          589.687,
+          673.311
+        ]
+      ],
+      "bbox": {
+        "x": 589.687,
+        "y": 647.68,
+        "width": 109.61099999999999,
+        "height": 43.388000000000034
+      },
+      "detection_score": 0.8877280354499817,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.8702910643713858,
+      "words": null
+    },
+    {
+      "text": "other prizes, but it all starts to g",
+      "quad": [
+        [
+          705.821,
+          662.843
+        ],
+        [
+          914.629,
+          646.144
+        ],
+        [
+          916.661,
+          671.553
+        ],
+        [
+          707.853,
+          688.252
+        ]
+      ],
+      "bbox": {
+        "x": 705.821,
+        "y": 646.144,
+        "width": 210.83999999999992,
+        "height": 42.10799999999995
+      },
+      "detection_score": 0.9282587170600891,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9628833158741281,
+      "words": null
+    },
+    {
+      "text": "get a",
+      "quad": [
+        [
+          679.488,
+          664.583
+        ],
+        [
+          723.69,
+          664.583
+        ],
+        [
+          723.69,
+          684.327
+        ],
+        [
+          679.488,
+          684.327
+        ]
+      ],
+      "bbox": {
+        "x": 679.488,
+        "y": 664.583,
+        "width": 44.202,
+        "height": 19.744000000000028
+      },
+      "detection_score": 0.8124131560325623,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9891942667397137,
+      "words": null
+    },
+    {
+      "text": "(How to work out",
+      "quad": [
+        [
+          593.529,
+          631.592
+        ],
+        [
+          725.26,
+          648.897
+        ],
+        [
+          721.971,
+          673.932
+        ],
+        [
+          590.24,
+          656.628
+        ]
+      ],
+      "bbox": {
+        "x": 590.24,
+        "y": 631.592,
+        "width": 135.01999999999998,
+        "height": 42.34000000000003
+      },
+      "detection_score": 0.9094057679176331,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9787745027564703,
+      "words": null
+    },
+    {
+      "text": "we'll move on to something else.",
+      "quad": [
+        [
+          706.662,
+          645.95
+        ],
+        [
+          916.659,
+          631.393
+        ],
+        [
+          918.318,
+          655.326
+        ],
+        [
+          708.321,
+          669.883
+        ]
+      ],
+      "bbox": {
+        "x": 706.662,
+        "y": 631.393,
+        "width": 211.65599999999995,
+        "height": 38.49000000000001
+      },
+      "detection_score": 0.9200312495231628,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.988885912340361,
+      "words": null
+    },
+    {
+      "text": "features you'll find at: www.murderousmaths.co.uk",
+      "quad": [
+        [
+          595.594,
+          600.391
+        ],
+        [
+          916.898,
+          602.495
+        ],
+        [
+          916.692,
+          633.958
+        ],
+        [
+          595.388,
+          631.855
+        ]
+      ],
+      "bbox": {
+        "x": 595.388,
+        "y": 600.391,
+        "width": 321.51,
+        "height": 33.56700000000001
+      },
+      "detection_score": 0.9199252724647522,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9741430672463014,
+      "words": null
+    },
+    {
+      "text": "The disappearing sum",
+      "quad": [
+        [
+          791.171,
+          573.512
+        ],
+        [
+          916.973,
+          567.136
+        ],
+        [
+          918.045,
+          588.302
+        ],
+        [
+          792.244,
+          594.677
+        ]
+      ],
+      "bbox": {
+        "x": 791.171,
+        "y": 567.136,
+        "width": 126.87399999999991,
+        "height": 27.541000000000054
+      },
+      "detection_score": 0.9511673450469971,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9936329853019221,
+      "words": null
+    },
+    {
+      "text": "Bumfoss",
+      "quad": [
+        [
+          593.604,
+          545.604
+        ],
+        [
+          648.319,
+          544.552
+        ],
+        [
+          649.043,
+          582.171
+        ],
+        [
+          594.328,
+          583.223
+        ]
+      ],
+      "bbox": {
+        "x": 593.604,
+        "y": 544.552,
+        "width": 55.438999999999965,
+        "height": 38.670999999999935
+      },
+      "detection_score": 0.8058756589889526,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.7213986988066904,
+      "words": null
+    },
+    {
+      "text": "It's Friday evening. The lovely Veronica Gumfloss",
+      "quad": [
+        [
+          595.153,
+          549.379
+        ],
+        [
+          919.682,
+          554.504
+        ],
+        [
+          919.218,
+          583.87
+        ],
+        [
+          594.69,
+          578.745
+        ]
+      ],
+      "bbox": {
+        "x": 594.69,
+        "y": 549.379,
+        "width": 324.99199999999996,
+        "height": 34.490999999999985
+      },
+      "detection_score": 0.9227478504180908,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9537035178915169,
+      "words": null
+    },
+    {
+      "text": "tender moment when each hopeful player closes his",
+      "quad": [
+        [
+          597.706,
+          500.362
+        ],
+        [
+          921.249,
+          505.873
+        ],
+        [
+          920.772,
+          533.867
+        ],
+        [
+          597.23,
+          528.356
+        ]
+      ],
+      "bbox": {
+        "x": 597.23,
+        "y": 500.362,
+        "width": 324.019,
+        "height": 33.50499999999994
+      },
+      "detection_score": 0.9543761610984802,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.991350077276565,
+      "words": null
+    },
+    {
+      "text": "Unfortunately Veronica's parents heard them",
+      "quad": [
+        [
+          598.497,
+          466.399
+        ],
+        [
+          922.22,
+          474.691
+        ],
+        [
+          921.596,
+          499.037
+        ],
+        [
+          597.873,
+          490.744
+        ]
+      ],
+      "bbox": {
+        "x": 597.873,
+        "y": 466.399,
+        "width": 324.347,
+        "height": 32.63799999999998
+      },
+      "detection_score": 0.9310697317123413,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9836958985800514,
+      "words": null
+    },
+    {
+      "text": "only has time to kiss four out of the eleven of them",
+      "quad": [
+        [
+          599.853,
+          434.481
+        ],
+        [
+          923.54,
+          441.883
+        ],
+        [
+          923.012,
+          465.01
+        ],
+        [
+          599.324,
+          457.609
+        ]
+      ],
+      "bbox": {
+        "x": 599.324,
+        "y": 434.481,
+        "width": 324.216,
+        "height": 30.528999999999996
+      },
+      "detection_score": 0.9685988426208496,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.986470863162086,
+      "words": null
+    },
+    {
+      "text": "if she's going to do it properly.",
+      "quad": [
+        [
+          748.272,
+          422.781
+        ],
+        [
+          924.514,
+          423.216
+        ],
+        [
+          924.463,
+          443.871
+        ],
+        [
+          748.221,
+          443.436
+        ]
+      ],
+      "bbox": {
+        "x": 748.221,
+        "y": 422.781,
+        "width": 176.293,
+        "height": 21.089999999999975
+      },
+      "detection_score": 0.9111500382423401,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9942819601989213,
+      "words": null
+    },
+    {
+      "text": "WHICH FOUR DO I FANCY MOST?",
+      "quad": [
+        [
+          634.073,
+          392.349
+        ],
+        [
+          833.34,
+          395.01
+        ],
+        [
+          833.105,
+          412.588
+        ],
+        [
+          633.838,
+          409.928
+        ]
+      ],
+      "bbox": {
+        "x": 633.838,
+        "y": 392.349,
+        "width": 199.50200000000007,
+        "height": 20.239000000000033
+      },
+      "detection_score": 0.9378140568733215,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9411515588001165,
+      "words": null
+    },
+    {
+      "text": "aem but for goodness sake DON'T reach for the",
+      "quad": [
+        [
+          608.614,
+          191.17
+        ],
+        [
+          934.066,
+          214.964
+        ],
+        [
+          932.145,
+          241.243
+        ],
+        [
+          606.693,
+          217.449
+        ]
+      ],
+      "bbox": {
+        "x": 606.693,
+        "y": 191.17,
+        "width": 327.37300000000005,
+        "height": 50.07300000000001
+      },
+      "detection_score": 0.9356896877288818,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9145262137955473,
+      "words": null
+    },
+    {
+      "text": "calculator! The most brilliant thing about perms and",
+      "quad": [
+        [
+          609.245,
+          171.426
+        ],
+        [
+          934.516,
+          199.341
+        ],
+        [
+          932.258,
+          225.647
+        ],
+        [
+          606.987,
+          197.732
+        ]
+      ],
+      "bbox": {
+        "x": 606.987,
+        "y": 171.426,
+        "width": 327.529,
+        "height": 54.221000000000004
+      },
+      "detection_score": 0.933245837688446,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9913344715006703,
+      "words": null
+    },
+    {
+      "text": "94",
+      "quad": [
+        [
+          774.849,
+          142.809
+        ],
+        [
+          798.758,
+          143.77
+        ],
+        [
+          798.104,
+          160.057
+        ],
+        [
+          774.194,
+          159.096
+        ]
+      ],
+      "bbox": {
+        "x": 774.194,
+        "y": 142.809,
+        "width": 24.564000000000078,
+        "height": 17.24799999999999
+      },
+      "detection_score": 0.9385561347007751,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9966214449306361,
+      "words": null
+    },
+    {
+      "text": "means that EVERYTHING ON THE BOTTOM",
+      "quad": [
+        [
+          211.169,
+          654.395
+        ],
+        [
+          543.802,
+          678.495
+        ],
+        [
+          542.171,
+          701
+        ],
+        [
+          209.539,
+          676.9
+        ]
+      ],
+      "bbox": {
+        "x": 209.539,
+        "y": 654.395,
+        "width": 334.26300000000003,
+        "height": 46.60500000000002
+      },
+      "detection_score": 0.9345777630805969,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9937182110194271,
+      "words": null
+    },
+    {
+      "text": "ALWAYS CANCELS OUT! It's probably the best fun",
+      "quad": [
+        [
+          211.443,
+          639.081
+        ],
+        [
+          542.497,
+          663.308
+        ],
+        [
+          540.903,
+          685.084
+        ],
+        [
+          209.849,
+          660.857
+        ]
+      ],
+      "bbox": {
+        "x": 209.849,
+        "y": 639.081,
+        "width": 332.64799999999997,
+        "height": 46.00299999999993
+      },
+      "detection_score": 0.9458768367767334,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9800596666139235,
+      "words": null
+    },
+    {
+      "text": "you'll ever have with a pencil so here we go...",
+      "quad": [
+        [
+          253.891,
+          626.813
+        ],
+        [
+          545.007,
+          645.497
+        ],
+        [
+          543.598,
+          667.454
+        ],
+        [
+          252.482,
+          648.769
+        ]
+      ],
+      "bbox": {
+        "x": 252.482,
+        "y": 626.813,
+        "width": 292.525,
+        "height": 40.64099999999996
+      },
+      "detection_score": 0.9364553093910217,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9935213063526509,
+      "words": null
+    },
+    {
+      "text": "11! = 11×10×9×8×7x6×5x4x3x2x1",
+      "quad": [
+        [
+          223.448,
+          596.55
+        ],
+        [
+          514.154,
+          616.287
+        ],
+        [
+          512.925,
+          634.394
+        ],
+        [
+          222.218,
+          614.658
+        ]
+      ],
+      "bbox": {
+        "x": 222.218,
+        "y": 596.55,
+        "width": 291.93600000000004,
+        "height": 37.84400000000005
+      },
+      "detection_score": 0.9412260055541992,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.8097381033242101,
+      "words": null
+    },
+    {
+      "text": "4×3×2×1×7×6×5×4×3×2×1",
+      "quad": [
+        [
+          223.72,
+          578.729
+        ],
+        [
+          454.979,
+          597.678
+        ],
+        [
+          453.557,
+          615.037
+        ],
+        [
+          222.298,
+          596.088
+        ]
+      ],
+      "bbox": {
+        "x": 222.298,
+        "y": 578.729,
+        "width": 232.68099999999998,
+        "height": 36.30799999999999
+      },
+      "detection_score": 0.9426316618919373,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "CJK",
+      "confidence": 0.871023534812564,
+      "words": null
+    },
+    {
+      "text": "4!x7!",
+      "quad": [
+        [
+          478.63,
+          599.271
+        ],
+        [
+          524.179,
+          600.205
+        ],
+        [
+          523.843,
+          616.558
+        ],
+        [
+          478.294,
+          615.623
+        ]
+      ],
+      "bbox": {
+        "x": 478.294,
+        "y": 599.271,
+        "width": 45.88499999999999,
+        "height": 17.287000000000035
+      },
+      "detection_score": 0.9557362794876099,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.938309878166016,
+      "words": null
+    },
+    {
+      "text": "(Before we continue, grab this book and show",
+      "quad": [
+        [
+          213.862,
+          545.936
+        ],
+        [
+          544.767,
+          566.444
+        ],
+        [
+          543.498,
+          586.911
+        ],
+        [
+          212.594,
+          566.403
+        ]
+      ],
+      "bbox": {
+        "x": 212.594,
+        "y": 545.936,
+        "width": 332.17300000000006,
+        "height": 40.97499999999991
+      },
+      "detection_score": 0.9476549029350281,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9885025867324059,
+      "words": null
+    },
+    {
+      "text": "somebody this sum. Rub their face on it if you need",
+      "quad": [
+        [
+          214.249,
+          531.02
+        ],
+        [
+          545.827,
+          549.65
+        ],
+        [
+          544.611,
+          571.298
+        ],
+        [
+          213.032,
+          552.668
+        ]
+      ],
+      "bbox": {
+        "x": 213.032,
+        "y": 531.02,
+        "width": 332.79499999999996,
+        "height": 40.27800000000002
+      },
+      "detection_score": 0.9515917301177979,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9812143135850221,
+      "words": null
+    },
+    {
+      "text": "to and tell them that this is the sort of thing you do",
+      "quad": [
+        [
+          214.917,
+          515.071
+        ],
+        [
+          546.453,
+          534.511
+        ],
+        [
+          545.249,
+          555.037
+        ],
+        [
+          213.713,
+          535.596
+        ]
+      ],
+      "bbox": {
+        "x": 213.713,
+        "y": 515.071,
+        "width": 332.74,
+        "height": 39.96600000000001
+      },
+      "detection_score": 0.9532679915428162,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9959101228312339,
+      "words": null
+    },
+    {
+      "text": "for fun without a calculator these days because",
+      "quad": [
+        [
+          214.42,
+          500.942
+        ],
+        [
+          547.098,
+          518.953
+        ],
+        [
+          546.073,
+          537.874
+        ],
+        [
+          213.396,
+          519.863
+        ]
+      ],
+      "bbox": {
+        "x": 213.396,
+        "y": 500.942,
+        "width": 333.702,
+        "height": 36.932000000000016
+      },
+      "detection_score": 0.9475715756416321,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9937119417451287,
+      "words": null
+    },
+    {
+      "text": "you're so brilliant.)",
+      "quad": [
+        [
+          414.818,
+          498.17
+        ],
+        [
+          548.842,
+          501.976
+        ],
+        [
+          548.29,
+          521.394
+        ],
+        [
+          414.267,
+          517.588
+        ]
+      ],
+      "bbox": {
+        "x": 414.267,
+        "y": 498.17,
+        "width": 134.575,
+        "height": 23.22399999999999
+      },
+      "detection_score": 0.953914999961853,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9619673430145951,
+      "words": null
+    },
+    {
+      "text": "Off we go then. For starters we'll get rid of the 7!",
+      "quad": [
+        [
+          214.393,
+          471.223
+        ],
+        [
+          535.599,
+          486.386
+        ],
+        [
+          534.717,
+          505.066
+        ],
+        [
+          213.511,
+          489.904
+        ]
+      ],
+      "bbox": {
+        "x": 213.511,
+        "y": 471.223,
+        "width": 322.0880000000001,
+        "height": 33.84299999999996
+      },
+      "detection_score": 0.9504064321517944,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9906553248257569,
+      "words": null
+    },
+    {
+      "text": "bit from top and bottom and get:",
+      "quad": [
+        [
+          332.278,
+          461.558
+        ],
+        [
+          549.454,
+          471.047
+        ],
+        [
+          548.605,
+          490.475
+        ],
+        [
+          331.429,
+          480.986
+        ]
+      ],
+      "bbox": {
+        "x": 331.429,
+        "y": 461.558,
+        "width": 218.02499999999998,
+        "height": 28.91700000000003
+      },
+      "detection_score": 0.9522977471351624,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9870207261242727,
+      "words": null
+    },
+    {
+      "text": "11×10×9×8",
+      "quad": [
+        [
+          331.999,
+          431.289
+        ],
+        [
+          422.427,
+          436.641
+        ],
+        [
+          421.516,
+          452.032
+        ],
+        [
+          331.088,
+          446.681
+        ]
+      ],
+      "bbox": {
+        "x": 331.088,
+        "y": 431.289,
+        "width": 91.339,
+        "height": 20.742999999999995
+      },
+      "detection_score": 0.9450011253356934,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "CJK",
+      "confidence": 0.9204925724261672,
+      "words": null
+    },
+    {
+      "text": "4×3x2x1",
+      "quad": [
+        [
+          339.34,
+          415.627
+        ],
+        [
+          416.328,
+          421.131
+        ],
+        [
+          415.187,
+          437.088
+        ],
+        [
+          338.199,
+          431.585
+        ]
+      ],
+      "bbox": {
+        "x": 338.199,
+        "y": 415.627,
+        "width": 78.12899999999996,
+        "height": 21.461000000000013
+      },
+      "detection_score": 0.9234205484390259,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.7852935589028953,
+      "words": null
+    },
+    {
+      "text": "Pow! That's already got rid of more than half the",
+      "quad": [
+        [
+          214.808,
+          377.796
+        ],
+        [
+          549.529,
+          388.423
+        ],
+        [
+          548.895,
+          408.399
+        ],
+        [
+          214.174,
+          397.772
+        ]
+      ],
+      "bbox": {
+        "x": 214.174,
+        "y": 377.796,
+        "width": 335.355,
+        "height": 30.60300000000001
+      },
+      "detection_score": 0.9489343166351318,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9839372149481788,
+      "words": null
+    },
+    {
+      "text": "numbers. Next we'll see that the 4x2 on the bottom",
+      "quad": [
+        [
+          215.212,
+          363.574
+        ],
+        [
+          552.198,
+          370.751
+        ],
+        [
+          551.752,
+          391.681
+        ],
+        [
+          214.766,
+          384.504
+        ]
+      ],
+      "bbox": {
+        "x": 214.766,
+        "y": 363.574,
+        "width": 337.432,
+        "height": 28.10699999999997
+      },
+      "detection_score": 0.9416618347167969,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.992361528395026,
+      "words": null
+    },
+    {
+      "text": "cancels out the 8 on top (and we don't need that",
+      "quad": [
+        [
+          217.446,
+          345.082
+        ],
+        [
+          550.917,
+          356.452
+        ],
+        [
+          550.227,
+          376.692
+        ],
+        [
+          216.756,
+          365.321
+        ]
+      ],
+      "bbox": {
+        "x": 216.756,
+        "y": 345.082,
+        "width": 334.16100000000006,
+        "height": 31.610000000000014
+      },
+      "detection_score": 0.9494043588638306,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9932667899356545,
+      "words": null
+    },
+    {
+      "text": "\"x1\" on the bottom either). We're left with...",
+      "quad": [
+        [
+          260.135,
+          333.195
+        ],
+        [
+          551.761,
+          341.189
+        ],
+        [
+          551.242,
+          360.141
+        ],
+        [
+          259.616,
+          352.148
+        ]
+      ],
+      "bbox": {
+        "x": 259.616,
+        "y": 333.195,
+        "width": 292.145,
+        "height": 26.946000000000026
+      },
+      "detection_score": 0.9461323022842407,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9781181627825951,
+      "words": null
+    },
+    {
+      "text": "11x10x9",
+      "quad": [
+        [
+          344.337,
+          306.478
+        ],
+        [
+          412.803,
+          307.073
+        ],
+        [
+          412.674,
+          321.915
+        ],
+        [
+          344.208,
+          321.32
+        ]
+      ],
+      "bbox": {
+        "x": 344.208,
+        "y": 306.478,
+        "width": 68.59499999999997,
+        "height": 15.437000000000012
+      },
+      "detection_score": 0.9323770403862,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.8786874780036436,
+      "words": null
+    },
+    {
+      "text": "3",
+      "quad": [
+        [
+          372.422,
+          291.646
+        ],
+        [
+          385.191,
+          292.397
+        ],
+        [
+          384.437,
+          305.214
+        ],
+        [
+          371.669,
+          304.463
+        ]
+      ],
+      "bbox": {
+        "x": 371.669,
+        "y": 291.646,
+        "width": 13.521999999999991,
+        "height": 13.567999999999984
+      },
+      "detection_score": 0.9499939680099487,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9951216522749246,
+      "words": null
+    },
+    {
+      "text": "Then the 3 on the bottom divides into the 9 on top",
+      "quad": [
+        [
+          217.686,
+          254.205
+        ],
+        [
+          552.172,
+          259.838
+        ],
+        [
+          551.857,
+          278.535
+        ],
+        [
+          217.371,
+          272.903
+        ]
+      ],
+      "bbox": {
+        "x": 217.371,
+        "y": 254.205,
+        "width": 334.80100000000004,
+        "height": 24.330000000000013
+      },
+      "detection_score": 0.9535046815872192,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9954533690695032,
+      "words": null
+    },
+    {
+      "text": "leaving it as a 3 so all we've got now is:",
+      "quad": [
+        [
+          290.835,
+          238.413
+        ],
+        [
+          551.429,
+          243.444
+        ],
+        [
+          551.066,
+          262.284
+        ],
+        [
+          290.471,
+          257.253
+        ]
+      ],
+      "bbox": {
+        "x": 290.471,
+        "y": 238.413,
+        "width": 260.95799999999997,
+        "height": 23.87099999999998
+      },
+      "detection_score": 0.9566447734832764,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9753001670326531,
+      "words": null
+    },
+    {
+      "text": "Veronica's choices=11x10x3",
+      "quad": [
+        [
+          284.426,
+          212.171
+        ],
+        [
+          478.796,
+          212.452
+        ],
+        [
+          478.773,
+          228.53
+        ],
+        [
+          284.403,
+          228.249
+        ]
+      ],
+      "bbox": {
+        "x": 284.403,
+        "y": 212.171,
+        "width": 194.39299999999997,
+        "height": 16.35900000000001
+      },
+      "detection_score": 0.9142202734947205,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9759561283793254,
+      "words": null
+    },
+    {
+      "text": "Look! No bottom.",
+      "quad": [
+        [
+          434.115,
+          178.724
+        ],
+        [
+          553.766,
+          180.746
+        ],
+        [
+          553.478,
+          197.782
+        ],
+        [
+          433.827,
+          195.76
+        ]
+      ],
+      "bbox": {
+        "x": 433.827,
+        "y": 178.724,
+        "width": 119.93899999999996,
+        "height": 19.05800000000002
+      },
+      "detection_score": 0.9497089982032776,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9946032151676479,
+      "words": null
+    },
+    {
+      "text": "95",
+      "quad": [
+        [
+          372.125,
+          136.405
+        ],
+        [
+          393.5,
+          136.405
+        ],
+        [
+          393.5,
+          151.69
+        ],
+        [
+          372.125,
+          151.69
+        ]
+      ],
+      "bbox": {
+        "x": 372.125,
+        "y": 136.405,
+        "width": 21.375,
+        "height": 15.284999999999997
+      },
+      "detection_score": 0.8584616184234619,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9968863063821689,
+      "words": null
+    },
+    {
+      "text": "群",
+      "quad": [
+        [
+          12.682,
+          634.294
+        ],
+        [
+          42.947,
+          635.776
+        ],
+        [
+          42.026,
+          654.585
+        ],
+        [
+          11.761,
+          653.103
+        ]
+      ],
+      "bbox": {
+        "x": 11.761,
+        "y": 634.294,
+        "width": 31.186000000000003,
+        "height": 20.291000000000054
+      },
+      "detection_score": 0.8921511769294739,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "CJK",
+      "confidence": 0.9439156111369499,
+      "words": null
+    }
+  ],
+  "width": 1100,
+  "height": 708,
+  "elapsed_seconds": 0.952777584,
+  "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
+  "warnings": [
+    "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied.",
+    "Skipped 1 line(s) classified as Cyrillic: recognizer not included in this model package."
+  ]
+}

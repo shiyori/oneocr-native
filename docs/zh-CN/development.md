@@ -16,7 +16,7 @@ go test ./...
 go vet ./...
 ```
 
-版本统一维护在 `version.json`，修改后运行 `python scripts/version.py`。原生版本为 `0.1.1`，Python 版本为 `0.1.1`。
+版本统一维护在 `version.json`，修改后运行 `python scripts/version.py`。原生与 Python 版本均由该文件统一生成。
 
 在目标 Linux 架构构建完整运行包及通用 Python 包：
 

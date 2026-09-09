@@ -1,0 +1,49 @@
+{
+  "confidence": 0.9885326980373164,
+  "confidence_method": "ctc_token_geometric_mean",
+  "coordinate_space": "oriented_image",
+  "text": "ZHOUZHUJANG BRE",
+  "lines": [
+    {
+      "text": "ZHOUZHUJANG BRE",
+      "quad": [
+        [
+          0.426,
+          0
+        ],
+        [
+          428,
+          1.089
+        ],
+        [
+          428,
+          47
+        ],
+        [
+          0,
+          45.176
+        ]
+      ],
+      "bbox": {
+        "x": 0,
+        "y": 0,
+        "width": 428,
+        "height": 47
+      },
+      "detection_score": 0.949978768825531,
+      "vertical": false,
+      "rotated_180": true,
+      "rotation_degrees": 180,
+      "script": "Latin",
+      "confidence": 0.9885326980373164,
+      "words": null
+    }
+  ],
+  "width": 429,
+  "height": 48,
+  "elapsed_seconds": 0.028998,
+  "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
+  "warnings": [
+    "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."
+  ]
+}

@@ -1,0 +1,355 @@
+{
+  "confidence": 0.7347936592845559,
+  "confidence_method": "ctc_token_geometric_mean",
+  "coordinate_space": "oriented_image",
+  "text": "天津君和\n碑类功以为首页\n育限公\n示\n发票专用章\n友\n吗繁物\n52636\n06\n14",
+  "lines": [
+    {
+      "text": "天津君和",
+      "quad": [
+        [
+          142.453,
+          63.928
+        ],
+        [
+          255.304,
+          113.954
+        ],
+        [
+          125.187,
+          407.481
+        ],
+        [
+          12.335,
+          357.455
+        ]
+      ],
+      "bbox": {
+        "x": 12.335,
+        "y": 63.928,
+        "width": 242.969,
+        "height": 343.553
+      },
+      "detection_score": 0.9299488067626953,
+      "vertical": true,
+      "rotated_180": true,
+      "rotation_degrees": 90,
+      "script": "CJK",
+      "confidence": 0.980590073917861,
+      "words": null
+    },
+    {
+      "text": "碑类功以为首页",
+      "quad": [
+        [
+          409.843,
+          99.697
+        ],
+        [
+          639,
+          103.562
+        ],
+        [
+          639,
+          145.406
+        ],
+        [
+          409.147,
+          141.541
+        ]
+      ],
+      "bbox": {
+        "x": 409.147,
+        "y": 99.697,
+        "width": 229.853,
+        "height": 45.709
+      },
+      "detection_score": 0.9355682134628296,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.4387539449212688,
+      "words": null
+    },
+    {
+      "text": "育限公",
+      "quad": [
+        [
+          417.836,
+          144.824
+        ],
+        [
+          505.344,
+          101.826
+        ],
+        [
+          604.474,
+          303.573
+        ],
+        [
+          516.966,
+          346.571
+        ]
+      ],
+      "bbox": {
+        "x": 417.836,
+        "y": 101.826,
+        "width": 186.63800000000003,
+        "height": 244.74500000000003
+      },
+      "detection_score": 0.9085151553153992,
+      "vertical": true,
+      "rotated_180": false,
+      "rotation_degrees": 270,
+      "script": "CJK",
+      "confidence": 0.682549044253353,
+      "words": null
+    },
+    {
+      "text": "示",
+      "quad": [
+        [
+          108.067,
+          111.202
+        ],
+        [
+          147.89,
+          106.224
+        ],
+        [
+          151.606,
+          135.959
+        ],
+        [
+          111.784,
+          140.937
+        ]
+      ],
+      "bbox": {
+        "x": 108.067,
+        "y": 106.224,
+        "width": 43.539,
+        "height": 34.71300000000001
+      },
+      "detection_score": 0.8080686926841736,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.29052740742173405,
+      "words": null
+    },
+    {
+      "text": "发票专用章",
+      "quad": [
+        [
+          166.867,
+          353.392
+        ],
+        [
+          466.764,
+          353.392
+        ],
+        [
+          466.764,
+          438.555
+        ],
+        [
+          166.867,
+          438.555
+        ]
+      ],
+      "bbox": {
+        "x": 166.867,
+        "y": 353.392,
+        "width": 299.89700000000005,
+        "height": 85.16300000000001
+      },
+      "detection_score": 0.9868755340576172,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.9999148687258722,
+      "words": null
+    },
+    {
+      "text": "友",
+      "quad": [
+        [
+          179.519,
+          375.625
+        ],
+        [
+          213.647,
+          376.5
+        ],
+        [
+          212.325,
+          428.073
+        ],
+        [
+          178.197,
+          427.198
+        ]
+      ],
+      "bbox": {
+        "x": 178.197,
+        "y": 375.625,
+        "width": 35.44999999999999,
+        "height": 52.44799999999998
+      },
+      "detection_score": 0.7458776235580444,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.4828491835478426,
+      "words": null
+    },
+    {
+      "text": "吗繁物",
+      "quad": [
+        [
+          183.745,
+          439.99
+        ],
+        [
+          452.104,
+          439.99
+        ],
+        [
+          452.104,
+          509.557
+        ],
+        [
+          183.745,
+          509.557
+        ]
+      ],
+      "bbox": {
+        "x": 183.745,
+        "y": 439.99,
+        "width": 268.359,
+        "height": 69.56700000000001
+      },
+      "detection_score": 0.9762091636657715,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "CJK",
+      "confidence": 0.995303410452523,
+      "words": null
+    },
+    {
+      "text": "52636",
+      "quad": [
+        [
+          141.551,
+          468.587
+        ],
+        [
+          256.996,
+          538.335
+        ],
+        [
+          230.857,
+          581.6
+        ],
+        [
+          115.412,
+          511.852
+        ]
+      ],
+      "bbox": {
+        "x": 115.412,
+        "y": 468.587,
+        "width": 141.58399999999997,
+        "height": 113.01300000000003
+      },
+      "detection_score": 0.9168569445610046,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.8146898729656922,
+      "words": null
+    },
+    {
+      "text": "06",
+      "quad": [
+        [
+          423.765,
+          512.672
+        ],
+        [
+          484.072,
+          478.212
+        ],
+        [
+          509.537,
+          522.776
+        ],
+        [
+          449.231,
+          557.237
+        ]
+      ],
+      "bbox": {
+        "x": 423.765,
+        "y": 478.212,
+        "width": 85.77199999999999,
+        "height": 79.02499999999998
+      },
+      "detection_score": 0.8925431370735168,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9913498166256608,
+      "words": null
+    },
+    {
+      "text": "14",
+      "quad": [
+        [
+          258.196,
+          537.894
+        ],
+        [
+          295.603,
+          542.867
+        ],
+        [
+          290.226,
+          583.311
+        ],
+        [
+          252.819,
+          578.338
+        ]
+      ],
+      "bbox": {
+        "x": 252.819,
+        "y": 537.894,
+        "width": 42.78400000000002,
+        "height": 45.41700000000003
+      },
+      "detection_score": 0.7904089689254761,
+      "vertical": false,
+      "rotated_180": false,
+      "rotation_degrees": 0,
+      "script": "Latin",
+      "confidence": 0.9241274400373413,
+      "words": null
+    }
+  ],
+  "width": 640,
+  "height": 640,
+  "elapsed_seconds": 0.2109985,
+  "model_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
+  "warnings": [
+    "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."
+  ]
+}

@@ -16,7 +16,7 @@ go test ./...
 go vet ./...
 ```
 
-`version.json` is the version source. Run `python scripts/version.py` after changing it. The native version is `0.1.1` and the Python version is `0.1.1`.
+`version.json` is the version source. Run `python scripts/version.py` after changing it. Native and Python versions are generated from this file.
 
 Build the complete Linux runtime package and universal Python distribution on the target Linux architecture:
 

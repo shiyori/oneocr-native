@@ -20,6 +20,14 @@ Optional arguments: `--oneocr /path/to/oneocr`, `--home /path/to/installed/resou
 
 After changing thresholds, regenerate the assets and update the counts and threshold captions in all three main READMEs.
 
+To rerun all original PaddleOCR images and regenerate the [dedicated results pages](../../en/test-results.md), use:
+
+```sh
+python scripts/render_ocr_examples.py --suite paddleocr --font /path/to/cjk-font.ttf
+```
+
+This suite reads the original filenames from the pinned source manifest and verifies their SHA-256 hashes before inference. It preserves the original input dimensions and the complete display canvas, without 720p conversion or outer-whitespace cropping. It writes paired images, unfiltered JSON and a manifest to `docs/assets/paddleocr-results/`, and generates all three localized `test-results.md` pages. Each manifest records input dimensions and hashes, confidence thresholds, output counts and presentation transforms. The originals do not have complete manual ground truth; counts are not accuracy metrics.
+
 ## Source and license
 
 The mixed-language image comes from [testdata/720p](../../../testdata/720p). The book, formula document and medal table are presentation derivatives of the images already maintained in [testdata/paddleocr](../../../testdata/paddleocr), pinned to PaddlePaddle/PaddleOCR commit `2661c7c0…`. Their original URLs and hashes are in the [source manifest](../../../testdata/paddleocr/manifest.json).

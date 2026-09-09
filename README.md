@@ -38,6 +38,8 @@ python -m oneocr_native recognize --format json image.png
 
 ## 测试结果
 
+[PaddleOCR 原图完整测试结果：9 张原图的对照图与 JSON](docs/zh-CN/test-results.md)
+
 OneOCR v0.1.3 对 `testdata` 中四张图片的实际输出。仅展示识别置信度 ≥ **0.70** 且检测分数 ≥ **0.70** 的结果。左图在原图上画框；右图保留原图，在同一位置叠加蓝色识别文字，并加局部浅色底以保持可读性。点击图片可查看高清图。
 
 两张图采用相同裁剪和坐标；外围留白同步裁去，未人工修正识别文字。置信度为未校准模型分数。
