@@ -6,7 +6,7 @@ Requires Go 1.24+ and a C compiler. Add the Go module to your own project; no de
 
 ```sh
 go mod init example.com/ocr-app
-go get github.com/shiyori/oneocr-native@v0.1.1
+go get github.com/shiyori/oneocr-native@v0.1.2
 ```
 
 Skip `go mod init` if the project already has `go.mod`.
@@ -18,7 +18,8 @@ package main
 
 import (
     "context"
-    "fmt"
+    "encoding/json"
+    "os"
     "github.com/shiyori/oneocr-native"
 )
 
@@ -29,7 +30,7 @@ func main() {
     defer engine.Close()
     result, err := engine.Recognize(context.Background(), oneocr.FromFile("image.png"), oneocr.Options{})
     if err != nil { panic(err) }
-    fmt.Println(result.Text)
+    if err := json.NewEncoder(os.Stdout).Encode(result); err != nil { panic(err) }
 }
 ```
 
@@ -42,9 +43,10 @@ go run .
 Install the command with Go, then prepare resources and recognize images from any directory:
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.1
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
 oneocr install
 oneocr recognize image.png
+oneocr recognize --format json image.png
 ```
 
 Add the Go executable directory (usually `GOPATH/bin`) to `PATH`. Both paths discover and reuse a compatible runtime, downloading missing dependencies on demand. Normal calls need no runtime path and do not change the host’s ORT Go binding version.

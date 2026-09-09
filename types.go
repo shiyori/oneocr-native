@@ -7,6 +7,7 @@ type (
 	AndroidInstallOptions = engine.AndroidInstallOptions
 	AndroidInstallation   = engine.AndroidInstallation
 	Bundle                = engine.Bundle
+	Box                   = engine.Box
 	CharacterClass        = engine.CharacterClass
 	CharacterModel        = engine.CharacterModel
 	Config                = engine.Config

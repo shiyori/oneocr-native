@@ -69,9 +69,19 @@ def test_native_image_recognition(engine, name):
         expected = ""
         assert any("unavailable" in warning for warning in result.warnings)
     assert result.text == expected
+    assert result.confidence_method == "ctc_token_geometric_mean"
+    assert result.coordinate_space == "oriented_image"
+    if result.lines:
+        assert result.confidence is not None and 0 <= result.confidence <= 1
+    else:
+        assert result.confidence is None
     for line in result.lines:
-        assert line.confidence is None
+        assert line.confidence is not None and 0 <= line.confidence <= 1
         assert len(line.quad) == 4
+        assert line.bbox["width"] > 0 and line.bbox["height"] > 0
+        assert line.detection_score > 0
+        assert isinstance(line.vertical, bool) and isinstance(line.rotated_180, bool)
+        assert line.words is None
         for x, y in line.quad:
             assert 0 <= x <= result.width - 1
             assert 0 <= y <= result.height - 1
@@ -133,3 +143,18 @@ def test_independent_stages(engine):
     assert detected.to_dict()["regions"][0]["score"] > 0
     with pytest.raises(ValueError, match="unavailable script"):
         engine.recognize_line(Image.fromarray(crop), script="invalid")
+
+
+def test_stage_json_metadata(engine):
+    root = Path(FIXTURES)
+    detected = engine.detect(root / "CJK.png").to_dict()
+    assert detected["coordinate_space"] == "oriented_image"
+    assert detected["regions"][0]["bbox"]["width"] > 0
+    line = engine.recognize_line(root.parent / "scripts/testdata/cjk-line.png").to_dict()
+    assert line["text"] == "你好世界 日本語テスト 한국어 123"
+    assert 0 < line["confidence"] <= 1
+    assert line["confidence_method"] == "ctc_token_geometric_mean"
+    assert line["width"] > 0 and line["height"] > 0
+    # Strict JSON rejects NaN/Infinity; all three result types must serialize.
+    for result in [detected, line, engine.recognize(root / "blank.png").to_dict()]:
+        json.dumps(result, allow_nan=False)

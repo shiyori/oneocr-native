@@ -56,3 +56,25 @@ def test_normalization_retains_rgb_channels_and_stride():
     assert data.shape[-1] % 8 == 0
     np.testing.assert_allclose(data[0, :, 30, 50], [0, 127 / 255, 1])
     np.testing.assert_array_equal(data[0, :, 30, 0], [1, 1, 1])
+
+
+def test_confidence_scores_emissions_not_repeated_frames():
+    alphabet = Alphabet(b"a 0\n<blank> 1\n")
+    probabilities = np.array([[.8, .2], [.99, .01], [.1, .9], [.6, .4]], np.float32)
+    result = alphabet.decode_scored(np.log(probabilities))
+    assert result.text == "aa"
+    assert result.tokens == 2
+    assert result.confidence == pytest.approx(np.sqrt(.8 * .6))
+    shifted = alphabet.decode_scored(np.log(probabilities) + 100)
+    assert shifted.confidence == pytest.approx(result.confidence, abs=1e-5)
+
+
+def test_confidence_omits_trimmed_spaces_and_empty_output():
+    alphabet = Alphabet(b"a 0\n<space> 1\n<blank> 2\n")
+    probabilities = np.array([[.1, .8, .1], [.6, .2, .2], [.1, .8, .1]], np.float32)
+    result = alphabet.decode_scored(np.log(probabilities))
+    assert result.text == "a" and result.tokens == 1
+    assert result.confidence == pytest.approx(.6)
+    for values in [np.array([[-2, -3, 0]], np.float32), np.empty((0, 3), np.float32)]:
+        result = alphabet.decode_scored(values)
+        assert result.text == "" and result.confidence is None

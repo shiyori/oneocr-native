@@ -296,3 +296,12 @@ func readingOrder(quads []Quad, rtl bool) []int {
 	}
 	return cut(all)
 }
+
+func quadBounds(quad Quad) Box {
+	minX, maxX, minY, maxY := quad[0][0], quad[0][0], quad[0][1], quad[0][1]
+	for _, point := range quad[1:] {
+		minX, maxX = math.Min(minX, point[0]), math.Max(maxX, point[0])
+		minY, maxY = math.Min(minY, point[1]), math.Max(maxY, point[1])
+	}
+	return Box{X: minX, Y: minY, Width: maxX - minX, Height: maxY - minY}
+}

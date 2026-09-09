@@ -5,9 +5,10 @@
 Python 3.11–3.13 is supported. Install the wheel directly from GitHub Releases, then prepare the model and runtime. **Run these commands from any directory**; no checkout is needed.
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.1/oneocr_native-0.1.1-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.2/oneocr_native-0.1.2-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
+python -m oneocr_native recognize --format json image.png
 ```
 
 If `python` selects a different interpreter on your system, use `python3` or the appropriate `py -3.13` command consistently. The same interpreter must perform installation and recognition.

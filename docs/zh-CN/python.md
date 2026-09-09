@@ -5,9 +5,10 @@
 支持 Python 3.11–3.13。直接安装 GitHub Release 中的 wheel，再准备模型和运行库。**以下命令可在任意目录运行**，无需克隆仓库。
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.1/oneocr_native-0.1.1-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.2/oneocr_native-0.1.2-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
+python -m oneocr_native recognize --format json image.png
 ```
 
 如果系统使用 `python3` 或 `py -3.13` 选择解释器，请在安装和运行时保持一致。

@@ -33,7 +33,7 @@ Android 需要 Android SDK、NDK 27+、JDK 17+ 和 CMake：
 python scripts/build_sdk.py --target android --output dist/release --android-sdk /path/to/android-sdk --android-ndk /path/to/ndk
 ```
 
-推送与 `version.json` 一致的版本标签（例如 `v0.1.1`）会自动执行 `release-publish`：构建 Android 完整/Core AAR、通用 Python 包和每个架构一个 Linux 完整包，验证 Linux 完整包移动目录后的离线识别及官方依赖安装，检查制品内容、许可证和校验和，再上传草稿并核对远端 SHA-256，最后发布为正式版并设为 Latest。每个平台的构建记录绑定同一源码提交，常规 CI 必须通过。下载文档默认使用 `releases/latest` 和 `latest/download`。
+推送与 `version.json` 一致的版本标签（例如 `v0.1.2`）会自动执行 `release-publish`：构建 Android 完整/Core AAR、通用 Python 包和每个架构一个 Linux 完整包，验证 Linux 完整包移动目录后的离线识别及官方依赖安装，检查制品内容、许可证和校验和，再上传草稿并核对远端 SHA-256，最后发布为正式版并设为 Latest。每个平台的构建记录绑定同一源码提交，常规 CI 必须通过。下载文档默认使用 `releases/latest` 和 `latest/download`。
 
 扩展验证通过 Actions 手动运行 `release-build`（选择 `main`），或执行 `gh workflow run release-build.yml --ref main`。它包含完整 OCR 对照、多运行库兼容、Python 多版本消费者和 Android 模拟器测试，不是常规 CI 或正式发布的前置任务。需要保留这些报告时，成功后运行 `python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS`。发布失败可从 `main` 手动运行 `release-publish`，将 `tag` 输入设为原版本标签；流程使用当前发布脚本处理原标签源码，保留 Go 模块标签不变。已公开且内容不同的制品不会被覆盖。 若构建已经成功、仅发布步骤失败，可额外填写 `build_run_id` 复用原运行的产物，只重试校验与发布。
 

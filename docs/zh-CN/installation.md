@@ -18,6 +18,7 @@ Linux 完整包解压后即可运行，不需要安装 Go，也无需额外配�
 
 ```sh
 /path/to/oneocr-linux-amd64/bin/oneocr recognize image.png
+/path/to/oneocr-linux-amd64/bin/oneocr recognize --format json image.png
 ```
 
 Android 完整 AAR 包含 arm64-v8a / x86_64，最低 API 26。把 AAR 加入应用后按 [Android 指南](android.md)调用。只有已经管理宿主 ORT 的应用才使用指南中的 Core 方案。
@@ -26,12 +27,13 @@ Android 完整 AAR 包含 arm64-v8a / x86_64，最低 API 26。把 AAR 加入应
 
 ### Go
 
-在项目中运行 `go get github.com/shiyori/oneocr-native@v0.1.1`，通过 `oneocr.Install` 准备完整依赖，再调用 `oneocr.Open`。命令行使用：
+在项目中运行 `go get github.com/shiyori/oneocr-native@v0.1.2`，通过 `oneocr.Install` 准备完整依赖，再调用 `oneocr.Open`。命令行使用：
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.1
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
 oneocr install
 oneocr recognize image.png
+oneocr recognize --format json image.png
 ```
 
 ### Python
@@ -39,9 +41,10 @@ oneocr recognize image.png
 Python 3.11–3.13 使用通用 wheel；安装命令自动补齐模型和缺失的运行库：
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.1/oneocr_native-0.1.1-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.2/oneocr_native-0.1.2-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
+python -m oneocr_native recognize --format json image.png
 ```
 
 [Go](go.md) · [C/C++](native.md) · [Python](python.md) · [Android](android.md)

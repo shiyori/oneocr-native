@@ -18,20 +18,22 @@ Use complete packages with the default model and runtime included. Core AAR is a
 
 ## Go integration
 
-For code integration, use `go get github.com/shiyori/oneocr-native@v0.1.1`; see the [Go guide](docs/en/go.md). Install the CLI with:
+For code integration, use `go get github.com/shiyori/oneocr-native@v0.1.2`; see the [Go guide](docs/en/go.md). Install the CLI with:
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.1
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
 oneocr install
 oneocr recognize image.png
+oneocr recognize --format json image.png
 ```
 
 ## Python
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.1/oneocr_native-0.1.1-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.2/oneocr_native-0.1.2-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
+python -m oneocr_native recognize --format json image.png
 ```
 
 ## Integration guides

@@ -222,6 +222,7 @@ func (e *Engine) recognize(ctx context.Context, r raster, options Options) (Resu
 		return Result{}, fmt.Errorf("oneocr: more than 1000 detected regions; split image")
 	}
 	lines := []Line{}
+	summary := recognitionResult{}
 	unsupported := map[string]int{}
 	quads := []Quad{}
 	angles := []float64{}
@@ -254,11 +255,11 @@ func (e *Engine) recognize(ctx context.Context, r raster, options Options) (Resu
 		if err != nil {
 			return Result{}, err
 		}
-		text, err := recognizer.run(ctx, crop)
+		recognized, err := recognizer.run(ctx, crop)
 		if err != nil {
 			return Result{}, err
 		}
-		if text == "" {
+		if recognized.text == "" {
 			continue
 		}
 		quad := d.quad
@@ -267,7 +268,10 @@ func (e *Engine) recognize(ctx context.Context, r raster, options Options) (Resu
 				quad[i][j] = math.RoundToEven(quad[i][j]*1000) / 1000
 			}
 		}
-		lines = append(lines, Line{Text: text, Quad: quad, Script: script})
+		lines = append(lines, Line{Text: recognized.text, Quad: quad, BBox: quadBounds(quad), Script: script,
+			Confidence: recognized.confidence(), DetectionScore: d.score, Vertical: d.vertical, Rotated180: flip < 0})
+		summary.logProbability += recognized.logProbability
+		summary.tokens += recognized.tokens
 		quads = append(quads, d.quad)
 		vector := sub(d.quad[1], d.quad[0])
 		if d.vertical && length(sub(d.quad[3], d.quad[0])) > length(vector) {
@@ -311,5 +315,6 @@ func (e *Engine) recognize(ctx context.Context, r raster, options Options) (Resu
 			warnings = append(warnings, fmt.Sprintf("Skipped %d line(s) classified as %s: recognizer not included in this model package.", count, script))
 		}
 	}
-	return Result{Text: strings.Join(text, "\n"), Lines: ordered, Width: r.width, Height: r.height, ElapsedSeconds: time.Since(start).Seconds(), ModelSHA256: e.bundle.SourceSHA256, Warnings: warnings}, nil
+	summary.text = strings.Join(text, "\n")
+	return Result{Text: summary.text, Confidence: summary.confidence(), ConfidenceMethod: RecognitionConfidenceMethod, CoordinateSpace: "oriented_image", Lines: ordered, Width: r.width, Height: r.height, ElapsedSeconds: time.Since(start).Seconds(), ModelSHA256: e.bundle.SourceSHA256, Warnings: warnings}, nil
 }

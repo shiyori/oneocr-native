@@ -13,7 +13,7 @@ from .config import CLASSIFIER_SCRIPTS
 from .detection import Detector
 from .errors import OneOcrError, UnsupportedModelError
 from .geometry import reading_order, rectify
-from .recognition import Alphabet, Recognizer, normalize_line
+from .recognition import CONFIDENCE_METHOD, Alphabet, Recognition, Recognizer, normalize_line
 from .runtime import session
 
 
@@ -24,6 +24,10 @@ class OcrLine:
     script: str
     confidence: float | None = None
     words: list[dict] | None = None
+    bbox: dict[str, float] | None = None
+    detection_score: float = 0.0
+    vertical: bool = False
+    rotated_180: bool = False
 
 
 @dataclass(frozen=True)
@@ -35,6 +39,9 @@ class OcrResult:
     elapsed_seconds: float
     model_sha256: str
     warnings: list[str] = field(default_factory=list)
+    confidence: float | None = None
+    confidence_method: str = CONFIDENCE_METHOD
+    coordinate_space: str = "oriented_image"
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -45,6 +52,7 @@ class DetectionRegion:
     quad: list[list[float]]
     score: float
     vertical: bool
+    bbox: dict[str, float] | None = None
 
 
 @dataclass(frozen=True)
@@ -54,6 +62,7 @@ class DetectionResult:
     height: int
     elapsed_seconds: float
     model_sha256: str
+    coordinate_space: str = "oriented_image"
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -66,9 +75,18 @@ class LineResult:
     rotated_180: bool
     elapsed_seconds: float
     model_sha256: str
+    confidence: float | None = None
+    confidence_method: str = CONFIDENCE_METHOD
+    width: int = 0
+    height: int = 0
 
     def to_dict(self) -> dict:
         return asdict(self)
+
+
+def _quad_bounds(quad: list[list[float]]) -> dict[str, float]:
+    xs, ys = zip(*quad)
+    return {"x": min(xs), "y": min(ys), "width": max(xs) - min(xs), "height": max(ys) - min(ys)}
 
 
 def _load_image(image: str | Path | Image.Image) -> tuple[Image.Image, np.ndarray]:
@@ -112,6 +130,7 @@ class OneOcrEngine:
         path = default_model_path() if config.model_path is None else Path(config.model_path)
         if path.is_dir():
             from .bundle import load_bundle
+
             self.prepared = load_bundle(path)
         else:
             with path.open("rb") as stream:
@@ -120,6 +139,7 @@ class OneOcrEngine:
                 self.prepared = PackageSource(path)
             else:
                 from .cache import prepare
+
                 self.prepared = prepare(path, config.cache_dir)
         self._initialize(config.max_side, config.threads)
 
@@ -197,8 +217,8 @@ class OneOcrEngine:
         """Recognize an image; optional script overrides automatic script selection.
 
         Coordinates refer to the EXIF-oriented input image, before detector
-        resizing. Confidence is intentionally null: original calibration and
-        rejection feature extraction have not been reimplemented.
+        resizing. Confidence summarizes emitted CTC token probabilities; it is
+        uncalibrated and is not an estimated probability of a correct result.
         """
         with self._lock:
             if self._closed:
@@ -217,7 +237,12 @@ class OneOcrEngine:
                 raise OneOcrError("more than 1000 detected regions; split the document image")
             return DetectionResult(
                 [
-                    DetectionRegion(d.quad.astype(float).tolist(), float(d.score), bool(d.vertical))
+                    DetectionRegion(
+                        d.quad.astype(float).tolist(),
+                        float(d.score),
+                        bool(d.vertical),
+                        _quad_bounds(d.quad.astype(float).tolist()),
+                    )
                     for d in detections
                 ],
                 pil.width,
@@ -238,24 +263,27 @@ class OneOcrEngine:
             if self._closed:
                 raise OneOcrError("engine is closed")
             start = perf_counter()
-            _, crop = _load_image(image)
+            pil, crop = _load_image(image)
             rotated = False
             if not script:
                 script, flip = self._classify(crop)
                 if flip < 0:
                     crop = cv2.rotate(crop, cv2.ROTATE_180)
                     rotated = True
-            text = ""
+            recognized = Recognition()
             if script:
                 if script not in self.characters:
                     raise ValueError(f"unavailable script {script!r}")
-                text, _ = self._recognizer(script).run(crop)
+                recognized = self._recognizer(script).run_scored(crop)
             return LineResult(
-                text,
+                recognized.text,
                 script or "",
                 rotated,
                 perf_counter() - start,
                 self.prepared.manifest["source_sha256"],
+                confidence=recognized.confidence,
+                width=pil.width,
+                height=pil.height,
             )
 
     def _recognize(self, image: str | Path | Image.Image, *, script: str | None) -> OcrResult:
@@ -267,6 +295,7 @@ class OneOcrEngine:
         if len(detections) > 1000:
             raise OneOcrError("more than 1000 detected regions; split the document image")
         lines = []
+        log_probability, tokens = 0.0, 0
         quads = []
         angles = []
         unavailable = set()
@@ -282,10 +311,24 @@ class OneOcrEngine:
             if flip < 0:
                 crop = cv2.rotate(crop, cv2.ROTATE_180)
             recognizer = self._recognizer(selected)
-            text, _ = recognizer.run(crop)
-            if not text:
+            recognized = recognizer.run_scored(crop)
+            if not recognized.text:
                 continue
-            lines.append(OcrLine(text, detection.quad.astype(float).round(3).tolist(), selected))
+            quad = detection.quad.astype(float).round(3).tolist()
+            lines.append(
+                OcrLine(
+                    recognized.text,
+                    quad,
+                    selected,
+                    confidence=recognized.confidence,
+                    bbox=_quad_bounds(quad),
+                    detection_score=float(detection.score),
+                    vertical=bool(detection.vertical),
+                    rotated_180=bool(flip < 0),
+                )
+            )
+            log_probability += recognized.log_probability
+            tokens += recognized.tokens
             quads.append(detection.quad)
             q = detection.quad
             # Rectification rotates tall vertical crops counterclockwise;
@@ -315,4 +358,7 @@ class OneOcrEngine:
                 "Experimental segment grouping and reading order; original rejection/calibration are not applied."
             ]
             + [f"Skipped unavailable script: {name}" for name in sorted(unavailable)],
+            confidence=Recognition(
+                "\n".join(line.text for line in ordered), log_probability, tokens
+            ).confidence,
         )

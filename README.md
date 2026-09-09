@@ -18,20 +18,22 @@
 
 ## Go 接入
 
-代码接入使用 `go get github.com/shiyori/oneocr-native@v0.1.1`，详见 [Go 指南](docs/zh-CN/go.md)。命令行接入使用：
+代码接入使用 `go get github.com/shiyori/oneocr-native@v0.1.2`，详见 [Go 指南](docs/zh-CN/go.md)。命令行接入使用：
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.1
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
 oneocr install
 oneocr recognize image.png
+oneocr recognize --format json image.png
 ```
 
 ## Python
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.1/oneocr_native-0.1.1-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.2/oneocr_native-0.1.2-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
+python -m oneocr_native recognize --format json image.png
 ```
 
 ## 接入指南

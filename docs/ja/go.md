@@ -6,7 +6,7 @@ Go 1.24 以上と C コンパイラーが必要です。自分のプロジェク
 
 ```sh
 go mod init example.com/ocr-app
-go get github.com/shiyori/oneocr-native@v0.1.1
+go get github.com/shiyori/oneocr-native@v0.1.2
 ```
 
 既に `go.mod` がある場合は `go mod init` を省略してください。
@@ -18,7 +18,8 @@ package main
 
 import (
     "context"
-    "fmt"
+    "encoding/json"
+    "os"
     "github.com/shiyori/oneocr-native"
 )
 
@@ -29,7 +30,7 @@ func main() {
     defer engine.Close()
     result, err := engine.Recognize(context.Background(), oneocr.FromFile("image.png"), oneocr.Options{})
     if err != nil { panic(err) }
-    fmt.Println(result.Text)
+    if err := json.NewEncoder(os.Stdout).Encode(result); err != nil { panic(err) }
 }
 ```
 
@@ -42,9 +43,10 @@ go run .
 Go でコマンドをインストールした後、任意のディレクトリでリソースを準備して画像を認識できます。
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.1
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
 oneocr install
 oneocr recognize image.png
+oneocr recognize --format json image.png
 ```
 
 Go の実行ファイル用ディレクトリ（通常は `GOPATH/bin`）を `PATH` に追加してください。どちらの方法も互換 runtime を自動検出して再利用し、不足分を必要に応じて取得します。通常の呼び出しに runtime パスは不要で、ホストの ORT Go バインディングのバージョンも変更しません。

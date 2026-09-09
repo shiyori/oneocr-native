@@ -6,7 +6,7 @@
 
 ```sh
 go mod init example.com/ocr-app
-go get github.com/shiyori/oneocr-native@v0.1.1
+go get github.com/shiyori/oneocr-native@v0.1.2
 ```
 
 已有 `go.mod` 时跳过 `go mod init`。
@@ -18,7 +18,8 @@ package main
 
 import (
     "context"
-    "fmt"
+    "encoding/json"
+    "os"
     "github.com/shiyori/oneocr-native"
 )
 
@@ -29,7 +30,7 @@ func main() {
     defer engine.Close()
     result, err := engine.Recognize(context.Background(), oneocr.FromFile("image.png"), oneocr.Options{})
     if err != nil { panic(err) }
-    fmt.Println(result.Text)
+    if err := json.NewEncoder(os.Stdout).Encode(result); err != nil { panic(err) }
 }
 ```
 
@@ -42,9 +43,10 @@ go run .
 通过 Go 安装命令后，可在任意目录准备资源并识别图片：
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.1
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
 oneocr install
 oneocr recognize image.png
+oneocr recognize --format json image.png
 ```
 
 把 Go 的可执行文件目录（通常为 `GOPATH/bin`）加入 `PATH`。两种接入方式都自动查找、复用兼容 runtime；缺失依赖按需下载，普通调用无需配置 runtime 路径，也不会修改宿主的 ORT Go 绑定版本。

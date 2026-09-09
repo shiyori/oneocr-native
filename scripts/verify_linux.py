@@ -58,10 +58,22 @@ def verify(dist: Path, runtime_cache: Path):
             input_image = line_image if operation == "recognize-line" else image
             result = json.loads(command(cli, operation, "--format", "json", input_image, work=work, env=env))
             if operation == "detect":
+                if result["coordinate_space"] != "oriented_image" or any(
+                    r["bbox"]["width"] <= 0 or r["bbox"]["height"] <= 0 for r in result["regions"]
+                ):
+                    raise RuntimeError("invalid detector JSON geometry")
                 if not result["regions"]:
                     raise RuntimeError("complete package detector returned no regions")
             elif result["text"] != EXPECTED_TEXT:
                 raise RuntimeError(f"complete package {operation} text mismatch: {result['text']!r}")
+            if operation != "detect":
+                if result["confidence_method"] != "ctc_token_geometric_mean" or not 0 < result["confidence"] <= 1:
+                    raise RuntimeError("invalid recognition JSON confidence")
+                if operation == "recognize" and (result["coordinate_space"] != "oriented_image" or not result["lines"] or any(
+                    not 0 < line["confidence"] <= 1 or line["bbox"]["width"] <= 0 or line["detection_score"] <= 0
+                    for line in result["lines"]
+                )):
+                    raise RuntimeError("incomplete recognition JSON line information")
         # Code users may obtain resources separately. Exercise the same installer
         # with just the command, model metadata and unmodified official ORT archive.
         installer_dir = root / "installer"

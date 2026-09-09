@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import math
 import unicodedata
+from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -13,6 +15,21 @@ if TYPE_CHECKING:
 from .bidi import visual_to_logical
 from .config import CharacterModel
 from .errors import ModelFormatError, UnsupportedModelError
+
+CONFIDENCE_METHOD = "ctc_token_geometric_mean"
+
+
+@dataclass(frozen=True)
+class Recognition:
+    text: str = ""
+    log_probability: float = 0.0
+    tokens: int = 0
+
+    @property
+    def confidence(self) -> float | None:
+        if not self.text or not self.tokens:
+            return None
+        return math.exp(self.log_probability / self.tokens)
 
 
 def normalize_line(rgb: np.ndarray, *, stride: int = 4) -> np.ndarray:
@@ -66,6 +83,10 @@ class Alphabet:
                 self.composites[parts[0]] = parts[1]
 
     def decode(self, log_probabilities: np.ndarray, *, script: str = "Latin") -> tuple[str, float]:
+        result = self.decode_scored(log_probabilities, script=script)
+        return result.text, result.confidence if result.confidence is not None else 0.0
+
+    def decode_scored(self, log_probabilities: np.ndarray, *, script: str = "Latin") -> Recognition:
         if (
             log_probabilities.ndim != 2
             or log_probabilities.shape[1] != len(self.characters)
@@ -74,7 +95,7 @@ class Alphabet:
             raise ModelFormatError("recognizer output does not match the character dictionary")
         ids = log_probabilities.argmax(axis=1)
         characters = []
-        peaks = []
+        emissions = []
         previous = -1
         for frame, idx in enumerate(ids):
             idx = int(idx)
@@ -84,15 +105,29 @@ class Alphabet:
                     token = " "
                 elif token.startswith("<") and token.endswith(">"):
                     raise UnsupportedModelError(f"unsupported dictionary token: {token}")
-                characters.append(self.composites.get(token, token))
-                peaks.append(float(log_probabilities[frame, idx]))
+                token = self.composites.get(token, token)
+                characters.append(token)
+                if token:
+                    emissions.append((frame, idx, token))
             previous = idx
         text = "".join(characters).strip()
         if script in ("Arabic", "Hebrew"):
             text = visual_to_logical(text)
         text = unicodedata.normalize("NFC", text)
-        probability = float(np.exp(np.mean(peaks))) if peaks else 0.0
-        return text, probability
+        if not text:
+            return Recognition()
+        while emissions and not emissions[0][2].strip():
+            emissions.pop(0)
+        while emissions and not emissions[-1][2].strip():
+            emissions.pop()
+        log_probability = 0.0
+        for frame, idx, _ in emissions:
+            row = log_probabilities[frame].astype(np.float64)
+            maximum = float(row.max())
+            log_probability += (
+                float(row[idx]) - maximum - math.log(float(np.exp(row - maximum).sum()))
+            )
+        return Recognition(text, log_probability, len(emissions))
 
 
 class Recognizer:
@@ -105,6 +140,10 @@ class Recognizer:
             raise UnsupportedModelError("recognizer graph and alphabet are incompatible")
 
     def run(self, rgb: np.ndarray) -> tuple[str, float]:
+        result = self.run_scored(rgb)
+        return result.text, result.confidence if result.confidence is not None else 0.0
+
+    def run_scored(self, rgb: np.ndarray) -> Recognition:
         data = normalize_line(rgb, stride=self.config.pixels_per_frame)
         if data.shape[-1] > 8192:
             raise UnsupportedModelError("text line exceeds 8192 normalized pixels; split the image")
@@ -117,4 +156,4 @@ class Recognizer:
                 ),
             },
         )[0]
-        return self.alphabet.decode(output[:, 0, :], script=self.config.script)
+        return self.alphabet.decode_scored(output[:, 0, :], script=self.config.script)

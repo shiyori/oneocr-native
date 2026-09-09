@@ -57,7 +57,7 @@ PIPELINE_SPEC = {
     "limitations": [
         "Independent final quad fitting, line normalization and reading order",
         "Rejection/calibration models exported but not used by the reference pipeline",
-        "confidence and words are null; natural vertical CJK and handwriting not validated",
+        "confidence is uncalibrated CTC token geometric mean; words are null; natural vertical CJK and handwriting not validated",
     ],
 }
 

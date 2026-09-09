@@ -7,26 +7,47 @@ var ErrClosed = errors.New("oneocr: engine is closed")
 type Point [2]float64
 type Quad [4]Point
 
+// Box is the axis-aligned extent of a quadrilateral, in image pixel coordinates.
+type Box struct {
+	X      float64 `json:"x"`
+	Y      float64 `json:"y"`
+	Width  float64 `json:"width"`
+	Height float64 `json:"height"`
+}
+
+// Line contains a recognized line and its geometry in the oriented input image.
+// Confidence is an uncalibrated CTC score; Words is nil until word alignment is supported.
 type Line struct {
-	Text       string   `json:"text"`
-	Quad       Quad     `json:"quad"`
-	Script     string   `json:"script"`
-	Confidence *float64 `json:"confidence"`
-	Words      []Word   `json:"words"`
+	Text           string   `json:"text"`
+	Quad           Quad     `json:"quad"`
+	BBox           Box      `json:"bbox"`
+	DetectionScore float64  `json:"detection_score"`
+	Vertical       bool     `json:"vertical"`
+	Rotated180     bool     `json:"rotated_180"`
+	Script         string   `json:"script"`
+	Confidence     *float64 `json:"confidence"`
+	Words          []Word   `json:"words"`
 }
 type Word struct {
 	Text       string   `json:"text"`
 	Quad       Quad     `json:"quad"`
 	Confidence *float64 `json:"confidence"`
 }
+
+// Result describes a page. Confidence aggregates emitted tokens across all
+// returned lines; it is nil when no text was recognized. Coordinates are pixels
+// in the EXIF-oriented image described by Width and Height.
 type Result struct {
-	Text           string   `json:"text"`
-	Lines          []Line   `json:"lines"`
-	Width          int      `json:"width"`
-	Height         int      `json:"height"`
-	ElapsedSeconds float64  `json:"elapsed_seconds"`
-	ModelSHA256    string   `json:"model_sha256"`
-	Warnings       []string `json:"warnings"`
+	Confidence       *float64 `json:"confidence"`
+	ConfidenceMethod string   `json:"confidence_method"`
+	CoordinateSpace  string   `json:"coordinate_space"`
+	Text             string   `json:"text"`
+	Lines            []Line   `json:"lines"`
+	Width            int      `json:"width"`
+	Height           int      `json:"height"`
+	ElapsedSeconds   float64  `json:"elapsed_seconds"`
+	ModelSHA256      string   `json:"model_sha256"`
+	Warnings         []string `json:"warnings"`
 }
 
 type Config struct {

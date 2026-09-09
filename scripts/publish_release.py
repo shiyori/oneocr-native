@@ -159,6 +159,7 @@ Offline Chinese, Japanese, Korean and English OCR for Go, C, C++, Python and And
 - Existing compatible ONNX Runtime 1.26+ can be reused; managed bundles include 1.29.0.
 - Windows x64, macOS ARM64, Linux x64/ARM64, Android ARM64/x86_64; Python 3.11–3.13.
 - Three operations: recognize, detect and recognize-line. File, memory and native pixel inputs are documented per language.
+- Structured JSON: `oneocr recognize --format json image.png` includes line quadrilaterals, bounding boxes, detection scores and uncalibrated CTC recognition confidence. Go/Python and C/C++/Android expose the same result fields.
 
 [简体中文](https://github.com/{REPOSITORY}/blob/{TAG}/README.md) · [English](https://github.com/{REPOSITORY}/blob/{TAG}/README.en.md) · [日本語](https://github.com/{REPOSITORY}/blob/{TAG}/README.ja.md)
 

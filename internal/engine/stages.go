@@ -11,26 +11,32 @@ import (
 // uncalibrated detector score, not a recognition confidence. Order is unspecified.
 type Detection struct {
 	Quad     Quad    `json:"quad"`
+	BBox     Box     `json:"bbox"`
 	Score    float64 `json:"score"`
 	Vertical bool    `json:"vertical"`
 }
 type DetectionResult struct {
-	Regions        []Detection `json:"regions"`
-	Width          int         `json:"width"`
-	Height         int         `json:"height"`
-	ElapsedSeconds float64     `json:"elapsed_seconds"`
-	ModelSHA256    string      `json:"model_sha256"`
+	CoordinateSpace string      `json:"coordinate_space"`
+	Regions         []Detection `json:"regions"`
+	Width           int         `json:"width"`
+	Height          int         `json:"height"`
+	ElapsedSeconds  float64     `json:"elapsed_seconds"`
+	ModelSHA256     string      `json:"model_sha256"`
 }
 
 // LineResult describes a single already cropped, horizontally laid-out line.
 // Empty Script enables classification and automatic 180-degree correction.
 // Explicit Script skips classification and assumes an upright crop.
 type LineResult struct {
-	Text           string  `json:"text"`
-	Script         string  `json:"script"`
-	Rotated180     bool    `json:"rotated_180"`
-	ElapsedSeconds float64 `json:"elapsed_seconds"`
-	ModelSHA256    string  `json:"model_sha256"`
+	Confidence       *float64 `json:"confidence"`
+	ConfidenceMethod string   `json:"confidence_method"`
+	Width            int      `json:"width"`
+	Height           int      `json:"height"`
+	Text             string   `json:"text"`
+	Script           string   `json:"script"`
+	Rotated180       bool     `json:"rotated_180"`
+	ElapsedSeconds   float64  `json:"elapsed_seconds"`
+	ModelSHA256      string   `json:"model_sha256"`
 }
 
 func (e *Engine) detectOnly(ctx context.Context, r raster) (DetectionResult, error) {
@@ -42,9 +48,9 @@ func (e *Engine) detectOnly(ctx context.Context, r raster) (DetectionResult, err
 	if len(ds) > 1000 {
 		return DetectionResult{}, fmt.Errorf("oneocr: more than 1000 detected regions; split image")
 	}
-	out := DetectionResult{Regions: make([]Detection, 0, len(ds)), Width: r.width, Height: r.height, ModelSHA256: e.bundle.SourceSHA256}
+	out := DetectionResult{CoordinateSpace: "oriented_image", Regions: make([]Detection, 0, len(ds)), Width: r.width, Height: r.height, ModelSHA256: e.bundle.SourceSHA256}
 	for _, d := range ds {
-		out.Regions = append(out.Regions, Detection{Quad: d.quad, Score: d.score, Vertical: d.vertical})
+		out.Regions = append(out.Regions, Detection{Quad: d.quad, BBox: quadBounds(d.quad), Score: d.score, Vertical: d.vertical})
 	}
 	out.ElapsedSeconds = time.Since(start).Seconds()
 	return out, nil
@@ -61,7 +67,7 @@ func (e *Engine) recognizeLine(ctx context.Context, r raster, options Options) (
 			return LineResult{}, err
 		}
 		if script == "" {
-			return LineResult{ModelSHA256: e.bundle.SourceSHA256, ElapsedSeconds: time.Since(start).Seconds()}, nil
+			return LineResult{ConfidenceMethod: RecognitionConfidenceMethod, Width: r.width, Height: r.height, ModelSHA256: e.bundle.SourceSHA256, ElapsedSeconds: time.Since(start).Seconds()}, nil
 		}
 		if flip < 0 {
 			r = r.orient(3)
@@ -72,11 +78,11 @@ func (e *Engine) recognizeLine(ctx context.Context, r raster, options Options) (
 	if err != nil {
 		return LineResult{}, err
 	}
-	text, err := rec.run(ctx, r)
+	recognized, err := rec.run(ctx, r)
 	if err != nil {
 		return LineResult{}, err
 	}
-	return LineResult{Text: text, Script: script, Rotated180: rotated, ElapsedSeconds: time.Since(start).Seconds(), ModelSHA256: e.bundle.SourceSHA256}, nil
+	return LineResult{Text: recognized.text, Confidence: recognized.confidence(), ConfidenceMethod: RecognitionConfidenceMethod, Width: r.width, Height: r.height, Script: script, Rotated180: rotated, ElapsedSeconds: time.Since(start).Seconds(), ModelSHA256: e.bundle.SourceSHA256}, nil
 }
 
 // rgbRaster copies the buffer; callers may reuse it after the synchronous call.

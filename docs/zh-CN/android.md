@@ -45,7 +45,7 @@ String line = engine.recognizeLine(OneOcr.Input.fromBitmap(lineBitmap), options)
 已有宿主 ORT 时使用 [Core AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-core.aar)。它只包含 OneOCR Java/JNI，不含模型或 ORT。可下载默认模型并以 `oneocr-cjk-en.ocrpack` 保存到 `src/main/assets`，或使用 Go 安装的命令准备应用模块：
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.1
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
 oneocr install --android-project /path/to/your-app/app
 ```
 

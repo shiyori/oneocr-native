@@ -18,6 +18,7 @@ Linux 完全パッケージは展開後に直接実行できます。Go のイ�
 
 ```sh
 /path/to/oneocr-linux-amd64/bin/oneocr recognize image.png
+/path/to/oneocr-linux-amd64/bin/oneocr recognize --format json image.png
 ```
 
 Android 完全版 AAR は arm64-v8a / x86_64 を含み、API 26 以上に対応します。アプリに追加して [Android ガイド](android.md)に従って利用してください。Core は既にホスト ORT を管理しているアプリ向けの上級設定です。
@@ -26,12 +27,13 @@ Android 完全版 AAR は arm64-v8a / x86_64 を含み、API 26 以上に対応�
 
 ### Go
 
-プロジェクトで `go get github.com/shiyori/oneocr-native@v0.1.1` を実行し、`oneocr.Install` で依存関係を揃えてから `oneocr.Open` を呼びます。コマンドラインでは：
+プロジェクトで `go get github.com/shiyori/oneocr-native@v0.1.2` を実行し、`oneocr.Install` で依存関係を揃えてから `oneocr.Open` を呼びます。コマンドラインでは：
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.1
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.2
 oneocr install
 oneocr recognize image.png
+oneocr recognize --format json image.png
 ```
 
 ### Python
@@ -39,9 +41,10 @@ oneocr recognize image.png
 Python 3.11–3.13 は共通 wheel を利用します。準備コマンドがモデルと不足しているランタイムを揃えます。
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.1/oneocr_native-0.1.1-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.2/oneocr_native-0.1.2-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
+python -m oneocr_native recognize --format json image.png
 ```
 
 [Go](go.md) · [C/C++](native.md) · [Python](python.md) · [Android](android.md)

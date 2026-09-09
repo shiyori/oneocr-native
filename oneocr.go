@@ -10,22 +10,23 @@ import (
 var ErrClosed = engine.ErrClosed
 
 const (
-	Version               = engine.Version
-	ReleaseTag            = engine.ReleaseTag
-	ManagedRuntimeVersion = engine.ManagedRuntimeVersion
-	DefaultModelName      = engine.DefaultModelName
-	BundleSchema          = engine.BundleSchema
-	PackageSchema         = engine.PackageSchema
-	RGB                   = engine.RGB
-	RGBA                  = engine.RGBA
-	BGRA                  = engine.BGRA
-	RGBX                  = engine.RGBX
-	BGRX                  = engine.BGRX
-	CharactersHan         = engine.CharactersHan
-	CharactersKana        = engine.CharactersKana
-	CharactersHangul      = engine.CharactersHangul
-	CharactersLatin       = engine.CharactersLatin
-	CharactersDigits      = engine.CharactersDigits
+	RecognitionConfidenceMethod = engine.RecognitionConfidenceMethod
+	Version                     = engine.Version
+	ReleaseTag                  = engine.ReleaseTag
+	ManagedRuntimeVersion       = engine.ManagedRuntimeVersion
+	DefaultModelName            = engine.DefaultModelName
+	BundleSchema                = engine.BundleSchema
+	PackageSchema               = engine.PackageSchema
+	RGB                         = engine.RGB
+	RGBA                        = engine.RGBA
+	BGRA                        = engine.BGRA
+	RGBX                        = engine.RGBX
+	BGRX                        = engine.BGRX
+	CharactersHan               = engine.CharactersHan
+	CharactersKana              = engine.CharactersKana
+	CharactersHangul            = engine.CharactersHangul
+	CharactersLatin             = engine.CharactersLatin
+	CharactersDigits            = engine.CharactersDigits
 )
 
 // InstallAndroid prepares an app module without replacing existing resources.
