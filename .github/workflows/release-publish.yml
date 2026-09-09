@@ -8,6 +8,10 @@ on:
         description: Existing stable tag to publish with current release tooling
         required: true
         type: string
+      build_run_id:
+        description: Optional previous run whose completed build artifacts should be reused
+        required: false
+        type: string
 permissions:
   contents: read
 concurrency:
@@ -34,6 +38,7 @@ jobs:
           python scripts/version.py --check
           PYTHONPATH=scripts python -c 'import os; from version import TAG; assert os.environ["RELEASE_TAG"] == TAG, "Run this workflow on the version tag"'
   linux:
+    if: ${{ !inputs.build_run_id }}
     needs: version
     strategy:
       fail-fast: false
@@ -86,6 +91,7 @@ jobs:
           if-no-files-found: error
           retention-days: 14
   android:
+    if: ${{ !inputs.build_run_id }}
     needs: version
     runs-on: ubuntu-22.04
     timeout-minutes: 15
@@ -137,7 +143,8 @@ jobs:
           if-no-files-found: error
           retention-days: 14
   publish:
-    needs: [linux, android]
+    if: ${{ always() && needs.version.result == 'success' && (inputs.build_run_id || (needs.linux.result == 'success' && needs.android.result == 'success')) }}
+    needs: [version, linux, android]
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     permissions:
@@ -161,6 +168,8 @@ jobs:
         with:
           pattern: release-assets-*
           path: dist/packages
+          run-id: ${{ inputs.build_run_id || github.run_id }}
+          github-token: ${{ github.token }}
       - name: Assemble same-commit assets and publish Latest
         run: |
           python scripts/publish_release.py assemble --packages dist/packages --output dist/release

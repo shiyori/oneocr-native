@@ -93,5 +93,21 @@ class RecordTests(unittest.TestCase):
             self.assertEqual(record["commit"], "tagged")
 
 
+class UploadedTests(unittest.TestCase):
+    def test_uses_draft_aware_asset_lookup(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            path = directory / "asset.zip"
+            path.write_bytes(b"asset")
+            remote = {"assets": [{"name": path.name, "size": path.stat().st_size, "digest": "sha256:" + digest(path)}]}
+            with patch.object(release, "gh", return_value=json.dumps(remote)) as gh:
+                release.verify_uploaded(directory, [path.name])
+                gh.assert_called_once_with("release", "view", release.TAG, "--repo", release.REPOSITORY, "--json", "assets")
+            remote["assets"][0]["digest"] = "sha256:wrong"
+            with patch.object(release, "gh", return_value=json.dumps(remote)), \
+                 self.assertRaisesRegex(RuntimeError, "uploaded checksum differs"):
+                release.verify_uploaded(directory, [path.name])
+
+
 if __name__ == "__main__":
     unittest.main()

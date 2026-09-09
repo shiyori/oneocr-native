@@ -172,16 +172,24 @@ Verify downloads with `SHA256SUMS` and `release-manifest.json`. Code: AGPL-3.0-o
             gh("release", "edit", TAG, "--repo", REPOSITORY, "--prerelease=false", "--latest")
             print(gh("release", "view", TAG, "--repo", REPOSITORY, "--json", "url,isDraft"))
             return
+        upload_needed = True
         if existing.returncode != 0:
             gh("release", "create", TAG, "--repo", REPOSITORY, "--verify-tag", "--draft", "--title", f"OneOCR {VERSION}", "--notes-file", body)
-        gh("release", "upload", TAG, "--repo", REPOSITORY, *[assets / n for n in names], "--clobber")
-        verify_uploaded(assets, names)
+        else:
+            try:
+                verify_uploaded(assets, names)
+                upload_needed = False
+            except RuntimeError:
+                pass  # Resume an incomplete draft with the audited artifact set.
+        if upload_needed:
+            gh("release", "upload", TAG, "--repo", REPOSITORY, *[assets / n for n in names], "--clobber")
+            verify_uploaded(assets, names)
         gh("release", "edit", TAG, "--repo", REPOSITORY, "--draft=false", "--prerelease=false", "--latest", "--notes-file", body)
         print(gh("release", "view", TAG, "--repo", REPOSITORY, "--json", "url,isDraft"))
 
 
 def verify_uploaded(assets, names):
-    remote = json.loads(gh("api", f"repos/{REPOSITORY}/releases/tags/{TAG}"))
+    remote = json.loads(gh("release", "view", TAG, "--repo", REPOSITORY, "--json", "assets"))
     require({a["name"] for a in remote["assets"]} == set(names), "uploaded asset set differs")
     for asset in remote["assets"]:
         require(asset.get("digest") == "sha256:" + digest(assets / asset["name"]) and asset["size"] == (assets / asset["name"]).stat().st_size, "uploaded checksum differs")
