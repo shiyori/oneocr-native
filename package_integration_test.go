@@ -37,7 +37,7 @@ func TestPackageNativeParity(t *testing.T) {
 		if len(a.Source) > 0 {
 			continue
 		}
-		r, err := full.RecognizeFile(context.Background(), filepath.Join(fixtures, a.File), Options{})
+		r, err := full.Recognize(context.Background(), FromFile(filepath.Join(fixtures, a.File)), Options{})
 		if err != nil {
 			t.Fatal(a.File, err)
 		}
@@ -60,7 +60,7 @@ func TestPackageNativeParity(t *testing.T) {
 				if !ok {
 					continue
 				}
-				r, err := engine.RecognizeFile(context.Background(), filepath.Join(fixtures, a.File), Options{})
+				r, err := engine.Recognize(context.Background(), FromFile(filepath.Join(fixtures, a.File)), Options{})
 				if err != nil {
 					t.Fatal(a.File, err)
 				}
@@ -79,7 +79,7 @@ func TestPackageNativeParity(t *testing.T) {
 					t.Fatal(a.File, "unsupported lines had no warning")
 				}
 			}
-			if _, err = engine.RecognizeFile(context.Background(), filepath.Join(fixtures, "Latin.png"), Options{Script: "Thai"}); err == nil {
+			if _, err = engine.Recognize(context.Background(), FromFile(filepath.Join(fixtures, "Latin.png")), Options{Script: "Thai"}); err == nil {
 				t.Fatal("accepted unavailable forced script")
 			}
 			if len(engine.recognizers) != len(engine.characters) {

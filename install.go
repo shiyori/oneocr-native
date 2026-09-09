@@ -5,6 +5,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/shiyori/oneocr-native/internal/installlock"
+	ort "github.com/shiyori/oneocr-native/internal/ort"
 	"io"
 	"os"
 	"path/filepath"
@@ -15,8 +17,8 @@ type Installation struct {
 	Schema         string `json:"schema"`
 	ModelPath      string `json:"model_path,omitempty"`
 	BundleDir      string `json:"bundle_dir,omitempty"`
-	RuntimeLibrary string `json:"runtime_library"`
-	RuntimeSHA256  string `json:"runtime_sha256"`
+	RuntimeLibrary string `json:"runtime_library,omitempty"`
+	RuntimeSHA256  string `json:"runtime_sha256,omitempty"`
 	Platform       string `json:"platform"`
 	ModelSHA256    string `json:"model_sha256"` // original OneModel provenance
 	PackageSHA256  string `json:"package_sha256,omitempty"`
@@ -25,20 +27,14 @@ type Installation struct {
 type InstallOptions struct {
 	ModelPath, RuntimeLibrary, Home, BundleDir string
 	Profile                                    string // original OneModel conversion; defaults to cjk-en
+	SourceDirectory                            string // offline GitHub Release assets directory
+	Offline                                    bool   // never download missing assets
 }
 
 func (i Installation) Config() Config {
 	return Config{ModelPath: i.ModelPath, BundleDir: i.BundleDir, RuntimeLibrary: i.RuntimeLibrary}
 }
 
-// OpenInstalled uses an installation without requiring resource/runtime paths.
-func OpenInstalled(home string) (*Engine, error) {
-	installed, err := LoadInstallation(home)
-	if err != nil {
-		return nil, err
-	}
-	return Open(installed.Config())
-}
 func DefaultHome() (string, error) {
 	if value := os.Getenv("ONEOCR_HOME"); value != "" {
 		return filepath.Abs(value)
@@ -118,23 +114,29 @@ func isPackageFile(filename string) (bool, error) {
 	return string(header) == packageMagic, nil
 }
 
-// Install copies one model package and the platform ORT library. Original
-// OneModel inputs are converted to cjk-en by default. BundleDir explicitly
-// requests the legacy expanded-directory installation for original inputs.
+// Install prepares the default model and runtime from the SDK, an existing
+// installation, or this version's GitHub Release. Recognition never downloads.
 func Install(options InstallOptions) (Installation, error) {
 	result := Installation{Schema: "oneocr.install.v2", Platform: runtime.GOOS + "-" + runtime.GOARCH}
-	if options.ModelPath == "" {
-		defaults, err := DefaultConfig()
-		if err != nil {
-			return result, err
-		}
-		options.ModelPath = defaults.ModelPath
-		if options.RuntimeLibrary == "" && os.Getenv("ONEOCR_RUNTIME") == "" {
-			options.RuntimeLibrary = defaults.RuntimeLibrary
-		}
-	}
+	referenceRuntime := options.RuntimeLibrary != "" || os.Getenv("ONEOCR_RUNTIME") != ""
 	home, err := installationHome(options.Home)
 	if err != nil {
+		return result, err
+	}
+	if err = os.MkdirAll(home, 0755); err != nil {
+		return result, err
+	}
+	unlock, err := installlock.Acquire(filepath.Join(home, "install.lock"))
+	if err != nil {
+		return result, err
+	}
+	defer unlock()
+	temporary, err := os.MkdirTemp(home, ".prepare-")
+	if err != nil {
+		return result, err
+	}
+	defer os.RemoveAll(temporary)
+	if err = prepareInstallResources(&options, temporary); err != nil {
 		return result, err
 	}
 	incomingHash, err := fileHash(options.ModelPath)
@@ -202,16 +204,45 @@ func Install(options InstallOptions) (Installation, error) {
 		return result, err
 	}
 	if !filepath.IsAbs(library) {
-		return result, fmt.Errorf("installation requires a runtime file; set --runtime, ONEOCR_RUNTIME, or use the SDK with its lib directory")
+		return result, fmt.Errorf("oneocr: no usable runtime was prepared; run oneocr install")
 	}
 	runtimeHash, err := fileHash(library)
 	if err != nil {
 		return result, err
 	}
-	result.RuntimeLibrary = filepath.Join(home, "runtime", result.Platform, runtimeHash, runtimeLibraryName())
-	result.RuntimeSHA256 = runtimeHash
-	if err = copyVerifiedFile(library, result.RuntimeLibrary, runtimeHash); err != nil {
+	loaded, err := ort.LoadedPath()
+	if err != nil {
 		return result, err
+	}
+	result.RuntimeSHA256 = runtimeHash
+	if loaded != "" || referenceRuntime {
+		result.RuntimeLibrary = library
+	} else {
+		runtimeDir := filepath.Join(home, "runtime", result.Platform, runtimeHash)
+		result.RuntimeLibrary = filepath.Join(runtimeDir, runtimeLibraryName())
+		manifestFile := filepath.Join(filepath.Dir(library), "runtime.json")
+		if _, statErr := os.Stat(manifestFile); statErr == nil {
+			record, err := readRuntimeManifest(filepath.Dir(library), result.Platform)
+			if err != nil {
+				return result, err
+			}
+			for _, file := range record.Files {
+				if err = copyVerifiedFile(filepath.Join(filepath.Dir(library), filepath.FromSlash(file.File)), filepath.Join(runtimeDir, filepath.FromSlash(file.File)), file.SHA256); err != nil {
+					return result, err
+				}
+			}
+			manifestHash, err := fileHash(manifestFile)
+			if err != nil {
+				return result, err
+			}
+			if err = copyVerifiedFile(manifestFile, filepath.Join(runtimeDir, "runtime.json"), manifestHash); err != nil {
+				return result, err
+			}
+		} else if !os.IsNotExist(statErr) {
+			return result, statErr
+		} else if err = copyVerifiedFile(library, result.RuntimeLibrary, runtimeHash); err != nil {
+			return result, err
+		}
 	}
 	engine, err := Open(result.Config())
 	if err != nil {
@@ -231,8 +262,8 @@ func Install(options InstallOptions) (Installation, error) {
 	if err != nil {
 		return result, err
 	}
-	temporary := f.Name()
-	defer os.Remove(temporary)
+	configTemporary := f.Name()
+	defer os.Remove(configTemporary)
 	defer f.Close()
 	if _, err = f.Write(append(encoded, '\n')); err != nil {
 		return result, err
@@ -240,7 +271,7 @@ func Install(options InstallOptions) (Installation, error) {
 	if err = f.Close(); err != nil {
 		return result, err
 	}
-	if err = os.Rename(temporary, filepath.Join(home, "config.json")); err != nil {
+	if err = os.Rename(configTemporary, filepath.Join(home, "config.json")); err != nil {
 		return result, err
 	}
 	return result, nil
@@ -253,7 +284,7 @@ func LoadInstallation(home string) (Installation, error) {
 	}
 	f, err := os.Open(filepath.Join(home, "config.json"))
 	if err != nil {
-		return result, fmt.Errorf("oneocr: not installed; run oneocr install --runtime ...: %w", err)
+		return result, fmt.Errorf("oneocr: not installed; run oneocr install: %w", err)
 	}
 	data, err := readLimited(f, 1024*1024)
 	f.Close()
@@ -269,12 +300,15 @@ func LoadInstallation(home string) (Installation, error) {
 	if (result.ModelPath == "") == (result.BundleDir == "") || !validHash(result.ModelSHA256) {
 		return result, fmt.Errorf("invalid installed model configuration")
 	}
-	hash, err := fileHash(result.RuntimeLibrary)
-	if err != nil {
-		return result, err
-	}
-	if hash != result.RuntimeSHA256 {
-		return result, fmt.Errorf("installed runtime checksum mismatch")
+	var hash string
+	if result.RuntimeLibrary != "" {
+		hash, err = fileHash(result.RuntimeLibrary)
+		if err != nil {
+			return result, err
+		}
+		if hash != result.RuntimeSHA256 {
+			return result, fmt.Errorf("installed runtime checksum mismatch")
+		}
 	}
 	if result.ModelPath != "" {
 		hash, err = fileHash(result.ModelPath)

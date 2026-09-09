@@ -4,10 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	ort "github.com/yalue/onnxruntime_go"
-	"image"
 	"math"
-	"os"
 	"strings"
 	"time"
 )
@@ -54,11 +51,11 @@ func Open(config Config) (*Engine, error) {
 		source.close()
 		return nil, err
 	}
-	if err = acquireRuntime(config.RuntimeLibrary, config.UseExistingORT); err != nil {
+	if err = acquireRuntime(config.RuntimeLibrary); err != nil {
 		source.close()
 		return nil, err
 	}
-	e := &Engine{bundle: bundle, source: source, characters: map[string]CharacterModel{}, recognizers: map[string]*recognizer{}, threads: config.Threads, maxSide: config.MaxSide, gate: make(chan struct{}, 1), heldRuntime: true, config: config, runtimeVersion: ort.GetVersion()}
+	e := &Engine{bundle: bundle, source: source, characters: map[string]CharacterModel{}, recognizers: map[string]*recognizer{}, threads: config.Threads, maxSide: config.MaxSide, gate: make(chan struct{}, 1), heldRuntime: true, config: config, runtimeVersion: environment.runtime.Version()}
 	success := false
 	defer func() {
 		if !success {
@@ -197,56 +194,13 @@ func (e *Engine) classify(ctx context.Context, crop raster) (string, float64, er
 	return classifierScripts[best], float64(flip[0]), nil
 }
 
-// Recognize accepts any Go image.Image. Coordinates refer to its Bounds,
-// normalized to a zero origin. Options.Script optionally overrides detection.
-func (e *Engine) Recognize(ctx context.Context, img image.Image, options Options) (Result, error) {
-	if img == nil {
-		return Result{}, fmt.Errorf("oneocr: nil image")
-	}
+// Recognize detects and reads text from an input. Coordinates have a zero origin.
+func (e *Engine) Recognize(ctx context.Context, input Input, options Options) (Result, error) {
 	if err := e.lock(ctx); err != nil {
 		return Result{}, err
 	}
 	defer e.unlock()
-	r, err := fromImage(img)
-	if err != nil {
-		return Result{}, err
-	}
-	return e.recognize(ctx, r, options)
-}
-
-// RecognizeEncoded accepts PNG/JPEG/GIF bytes and applies JPEG EXIF orientation.
-func (e *Engine) RecognizeEncoded(ctx context.Context, data []byte, options Options) (Result, error) {
-	if err := e.lock(ctx); err != nil {
-		return Result{}, err
-	}
-	defer e.unlock()
-	r, err := decodeImage(data)
-	if err != nil {
-		return Result{}, err
-	}
-	return e.recognize(ctx, r, options)
-}
-func (e *Engine) RecognizeFile(ctx context.Context, filename string, options Options) (Result, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return Result{}, err
-	}
-	defer f.Close()
-	data, err := readLimited(f, 128*1024*1024)
-	if err != nil {
-		return Result{}, err
-	}
-	return e.RecognizeEncoded(ctx, data, options)
-}
-
-// RecognizeRGB accepts packed RGB bytes with a row stride. Input is copied;
-// no pointer or byte slice remains owned by the engine after this call.
-func (e *Engine) RecognizeRGB(ctx context.Context, data []byte, width, height, stride int, options Options) (Result, error) {
-	if err := e.lock(ctx); err != nil {
-		return Result{}, err
-	}
-	defer e.unlock()
-	r, err := rgbRaster(data, width, height, stride)
+	r, err := input.raster()
 	if err != nil {
 		return Result{}, err
 	}

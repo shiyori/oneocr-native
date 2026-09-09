@@ -19,7 +19,7 @@ jobs:
       - run: python scripts/verify_models.py
       - run: go test ./...
       - run: go vet ./...
-      - run: python -m pip install ./python pytest
+      - run: python -m pip install "./python[conversion]" pytest onnxruntime==1.29.0
       - run: python -m pytest python/tests
   race:
     runs-on: ubuntu-latest

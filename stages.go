@@ -3,8 +3,6 @@ package oneocr
 import (
 	"context"
 	"fmt"
-	"image"
-	"os"
 	"time"
 )
 
@@ -93,114 +91,28 @@ func rgbRaster(data []byte, width, height, stride int) (raster, error) {
 	return r, nil
 }
 
-// Detect runs only the requested stage. Calls share the Engine cancellation gate.
-func (e *Engine) Detect(ctx context.Context, img image.Image) (DetectionResult, error) {
-	if img == nil {
-		return DetectionResult{}, fmt.Errorf("oneocr: nil image")
-	}
+// Detect runs the requested stage with the Engine's cancellation gate.
+func (e *Engine) Detect(ctx context.Context, input Input) (DetectionResult, error) {
 	if err := e.lock(ctx); err != nil {
 		return DetectionResult{}, err
 	}
 	defer e.unlock()
-	r, err := fromImage(img)
+	r, err := input.raster()
 	if err != nil {
 		return DetectionResult{}, err
 	}
 	return e.detectOnly(ctx, r)
 }
 
-// DetectEncoded runs only the requested stage. Calls share the Engine cancellation gate.
-func (e *Engine) DetectEncoded(ctx context.Context, data []byte) (DetectionResult, error) {
-	if err := e.lock(ctx); err != nil {
-		return DetectionResult{}, err
-	}
-	defer e.unlock()
-	r, err := decodeImage(data)
-	if err != nil {
-		return DetectionResult{}, err
-	}
-	return e.detectOnly(ctx, r)
-}
-
-// DetectRGB runs only the requested stage. Calls share the Engine cancellation gate.
-func (e *Engine) DetectRGB(ctx context.Context, data []byte, width, height, stride int) (DetectionResult, error) {
-	if err := e.lock(ctx); err != nil {
-		return DetectionResult{}, err
-	}
-	defer e.unlock()
-	r, err := rgbRaster(data, width, height, stride)
-	if err != nil {
-		return DetectionResult{}, err
-	}
-	return e.detectOnly(ctx, r)
-}
-
-// DetectFile reads an encoded image and applies JPEG EXIF orientation.
-func (e *Engine) DetectFile(ctx context.Context, filename string) (DetectionResult, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return DetectionResult{}, err
-	}
-	defer f.Close()
-	data, err := readLimited(f, 128*1024*1024)
-	if err != nil {
-		return DetectionResult{}, err
-	}
-	return e.DetectEncoded(ctx, data)
-}
-
-// RecognizeLine runs only the requested stage. Calls share the Engine cancellation gate.
-func (e *Engine) RecognizeLine(ctx context.Context, img image.Image, options Options) (LineResult, error) {
-	if img == nil {
-		return LineResult{}, fmt.Errorf("oneocr: nil image")
-	}
+// RecognizeLine runs the requested stage with the Engine's cancellation gate.
+func (e *Engine) RecognizeLine(ctx context.Context, input Input, options Options) (LineResult, error) {
 	if err := e.lock(ctx); err != nil {
 		return LineResult{}, err
 	}
 	defer e.unlock()
-	r, err := fromImage(img)
+	r, err := input.raster()
 	if err != nil {
 		return LineResult{}, err
 	}
 	return e.recognizeLine(ctx, r, options)
-}
-
-// RecognizeLineEncoded runs only the requested stage. Calls share the Engine cancellation gate.
-func (e *Engine) RecognizeLineEncoded(ctx context.Context, data []byte, options Options) (LineResult, error) {
-	if err := e.lock(ctx); err != nil {
-		return LineResult{}, err
-	}
-	defer e.unlock()
-	r, err := decodeImage(data)
-	if err != nil {
-		return LineResult{}, err
-	}
-	return e.recognizeLine(ctx, r, options)
-}
-
-// RecognizeLineRGB runs only the requested stage. Calls share the Engine cancellation gate.
-func (e *Engine) RecognizeLineRGB(ctx context.Context, data []byte, width, height, stride int, options Options) (LineResult, error) {
-	if err := e.lock(ctx); err != nil {
-		return LineResult{}, err
-	}
-	defer e.unlock()
-	r, err := rgbRaster(data, width, height, stride)
-	if err != nil {
-		return LineResult{}, err
-	}
-	return e.recognizeLine(ctx, r, options)
-}
-
-// RecognizeLineFile reads an encoded image and applies JPEG EXIF orientation.
-func (e *Engine) RecognizeLineFile(ctx context.Context, filename string, options Options) (LineResult, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return LineResult{}, err
-	}
-	defer f.Close()
-	data, err := readLimited(f, 128*1024*1024)
-	if err != nil {
-		return LineResult{}, err
-	}
-	return e.RecognizeLineEncoded(ctx, data, options)
 }

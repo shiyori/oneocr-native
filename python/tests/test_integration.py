@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from PIL import Image
 
-from oneocr_native import OneOcrEngine
+from oneocr_native import EngineConfig, OneOcrEngine
 
 pytestmark = pytest.mark.integration
 MODEL = os.environ.get("ONEOCR_MODEL")
@@ -18,7 +18,7 @@ FIXTURES = os.environ.get("ONEOCR_FIXTURES")
 def engine():
     if not MODEL or not FIXTURES:
         pytest.skip("set ONEOCR_MODEL and ONEOCR_FIXTURES for native inference tests")
-    with OneOcrEngine(MODEL) as value:
+    with OneOcrEngine(EngineConfig(MODEL)) as value:
         yield value
 
 

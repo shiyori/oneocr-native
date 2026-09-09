@@ -11,7 +11,7 @@ from .errors import ModelFormatError
 DEFAULT_MODEL = "oneocr-cjk-en.ocrpack"
 
 
-def default_model_path() -> Path:
+def default_model_path(home: Path | None = None) -> Path:
     """Find the single default model without selecting other .ocrpack files."""
     if explicit := os.environ.get("ONEOCR_MODEL"):
         return Path(explicit)
@@ -20,14 +20,7 @@ def default_model_path() -> Path:
         for candidate in (root / DEFAULT_MODEL, root / "models" / DEFAULT_MODEL):
             if candidate.is_file():
                 return candidate.resolve()
-    if configured := os.environ.get("ONEOCR_HOME"):
-        home = Path(configured)
-    elif sys.platform == "darwin":
-        home = Path.home() / "Library" / "Application Support" / "oneocr"
-    elif sys.platform == "win32":
-        home = Path(os.environ.get("APPDATA", Path.home() / "AppData" / "Roaming")) / "oneocr"
-    else:
-        home = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "oneocr"
+    home = home or installation_home()
     config = home / "config.json"
     if config.is_file():
         if config.stat().st_size > 1024 * 1024:
@@ -48,5 +41,17 @@ def default_model_path() -> Path:
             raise ModelFormatError("installed model package checksum mismatch")
         return model
     raise FileNotFoundError(
-        f"default model {DEFAULT_MODEL} not found; place it in models/ or run oneocr install"
+        f"default model {DEFAULT_MODEL} not found; place it in models/ or run python -m oneocr_native install"
     )
+
+
+def installation_home() -> Path:
+    if configured := os.environ.get("ONEOCR_HOME"):
+        home = Path(configured)
+    elif sys.platform == "darwin":
+        home = Path.home() / "Library" / "Application Support" / "oneocr"
+    elif sys.platform == "win32":
+        home = Path(os.environ.get("APPDATA", Path.home() / "AppData" / "Roaming")) / "oneocr"
+    else:
+        home = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "oneocr"
+    return home

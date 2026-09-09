@@ -35,9 +35,6 @@ type Config struct {
 	RuntimeLibrary string `json:"runtime_library,omitempty"`
 	Threads        int    `json:"threads,omitempty"`  // default 2, range 1..16, per Engine
 	MaxSide        int    `json:"max_side,omitempty"` // default 1600, range 128..4096
-	// UseExistingORT shares an environment initialized by the application via
-	// onnxruntime_go. The application must keep it alive until all Engines close.
-	UseExistingORT bool `json:"use_existing_ort,omitempty"`
 	// CharacterClasses restricts CJK/Latin decoding, not language identification.
 	// Empty selects han,kana,hangul,latin,digits. Spaces and punctuation remain.
 	CharacterClasses []CharacterClass `json:"character_classes,omitempty"`

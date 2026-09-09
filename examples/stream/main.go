@@ -72,7 +72,7 @@ func run() error {
 					}
 					job = value
 				}
-				result, err := e.RecognizeFile(ctx, job.Path, oneocr.Options{})
+				result, err := e.Recognize(ctx, oneocr.FromFile(job.Path), oneocr.Options{})
 				item := struct {
 					ID     int            `json:"id"`
 					Path   string         `json:"path"`

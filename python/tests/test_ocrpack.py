@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from oneocr_native import OneOcrEngine
+from oneocr_native import EngineConfig, OneOcrEngine
 from oneocr_native.bidi import portable_visual_to_logical
 from oneocr_native.errors import ModelFormatError, OneOcrError
 from oneocr_native.ocrpack import PackageSource
@@ -22,7 +22,7 @@ def engine(request):
     path = MODELS / f"oneocr-{request.param}.ocrpack"
     if not path.exists():
         pytest.skip("model data is distributed separately from Python source archives")
-    with OneOcrEngine(path, threads=1) as value:
+    with OneOcrEngine(EngineConfig(path, threads=1)) as value:
         yield value
 
 
@@ -59,7 +59,7 @@ def test_readonly_and_close(tmp_path):
     model.chmod(0o444)
     tmp_path.chmod(0o555)
     try:
-        with OneOcrEngine.from_package(model) as value:
+        with OneOcrEngine(EngineConfig(model)) as value:
             descriptor = value.prepared._file
             assert not value.recognizers
             assert value.recognize(FIXTURES / "CJK.png").text == "你好世界 日本語テスト 한국어 123"
@@ -169,7 +169,7 @@ def test_session_failure_closes_source(monkeypatch):
     monkeypatch.setattr(PackageSource, "close", closed)
     monkeypatch.setattr("oneocr_native.engine.session", fail)
     with pytest.raises(RuntimeError):
-        OneOcrEngine.from_package(model)
+        OneOcrEngine(EngineConfig(model))
     assert sources and all(s._file.closed for s in sources)
 
 

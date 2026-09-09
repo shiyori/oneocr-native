@@ -2,6 +2,7 @@ package oneocr
 
 import (
 	"fmt"
+	ort "github.com/shiyori/oneocr-native/internal/ort"
 	"os"
 	"path/filepath"
 )
@@ -19,6 +20,10 @@ func DefaultConfig() (Config, error) {
 	roots := []string{"."}
 	if executable, err := os.Executable(); err == nil {
 		directory := filepath.Dir(executable)
+		roots = append(roots, directory, filepath.Dir(directory))
+	}
+	if module := ort.ModulePath(); module != "" {
+		directory := filepath.Dir(module)
 		roots = append(roots, directory, filepath.Dir(directory))
 	}
 	for _, root := range roots {
@@ -49,8 +54,5 @@ func applyDefaultConfig(config *Config) error {
 		return err
 	}
 	config.ModelPath = defaults.ModelPath
-	if config.RuntimeLibrary == "" && os.Getenv("ONEOCR_RUNTIME") == "" {
-		config.RuntimeLibrary = defaults.RuntimeLibrary
-	}
 	return nil
 }

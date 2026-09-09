@@ -2,7 +2,8 @@ package dev.oneocr;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import java.io.ByteArrayOutputStream;
+import android.graphics.Canvas;
+import android.graphics.ColorSpace;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,29 +21,52 @@ public final class OneOcr implements AutoCloseable {
     static { System.loadLibrary("oneocr_jni"); }
     private long handle;
 
-    /** Opens the default model from app/src/main/assets with two CPU threads. */
-    public static OneOcr fromAsset(Context context) throws IOException {
-        return fromAsset(context, DEFAULT_MODEL, 2);
+    public static final class Options {
+        public String modelPath = "";
+        public String assetName = DEFAULT_MODEL;
+        public String runtimeLibrary = "";
+        public int threads = 2;
+        public int maxSide = 1600;
+        public int characterClasses = 0;
     }
-
-    /** Opens the default asset with the requested CPU thread count. */
-    public static OneOcr fromAsset(Context context, int threads) throws IOException {
-        return fromAsset(context, DEFAULT_MODEL, threads);
+    public static final class CallOptions {
+        public String script = "";
+        public long timeoutMs = 0;
     }
-
-    /** Uses the ONNX Runtime included in the AAR; model is an .ocrpack or legacy directory. */
-    public OneOcr(String model, int threads) { this(model, "", threads); }
-
-    /** An explicit runtime path remains supported for applications managing their own runtime. */
-    public OneOcr(String model, String runtimeLibrary, int threads) {
-        if (model == null || runtimeLibrary == null) throw new NullPointerException("paths");
-        handle = nativeOpen(utf8(model), utf8(runtimeLibrary), threads);
+    public enum PixelFormat { RGB(1), RGBA(2), BGRA(3), RGBX(4), BGRX(5); final int value; PixelFormat(int value) { this.value = value; } }
+    /** Borrows bytes or a Bitmap until the synchronous call returns. */
+    public static final class Input {
+        private int kind, width, height, stride, format;
+        private boolean premultiplied;
+        private byte[] data, path;
+        private Bitmap bitmap;
+        private Input() {}
+        public static Input fromFile(String path) {
+            Input i = new Input(); i.kind = 1; i.path = utf8(path); return i;
+        }
+        public static Input fromEncoded(byte[] data) {
+            if (data == null) throw new NullPointerException("data");
+            Input i = new Input(); i.kind = 2; i.data = data; return i;
+        }
+        public static Input fromBitmap(Bitmap bitmap) {
+            if (bitmap == null) throw new NullPointerException("bitmap");
+            Input i = new Input(); i.kind = 3; i.bitmap = bitmap; return i;
+        }
+        public static Input fromPixels(byte[] data, int width, int height, int stride, PixelFormat format, boolean premultiplied) {
+            if (data == null || format == null) throw new NullPointerException("pixels/format");
+            Input i = new Input(); i.kind = 3; i.data = data; i.width = width; i.height = height;
+            i.stride = stride; i.format = format.value; i.premultiplied = premultiplied; return i;
+        }
     }
-
-    /** Streams one asset into a content-addressed private file, then opens it.
-     * No resource directory is extracted and the complete package is never held in a byte[]. */
-    public static OneOcr fromAsset(Context context, String assetName, int threads) throws IOException {
-        if (context == null || assetName == null) throw new NullPointerException("context/assetName");
+    private OneOcr(long handle) { this.handle = handle; }
+    /** Opens the bundled default asset. Reuse the engine on a background executor. */
+    public static OneOcr open(Context context) throws IOException { return open(context, new Options()); }
+    public static OneOcr open(Context context, Options options) throws IOException {
+        if (context == null || options == null) throw new NullPointerException("context/options");
+        String model = options.modelPath.isEmpty() ? importAsset(context, options.assetName) : options.modelPath;
+        return new OneOcr(nativeOpen(utf8(model), utf8(options.runtimeLibrary), options.threads, options.maxSide, options.characterClasses));
+    }
+    private static String importAsset(Context context, String assetName) throws IOException {
         File directory = new File(context.getFilesDir(), "oneocr/models");
         if (!directory.isDirectory() && !directory.mkdirs()) throw new IOException("cannot create model directory");
         File temporary = File.createTempFile(".import-", ".ocrpack", directory);
@@ -67,7 +91,7 @@ public final class OneOcr implements AutoCloseable {
                 Files.move(temporary.toPath(), destination.toPath(),
                         StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
             }
-            return new OneOcr(destination.getAbsolutePath(), threads);
+            return destination.getAbsolutePath();
         } finally {
             if (temporary.exists()) temporary.delete();
         }
@@ -95,40 +119,58 @@ public final class OneOcr implements AutoCloseable {
         if (text.indexOf('\0') >= 0) throw new IllegalArgumentException("NUL in path");
         return text.getBytes(StandardCharsets.UTF_8);
     }
-    public synchronized String recognize(byte[] encodedImage) {
+    public String recognize(Input input) { return recognize(input, new CallOptions()); }
+    public synchronized String recognize(Input input, CallOptions options) { return operate(input, options, 0); }
+    public String detect(Input input) { return detect(input, new CallOptions()); }
+    public synchronized String detect(Input input, CallOptions options) { return operate(input, options, 1); }
+    public String recognizeLine(Input input) { return recognizeLine(input, new CallOptions()); }
+    public synchronized String recognizeLine(Input input, CallOptions options) { return operate(input, options, 2); }
+    private String operate(Input input, CallOptions options, int operation) {
         if (handle == 0) throw new IllegalStateException("OneOCR is closed");
-        if (encodedImage == null) throw new NullPointerException("encodedImage");
-        return nativeRecognize(handle, encodedImage);
+        if (input == null || options == null) throw new NullPointerException("input/options");
+        Bitmap bitmap = input.bitmap;
+        Bitmap copied = null;
+        try {
+            if (bitmap != null) {
+                if (bitmap.isRecycled()) throw new IllegalArgumentException("bitmap is recycled");
+                if (bitmap.getWidth() < 2 || bitmap.getHeight() < 2 || (long)bitmap.getWidth() * bitmap.getHeight() > 40_000_000)
+                    throw new IllegalArgumentException("image must be 2x2 to 40 megapixels");
+                if (bitmap.getConfig() == Bitmap.Config.HARDWARE) {
+                    copied = bitmap.copy(Bitmap.Config.ARGB_8888, false);
+                    if (copied == null) throw new IllegalArgumentException("cannot read hardware bitmap");
+                    bitmap = copied;
+                }
+                ColorSpace colorSpace = bitmap.getColorSpace();
+                if (bitmap.getConfig() != Bitmap.Config.ARGB_8888 || colorSpace == null || !colorSpace.isSrgb()) {
+                    Bitmap normalized = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+                    new Canvas(normalized).drawBitmap(bitmap, 0, 0, null);
+                    if (copied != null) copied.recycle();
+                    copied = normalized; bitmap = normalized;
+                }
+            }
+            return nativeOperate(handle, input.kind, input.path, input.data, bitmap,
+                input.width, input.height, input.stride, bitmap == null ? input.format : (bitmap.hasAlpha() ? 2 : 4),
+                bitmap == null ? input.premultiplied : bitmap.isPremultiplied(),
+                utf8(options.script == null ? "" : options.script), options.timeoutMs, operation);
+        } finally { if (copied != null) copied.recycle(); }
     }
-    public synchronized String recognize(Bitmap bitmap) {
-        if (bitmap == null) throw new NullPointerException("bitmap");
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        if (!bitmap.compress(Bitmap.CompressFormat.PNG, 100, bytes)) throw new IllegalArgumentException("cannot encode bitmap");
-        return recognize(bytes.toByteArray());
-    }
-    /** Detects regions without running script classification or recognition. */
-    public synchronized String detect(byte[] encodedImage) {
+    public synchronized void warmup(long timeoutMs) {
         if (handle == 0) throw new IllegalStateException("OneOCR is closed");
-        if (encodedImage == null) throw new NullPointerException("encodedImage");
-        return nativeStage(handle, encodedImage, null, true);
+        nativeWarmup(handle, timeoutMs);
     }
-    /** Recognizes a cropped horizontal line. Null/empty script auto-classifies
-     * and corrects 180-degree rotation; an explicit script assumes upright input. */
-    public synchronized String recognizeLine(byte[] encodedImage, String script) {
+    public synchronized String diagnostics() {
         if (handle == 0) throw new IllegalStateException("OneOCR is closed");
-        if (encodedImage == null) throw new NullPointerException("encodedImage");
-        return nativeStage(handle, encodedImage, script == null ? null : utf8(script), false);
-    }
-    public synchronized String recognizeLine(byte[] encodedImage) {
-        return recognizeLine(encodedImage, null);
+        return nativeDiagnostics(handle);
     }
     @Override public synchronized void close() {
         long value = handle;
         handle = 0;
         if (value != 0) nativeClose(value);
     }
-    private static native long nativeOpen(byte[] bundle, byte[] runtime, int threads);
-    private static native String nativeRecognize(long handle, byte[] image);
-    private static native String nativeStage(long handle, byte[] image, byte[] script, boolean detect);
+    private static native long nativeOpen(byte[] model, byte[] runtime, int threads, int maxSide, int characterClasses);
+    private static native String nativeOperate(long handle, int kind, byte[] path, byte[] data, Bitmap bitmap,
+        int width, int height, int stride, int format, boolean premultiplied, byte[] script, long timeoutMs, int operation);
+    private static native void nativeWarmup(long handle, long timeoutMs);
+    private static native String nativeDiagnostics(long handle);
     private static native void nativeClose(long handle);
 }

@@ -10,13 +10,12 @@ from pathlib import Path
 
 import numpy as np
 import onnx
-import onnxruntime as ort
 from filelock import FileLock
 
 from .config import PipelineConfig
 from .container import ModelContainer
 from .errors import ModelFormatError, UnsupportedModelError
-from .runtime import session
+from .runtime import get_runtime, session
 
 CONVERTER_VERSION = "cbc-1"
 
@@ -90,7 +89,7 @@ def _read_valid_cache(directory: Path, container: ModelContainer) -> PreparedMod
         if (
             manifest["source_sha256"] != container.source_hash
             or manifest["converter_version"] != CONVERTER_VERSION
-            or manifest["onnxruntime_version"] != ort.__version__
+            or manifest["onnxruntime_version"] != get_runtime().__version__
             or manifest["config_sha256"] != sha256(container.config).hexdigest()
             or len(manifest["resources"]) != len(container.resources)
         ):
@@ -165,7 +164,7 @@ def _prepare_locked(
             "source_sha256": container.source_hash,
             "source_bytes": container.source_size,
             "config_sha256": sha256(container.config).hexdigest(),
-            "onnxruntime_version": ort.__version__,
+            "onnxruntime_version": get_runtime().__version__,
             "provider": "CPUExecutionProvider",
             "pipeline": asdict(config),
             "resources": resources,

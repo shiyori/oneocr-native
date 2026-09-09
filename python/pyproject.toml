@@ -4,21 +4,23 @@ build-backend = "hatchling.build"
 
 [project]
 name = "oneocr-native"
-version = "0.1.0"
+dynamic = ["version"]
 license = "AGPL-3.0-only"
 license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 readme = "README.md"
 description = "Offline OneOCR for Chinese, Japanese, Korean and English"
 requires-python = ">=3.11,<3.14"
 dependencies = [
-  "filelock>=3.18,<4",
   "numpy>=2.4,<3",
-  "onnx>=1.22,<1.23",
-  "onnxruntime>=1.29,<1.30",
   "opencv-python-headless>=4.13,<6",
   "pillow>=12,<13",
-  "pycryptodome>=3.23,<4",
 ]
+
+[project.optional-dependencies]
+conversion = ["filelock>=3.18,<4", "onnx>=1.22,<1.23", "pycryptodome>=3.23,<4"]
+
+[tool.hatch.version]
+path = "src/oneocr_native/_version.py"
 
 [project.scripts]
 oneocr-native = "oneocr_native.cli:main"
@@ -30,7 +32,7 @@ dev = ["pytest>=8,<10", "ruff>=0.11,<1"]
 packages = ["src/oneocr_native"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src", "tests", "examples", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "uv.lock", "pyproject.toml"]
+include = ["src", "tests", "examples", "README.md", "README.en.md", "README.ja.md", "LICENSE", "THIRD_PARTY_NOTICES.md", "uv.lock", "pyproject.toml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

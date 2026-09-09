@@ -59,7 +59,7 @@ func TestTrackedPackageRecognition(t *testing.T) {
 				if script == "" {
 					script = "Latin"
 				}
-				result, err := engine.RecognizeFile(context.Background(), filepath.Join("testdata", label.File), Options{})
+				result, err := engine.Recognize(context.Background(), FromFile(filepath.Join("testdata", label.File)), Options{})
 				if err != nil {
 					t.Fatal(label.File, err)
 				}
@@ -71,7 +71,7 @@ func TestTrackedPackageRecognition(t *testing.T) {
 					t.Fatal("missing skip/warning", label.File)
 				}
 			}
-			if _, err := engine.RecognizeFile(context.Background(), "testdata/Latin.png", Options{Script: "Thai"}); err == nil {
+			if _, err := engine.Recognize(context.Background(), FromFile("testdata/Latin.png"), Options{Script: "Thai"}); err == nil {
 				t.Fatal("accepted missing script")
 			}
 			descriptor := engine.source.file
@@ -81,7 +81,7 @@ func TestTrackedPackageRecognition(t *testing.T) {
 			if _, err = descriptor.Stat(); err == nil {
 				t.Fatal("descriptor leaked")
 			}
-			if _, err = engine.RecognizeFile(context.Background(), "testdata/Latin.png", Options{}); err == nil {
+			if _, err = engine.Recognize(context.Background(), FromFile("testdata/Latin.png"), Options{}); err == nil {
 				t.Fatal("recognition after close")
 			}
 		})

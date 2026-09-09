@@ -42,16 +42,35 @@ func run(args []string) error {
 	switch command {
 	case "install":
 		model := fs.String("model", "", "optional model path; uses the default model when omitted")
-		library := fs.String("runtime", "", "platform ONNX Runtime 1.29 shared library")
+		library := fs.String("runtime", "", "advanced override for an existing ONNX Runtime library")
+		source := fs.String("source", "", "offline Release assets directory")
+		offline := fs.Bool("offline", false, "use only local resources")
+		goProject := fs.String("go-project", "", "also add this SDK to an existing Go project")
+		androidProject := fs.String("android-project", "", "prepare an Android app module")
 		home := fs.String("home", "", "installation root (default ONEOCR_HOME or OS user config)")
 		bundle := fs.String("bundle-dir", "", "legacy expanded directory for original OneModel input")
 		profile := fs.String("profile", "", "development conversion profile (default cjk-en)")
 		if e := fs.Parse(args[1:]); e != nil {
 			return e
 		}
-		installed, e := oneocr.Install(oneocr.InstallOptions{ModelPath: *model, RuntimeLibrary: *library, Home: *home, BundleDir: *bundle, Profile: *profile})
+		if *androidProject != "" {
+			if *goProject != "" {
+				return fmt.Errorf("choose one project type")
+			}
+			result, err := oneocr.InstallAndroid(oneocr.AndroidInstallOptions{ProjectDirectory: *androidProject, SourceDirectory: *source, Offline: *offline})
+			if err != nil {
+				return err
+			}
+			return emit(result)
+		}
+		installed, e := oneocr.Install(oneocr.InstallOptions{ModelPath: *model, RuntimeLibrary: *library, Home: *home, BundleDir: *bundle, Profile: *profile, SourceDirectory: *source, Offline: *offline})
 		if e != nil {
 			return e
+		}
+		if *goProject != "" {
+			if e = integrateGo(*goProject, *home, *offline || *source != ""); e != nil {
+				return e
+			}
 		}
 		return emit(installed)
 	case "export":
@@ -192,14 +211,14 @@ func run(args []string) error {
 		var resultText string
 		switch command {
 		case "detect":
-			result, e = engine.DetectFile(ctx, fs.Arg(0))
+			result, e = engine.Detect(ctx, oneocr.FromFile(fs.Arg(0)))
 		case "recognize-line":
 			var line oneocr.LineResult
-			line, e = engine.RecognizeLineFile(ctx, fs.Arg(0), oneocr.Options{Script: *script})
+			line, e = engine.RecognizeLine(ctx, oneocr.FromFile(fs.Arg(0)), oneocr.Options{Script: *script})
 			result, resultText = line, line.Text
 		default:
 			var full oneocr.Result
-			full, e = engine.RecognizeFile(ctx, fs.Arg(0), oneocr.Options{Script: *script})
+			full, e = engine.Recognize(ctx, oneocr.FromFile(fs.Arg(0)), oneocr.Options{Script: *script})
 			result, resultText = full, full.Text
 		}
 		if closeErr := engine.Close(); e == nil {

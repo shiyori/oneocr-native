@@ -75,7 +75,7 @@ func run() error {
 		if label.Source != "" {
 			continue
 		}
-		result, e := engine.RecognizeFile(context.Background(), filepath.Join(os.Args[3], label.File), oneocr.Options{})
+		result, e := engine.Recognize(context.Background(), oneocr.FromFile(filepath.Join(os.Args[3], label.File)), oneocr.Options{})
 		if e != nil {
 			return fmt.Errorf("%s: %w", label.File, e)
 		}

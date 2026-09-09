@@ -9,7 +9,6 @@ import cv2
 import numpy as np
 from PIL import Image, ImageOps
 
-from .cache import prepare
 from .config import CLASSIFIER_SCRIPTS
 from .detection import Detector
 from .errors import OneOcrError, UnsupportedModelError
@@ -88,63 +87,41 @@ def _load_image(image: str | Path | Image.Image) -> tuple[Image.Image, np.ndarra
     return pil, np.asarray(pil.convert("RGB"))
 
 
+@dataclass(frozen=True)
+class EngineConfig:
+    model_path: str | Path | None = None
+    cache_dir: str | Path | None = None
+    max_side: int = 1600
+    threads: int = 2
+
+
 class OneOcrEngine:
-    """Experimental OneOCR inference on the local ONNX Runtime CPU provider.
+    """Synchronous offline OCR. Reuse an engine or manage it with a with block."""
 
-    ONEOCRPK resources load directly from one verified file. Original OneModel
-    input is prepared into a content-addressed cache. No project Go library or
-    original Windows DLL is loaded. Recognition models load lazily; close the
-    engine or use a context manager to release owned resources.
-    """
-
-    def __init__(
-        self,
-        model_path: str | Path | None = None,
-        *,
-        cache_dir: str | Path | None = None,
-        max_side: int = 1600,
-        threads: int = 2,
-    ):
-        if not 128 <= max_side <= 4096:
+    def __init__(self, config: EngineConfig | None = None):
+        config = config or EngineConfig()
+        if not isinstance(config, EngineConfig):
+            raise TypeError("config must be EngineConfig")
+        if not 128 <= config.max_side <= 4096:
             raise ValueError("max_side must be between 128 and 4096")
-        if not 1 <= threads <= 16:
+        if not 1 <= config.threads <= 16:
             raise ValueError("threads must be between 1 and 16")
-        from .bundle import load_bundle
         from .defaults import default_model_path
         from .ocrpack import MAGIC, PackageSource
 
-        path = default_model_path() if model_path is None else Path(model_path)
+        path = default_model_path() if config.model_path is None else Path(config.model_path)
         if path.is_dir():
+            from .bundle import load_bundle
             self.prepared = load_bundle(path)
         else:
             with path.open("rb") as stream:
                 is_package = stream.read(8) == MAGIC
-            self.prepared = PackageSource(path) if is_package else prepare(path, cache_dir)
-        self._initialize(max_side, threads)
-
-    @classmethod
-    def from_bundle(cls, directory: str | Path, *, max_side: int = 1600, threads: int = 2):
-        """Load a portable developer bundle, without the original .onemodel."""
-        from .bundle import load_bundle
-
-        if not 128 <= max_side <= 4096 or not 1 <= threads <= 16:
-            raise ValueError("invalid max_side or threads")
-        instance = cls.__new__(cls)
-        instance.prepared = load_bundle(directory)
-        instance._initialize(max_side, threads)
-        return instance
-
-    @classmethod
-    def from_package(cls, filename: str | Path, *, max_side: int = 1600, threads: int = 2):
-        """Load a verified .ocrpack without extracting files or using Go libraries."""
-        from .ocrpack import PackageSource
-
-        if not 128 <= max_side <= 4096 or not 1 <= threads <= 16:
-            raise ValueError("invalid max_side or threads")
-        instance = cls.__new__(cls)
-        instance.prepared = PackageSource(filename)
-        instance._initialize(max_side, threads)
-        return instance
+            if is_package:
+                self.prepared = PackageSource(path)
+            else:
+                from .cache import prepare
+                self.prepared = prepare(path, config.cache_dir)
+        self._initialize(config.max_side, config.threads)
 
     def close(self):
         """Idempotently release owned session references and the package descriptor."""
@@ -189,7 +166,7 @@ class OneOcrEngine:
 
     @property
     def available_scripts(self) -> tuple[str, ...]:
-        """Model inventory; see validation report for tested script coverage."""
+        """Scripts provided by the active model."""
         return tuple(self.characters)
 
     def _recognizer(self, script: str) -> Recognizer:

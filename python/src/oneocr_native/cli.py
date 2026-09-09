@@ -2,21 +2,21 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from dataclasses import asdict
 from pathlib import Path
 
-from .bundle import export_bundle
-from .cache import prepare
-from .config import PipelineConfig
-from .container import ModelContainer
-from .engine import OneOcrEngine
 from .errors import OneOcrError
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Offline OCR for Chinese, Japanese, Korean and English")
     commands = parser.add_subparsers(dest="command", required=True)
+    setup = commands.add_parser("install", help="prepare the default model and reuse/install ONNX Runtime")
+    setup.add_argument("--source", type=Path, help="offline Release or complete Python bundle directory")
+    setup.add_argument("--offline", action="store_true", help="use only local files")
+    setup.add_argument("--home", type=Path, help="installation directory")
     for command in ("inspect", "prepare", "recognize", "detect", "recognize-line", "export"):
         sub = commands.add_parser(command)
         sub.add_argument(
@@ -41,11 +41,16 @@ def main(argv: list[str] | None = None) -> int:
             sub.add_argument("--threads", type=int, default=2)
     args = parser.parse_args(argv)
     try:
+        if args.command == "install":
+            from .install import install
+            print(json.dumps(install(args.source, offline=args.offline, home=args.home), indent=2))
+            return 0
         if hasattr(args, "model") and args.model is None:
             from .defaults import default_model_path
 
             args.model = default_model_path()
         if args.command == "inspect":
+            from .config import PipelineConfig
             from .ocrpack import MAGIC, PackageSource
 
             with args.model.open("rb") as stream:
@@ -54,6 +59,7 @@ def main(argv: list[str] | None = None) -> int:
                 with PackageSource(args.model) as source:
                     result = source.info
             else:
+                from .container import ModelContainer
                 container = ModelContainer.load(args.model)
                 config = PipelineConfig.parse(container.config)
                 result = {
@@ -68,6 +74,7 @@ def main(argv: list[str] | None = None) -> int:
                 }
             content = json.dumps(result, ensure_ascii=False, indent=2)
         elif args.command == "export":
+            from .bundle import export_bundle
             directory = export_bundle(
                 args.model, args.directory, archive=args.zip, cache_dir=args.cache_dir
             )
@@ -76,6 +83,7 @@ def main(argv: list[str] | None = None) -> int:
                 ensure_ascii=False,
             )
         elif args.command == "prepare":
+            from .cache import prepare
             prepared = prepare(args.model, args.cache_dir)
             content = json.dumps(
                 {
@@ -90,9 +98,11 @@ def main(argv: list[str] | None = None) -> int:
                 indent=2,
             )
         else:
-            with OneOcrEngine(
+            from .engine import EngineConfig, OneOcrEngine
+
+            with OneOcrEngine(EngineConfig(
                 args.model, cache_dir=args.cache_dir, max_side=args.max_side, threads=args.threads
-            ) as engine:
+            )) as engine:
                 if args.command == "detect":
                     result = engine.detect(args.image)
                 elif args.command == "recognize-line":
@@ -109,6 +119,6 @@ def main(argv: list[str] | None = None) -> int:
         else:
             print(content)
         return 0
-    except (OneOcrError, OSError, ValueError) as exc:
+    except (OneOcrError, OSError, ValueError, subprocess.CalledProcessError) as exc:
         print(f"oneocr-native: {exc}", file=sys.stderr)
         return 2

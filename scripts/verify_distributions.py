@@ -1,212 +1,169 @@
 #!/usr/bin/env python3
-"""Relocate and exercise local SDK artifacts; emit portable validation evidence."""
-
+"""Verify Release consumers from clean directories with networking disabled."""
 from __future__ import annotations
-
 import argparse
-import hashlib
 import json
 import os
-import posixpath
-import re
 import shutil
 import subprocess
 import tempfile
 import zipfile
 from pathlib import Path
+from runtime_assets import current_platform, digest
+from version import ROOT, VERSION, PYTHON_VERSION
 
-ROOT = Path(__file__).resolve().parents[1]
+
+def run(*command, cwd: Path, env: dict, success: bool = True):
+    result = subprocess.run([str(x) for x in command], cwd=cwd, env=env, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if success and result.returncode:
+        raise RuntimeError(f"{command[0]} failed ({result.returncode}):\n{result.stdout[-4000:]}\n{result.stderr[-8000:]}")
+    if not success and result.returncode == 0:
+        raise RuntimeError("invalid installation unexpectedly succeeded")
+    return result
 
 
-def run(*args, cwd=None, env=None):
-    result = subprocess.run(
-        [str(a) for a in args],
-        cwd=cwd,
-        env=env,
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    return result.stdout
+def extract(archive: Path, directory: Path) -> Path:
+    directory.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(archive) as source:
+        for entry in source.infolist():
+            if Path(entry.filename).is_absolute() or ".." in Path(entry.filename).parts or "\\" in entry.filename:
+                raise RuntimeError("unsafe distribution entry")
+            path = Path(source.extract(entry, directory))
+            mode = (entry.external_attr >> 16) & 0o777
+            if mode and path.is_file():
+                path.chmod(mode)
+    roots = [p for p in directory.iterdir() if p.is_dir()]
+    if len(roots) != 1:
+        raise RuntimeError("distribution must have one root directory")
+    return roots[0]
+
+
+def isolated(root: Path) -> dict:
+    environment = dict(os.environ)
+    for name in tuple(environment):
+        if name.startswith("ONEOCR_") or name in {"PYTHONPATH", "PYTHONHOME", "UV_PROJECT_ENVIRONMENT", "VIRTUAL_ENV"}:
+            environment.pop(name, None)
+    environment.update(ONEOCR_HOME=str(root / "oneocr-home"), GOMODCACHE=str(root / "go-modules"),
+                       GOPATH=str(root / "go-path"), GOCACHE=str(root / "go-build"), GOWORK="off",
+                       GOPROXY="off", GOTOOLCHAIN="local", PIP_NO_INDEX="1", PYTHONUTF8="1",
+                       HTTP_PROXY="http://127.0.0.1:9", HTTPS_PROXY="http://127.0.0.1:9",
+                       ALL_PROXY="http://127.0.0.1:9", NO_PROXY="", http_proxy="http://127.0.0.1:9",
+                       https_proxy="http://127.0.0.1:9", all_proxy="http://127.0.0.1:9", no_proxy="")
+    return environment
+
+
+def check_text(output: str):
+    if "你好世界 日本語テスト 한국어 123" not in output:
+        raise RuntimeError("consumer OCR text mismatch: " + output[:2000])
+
+
+def verify_native(dist: Path, root: Path, report: dict):
+    target = current_platform()
+    sdk = extract(dist / f"oneocr-sdk-{target}-{VERSION}.zip", root / "complete SDK 含空格")
+    core = extract(dist / f"oneocr-core-{target}-{VERSION}.zip", root / "core SDK")
+    work = root / "application"
+    work.mkdir()
+    image = work / "中文 图片.png"
+    shutil.copy2(ROOT / "testdata/CJK.png", image)
+    extension = ".exe" if os.name == "nt" else ""
+    cli = sdk / "bin" / f"oneocr{extension}"
+    env = isolated(root / "native")
+    check_text(run(cli,"recognize",image,cwd=work,env=env).stdout)
+    check_text(run(sdk / "bin" / f"oneocr-cpp{extension}",image,cwd=work,env=env).stdout)
+    report["complete_cli_cpp"] = True
+    cpp = root / "C++ application"
+    shutil.copytree(sdk / "examples/cpp",cpp)
+    build = cpp / "build"
+    run("cmake","-S",cpp,"-B",build,f"-DCMAKE_PREFIX_PATH={sdk}","-DCMAKE_BUILD_TYPE=Release",cwd=work,env=env)
+    run("cmake","--build",build,"--config","Release","--parallel","2",cwd=work,env=env)
+    executable_dir = build / "Release" if (build / "Release").is_dir() else build
+    portable = root / "portable application"
+    portable.mkdir()
+    copy_names = [f"oneocr-example{extension}","lib","models","licenses"]
+    copy_names.extend(p.name for p in executable_dir.glob("*.dll"))
+    for name in copy_names:
+        source = executable_dir / name
+        if source.is_dir(): shutil.copytree(source,portable / name)
+        elif source.is_file(): shutil.copy2(source,portable / name)
+    moved = sdk.with_name("SDK moved after build")
+    sdk.rename(moved)
+    try:
+        check_text(run(portable / f"oneocr-example{extension}",image,cwd=work,env=env).stdout)
+    finally:
+        moved.rename(sdk)
+    report["external_cmake_portable"] = True
+    app = root / "Go application"
+    app.mkdir()
+    (app / "main.go").write_text('''package main
+import("context";"fmt";"os";oneocr "github.com/shiyori/oneocr-native")
+func main(){e,err:=oneocr.Open(oneocr.Config{});if err!=nil{panic(err)};defer e.Close();r,err:=e.Recognize(context.Background(),oneocr.FromFile(os.Args[1]),oneocr.Options{});if err!=nil{panic(err)};if _,err=e.Detect(context.Background(),oneocr.FromFile(os.Args[1]));err!=nil{panic(err)};fmt.Println(r.Text)}
+''',encoding="utf-8")
+    run("go","mod","init","example.com/consumer",cwd=app,env=env)
+    run(cli,"install","--offline","--go-project",app,cwd=work,env=env)
+    check_text(run("go","run",".",image,cwd=app,env=env).stdout)
+    modules = run("go","list","-m","all",cwd=app,env=env).stdout
+    if "onnxruntime_go" in modules:
+        raise RuntimeError("SDK raised an ORT Go binding dependency")
+    report["offline_go_no_cache"] = True
+    core_cli = core / "bin" / f"oneocr{extension}"
+    core_env = isolated(root / "core")
+    run(core_cli,"install","--source",dist,"--offline",cwd=work,env=core_env)
+    check_text(run(core_cli,"recognize",image,cwd=work,env=core_env).stdout)
+    # Repeat without network or a release source; use the existing installation.
+    run(core_cli,"install","--offline",cwd=work,env=core_env)
+    report["offline_core_install_repeat"] = True
+    corrupt = root / "corrupt Release"
+    corrupt.mkdir()
+    shutil.copy2(dist / "SHA256SUMS",corrupt / "SHA256SUMS")
+    (corrupt / "release-manifest.json").write_text("{}\n",encoding="utf-8")
+    bad_env = isolated(root / "bad")
+    output = run(core_cli,"install","--source",corrupt,"--offline",cwd=work,env=bad_env,success=False)
+    if "checksum" not in output.stderr or Path(bad_env["ONEOCR_HOME"],"config.json").exists():
+        raise RuntimeError("corrupt download did not fail atomically")
+    report["corrupt_release_rejected"] = True
+
+
+def verify_python(dist: Path, root: Path, versions: list[str], report: dict):
+    target = current_platform()
+    bundle = extract(dist / f"oneocr-python-{target}-{VERSION}.zip",root / "Python SDK 含空格")
+    work = root / "Python application"
+    work.mkdir()
+    image = work / "image.png"
+    shutil.copy2(ROOT / "testdata/CJK.png",image)
+    report["python"] = {}
+    for version in versions:
+        venv = root / ("python-" + version)
+        # Prepare the interpreter and pip before the offline consumer boundary.
+        subprocess.run(["uv","venv","--python",version,"--seed",str(venv)],check=True,stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+        python = venv / ("Scripts/python.exe" if os.name=="nt" else "bin/python")
+        env = isolated(root / ("python-data-"+version))
+        wheel = bundle / f"oneocr_native-{PYTHON_VERSION}-py3-none-any.whl"
+        run(python,"-m","pip","install","--no-index","--find-links",bundle / "wheelhouse" / version,wheel,cwd=work,env=env)
+        run(python,"-c","import importlib.util; assert importlib.util.find_spec('onnxruntime') is None; from oneocr_native import OneOcrEngine",cwd=work,env=env)
+        run(python,"-m","oneocr_native","install","-h",cwd=work,env=env)
+        run(python,bundle / "installation.py",cwd=work,env=env)
+        check_text(run(python,"-m","oneocr_native","recognize",image,cwd=work,env=env).stdout)
+        check_text(run(python,"-c","from oneocr_native import OneOcrEngine; e=OneOcrEngine(); print(e.recognize('image.png').text); assert e.detect('image.png').regions; e.close()",cwd=work,env=env).stdout)
+        run(python,"-m","oneocr_native","install","--offline",cwd=work,env=env)
+        report["python"][version] = {"core_import_without_ort":True,"offline_install":True,"cli":True,"api":True,"repeat":True}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--android-ndk", type=Path)
-    parser.add_argument("--dist", type=Path, default=ROOT / "dist")
-    parser.add_argument("--report", type=Path, default=ROOT / "validation/distributions.json")
+    parser.add_argument("--dist",type=Path,required=True)
+    parser.add_argument("--report",type=Path,required=True)
+    parser.add_argument("--python-versions",default="3.11,3.12,3.13")
+    parser.add_argument("--native-only",action="store_true")
+    parser.add_argument("--python-only",action="store_true")
     args = parser.parse_args()
-    report = {
-        "schema": "oneocr.distribution.validation.v1",
-        "host": "darwin-arm64",
-        "checks": {},
-    }
-    checks = report["checks"]
-    dist = args.dist
-    with tempfile.TemporaryDirectory(prefix="oneocr-consumer-") as temporary:
-        temp = Path(temporary)
-        with zipfile.ZipFile(dist / "oneocr-sdk-darwin-arm64-0.1.0.zip") as archive:
-            archive.extractall(temp)
-        sdk = temp / "oneocr-sdk-darwin-arm64"
-        for path in (sdk / "bin").iterdir():
-            path.chmod(0o755)
-        model = temp / "oneocr-cjk-en.ocrpack"
-        shutil.copy2(ROOT / "models" / model.name, model)
-        image = temp / "image.png"
-        shutil.copy2(ROOT / "testdata/CJK.png", image)
-        expected = "你好世界 日本語テスト 한국어 123"
-        environment = dict(os.environ)
-        for key in (
-            "ONEOCR_RUNTIME",
-            "DYLD_LIBRARY_PATH",
-            "LD_LIBRARY_PATH",
-            "PYTHONPATH",
-        ):
-            environment.pop(key, None)
-        actual = json.loads(
-            run(sdk / "bin/oneocr-cpp", image, cwd=temp, env=environment)
-        )
-        assert actual["text"] == expected
-        checks["relocated_cpp_binary"] = "passed"
-        consumer = temp / "cpp"
-        shutil.copytree(sdk / "examples/cpp", consumer)
-        build = temp / "cpp-build"
-        run("cmake", "-S", consumer, "-B", build, f"-DCMAKE_PREFIX_PATH={sdk}")
-        run("cmake", "--build", build, "--parallel", "2")
-        actual = json.loads(
-            run(build / "oneocr-example", image, cwd=temp, env=environment)
-        )
-        assert actual["text"] == expected
-        checks["external_cmake_target"] = "passed"
-        environment["ONEOCR_HOME"] = str(temp / "installation")
-        run(sdk / "bin/oneocr", "install", cwd=temp, env=environment)
-        output = run(sdk / "bin/oneocr", "recognize", image, cwd=temp, env=environment)
-        assert expected in output
-        checks["relocated_cli_install_and_recognize"] = "passed"
-        go = temp / "go-consumer"
-        go.mkdir()
-        run("go", "mod", "init", "example.org/consumer", cwd=go)
-        run(
-            "go",
-            "mod",
-            "edit",
-            f"-replace=github.com/shiyori/oneocr-native={sdk / 'go'}",
-            cwd=go,
-        )
-        run("go", "get", "github.com/shiyori/oneocr-native", cwd=go)
-        (go / "main.go").write_text("""package main
-import ("context"; "fmt"; "os"; oneocr "github.com/shiyori/oneocr-native")
-func main(){ e,err:=oneocr.Open(oneocr.Config{});if err!=nil{panic(err)};defer e.Close()
-r,err:=e.RecognizeFile(context.Background(),os.Args[1],oneocr.Options{});if err!=nil{panic(err)};fmt.Println(r.Text)}
-""")
-        assert expected in run("go", "run", ".", image, cwd=go, env=environment)
-        checks["external_go_source_sdk"] = "passed"
-        # A fresh Python consumer receives only the wheel, model and input image.
-        python_root = temp / "python-consumer"
-        python_root.mkdir()
-        shutil.copy2(model, python_root / model.name)
-        shutil.copy2(image, python_root / image.name)
-        wheel = dist / "oneocr_native-0.1.0-py3-none-any.whl"
-        run("uv", "venv", "--python", "3.13", python_root / ".venv")
-        executable = python_root / ".venv/bin/python"
-        run("uv", "pip", "install", "--python", executable, wheel)
-        clean = dict(environment)
-        clean.pop("ONEOCR_HOME", None)
-        script = """import pathlib, oneocr_native
-from oneocr_native import OneOcrEngine
-assert '.venv' in oneocr_native.__file__
-assert not list(pathlib.Path('.').rglob('liboneocr.*'))
-with OneOcrEngine() as e:
- print(e.recognize('image.png').text)
-assert e.prepared._file.closed
-"""
-        assert expected in run(
-            executable, "-I", "-c", script, cwd=python_root, env=clean
-        )
-        checks["isolated_python_wheel_without_go_library"] = "passed"
-        checks["recognized_text"] = expected
-        if args.android_ndk:
-            with zipfile.ZipFile(dist / "oneocr-android-0.1.0.aar") as aar:
-                aar.extractall(temp / "aar")
-            readelf = (
-                args.android_ndk
-                / "toolchains/llvm/prebuilt/darwin-x86_64/bin/llvm-readelf"
-            )
-            natives = []
-            for lib in sorted((temp / "aar/jni").rglob("*.so")):
-                headers = run(readelf, "-lW", lib)
-                loads = [
-                    line.split()
-                    for line in headers.splitlines()
-                    if line.strip().startswith("LOAD ")
-                ]
-                assert loads and all(int(line[-1], 16) >= 16384 for line in loads)
-                dynamic = run(readelf, "-d", lib)
-                needed = [
-                    line.split("[")[1].split("]")[0]
-                    for line in dynamic.splitlines()
-                    if "(NEEDED)" in line
-                ]
-                assert all("/" not in name for name in needed)
-                natives.append(
-                    {
-                        "file": lib.relative_to(temp / "aar").as_posix(),
-                        "load_alignment_min": min(int(line[-1], 16) for line in loads),
-                        "needed": needed,
-                    }
-                )
-            checks["android_elf"] = natives
-    # Archives must not contain build outputs or private machine paths in docs.
-    inspected = []
-    for artifact in sorted(dist.glob("*")):
-        if artifact.suffix not in {".zip", ".aar", ".whl"}:
-            continue
-        with zipfile.ZipFile(artifact) as zipped:
-            names = zipped.namelist()
-            assert not any(
-                any(
-                    part in {".venv", "__pycache__", ".git", ".cache", "CMakeFiles"}
-                    for part in Path(name).parts
-                )
-                for name in names
-            )
-            assert any("LICENSE" in n for n in names), artifact.name
-            for name in names:
-                if name.endswith((".md", ".go", ".py", "go.mod")):
-                    value = zipped.read(name).decode("utf-8")
-                    assert "/Users/shiyori" not in value, (artifact.name, name)
-                    assert "ShiyoriAutoAgent" not in value, (artifact.name, name)
-                    if name.endswith(".md"):
-                        for link in re.findall(r"\]\(([^)]+)\)", value):
-                            if ":" in link or link.startswith("#"):
-                                continue
-                            target = posixpath.normpath(
-                                posixpath.join(
-                                    posixpath.dirname(name), link.split("#")[0]
-                                )
-                            )
-                            assert target in names or any(
-                                n.startswith(target.rstrip("/") + "/") for n in names
-                            ), (artifact.name, name, link)
-            if "go-sdk" in artifact.name:
-                assert not any(n.endswith((".ocrpack", ".dylib", ".so")) for n in names)
-        inspected.append(
-            {
-                "file": artifact.name,
-                "bytes": artifact.stat().st_size,
-                "sha256": hashlib.sha256(artifact.read_bytes()).hexdigest(),
-            }
-        )
-    report["artifacts"] = inspected
-    report["limits"] = [
-        "Android native/AAR/consumer compile only; no device OCR",
-        "Windows/Linux desktop not executed on this host",
-    ]
-    output = args.report
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")
-    print(json.dumps({"checks": list(checks), "artifacts": len(inspected)}))
-
-
+    report={"platform":current_platform(),"version":VERSION}
+    report["assets"] = {p.name:digest(p) for p in sorted(args.dist.iterdir()) if p.is_file() and (current_platform() in p.name or p.suffix == ".whl" or p.name.startswith("oneocr-go-sdk"))}
+    with tempfile.TemporaryDirectory(prefix="oneocr-release-consumer-") as temporary:
+        root=Path(temporary)
+        if not args.python_only: verify_native(args.dist.resolve(),root,report)
+        if not args.native_only: verify_python(args.dist.resolve(),root,args.python_versions.split(","),report)
+    args.report.parent.mkdir(parents=True,exist_ok=True)
+    args.report.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
+    print(json.dumps(report,ensure_ascii=False))
 if __name__ == "__main__":
     main()

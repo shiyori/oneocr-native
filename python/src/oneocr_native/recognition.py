@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import unicodedata
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import cv2
 import numpy as np
-import onnxruntime as ort
+
+if TYPE_CHECKING:
+    import onnxruntime as ort
 
 from .bidi import visual_to_logical
 from .config import CharacterModel

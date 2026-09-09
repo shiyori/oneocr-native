@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	ort "github.com/yalue/onnxruntime_go"
+	"runtime"
 )
 
 func (e *Engine) openNetwork(resource, stage string, inputs, outputs []string) (*network, error) {
@@ -12,25 +12,7 @@ func (e *Engine) openNetwork(resource, stage string, inputs, outputs []string) (
 	if err != nil {
 		return nil, err
 	}
-	options, err := ort.NewSessionOptions()
-	if err != nil {
-		return nil, err
-	}
-	defer options.Destroy()
-	settings := []func() error{
-		func() error { return options.SetIntraOpNumThreads(e.threads) },
-		func() error { return options.SetInterOpNumThreads(1) },
-		func() error { return options.SetExecutionMode(ort.ExecutionModeSequential) },
-		func() error { return options.SetLogSeverityLevel(3) },
-		func() error { return options.AddSessionConfigEntry("session.intra_op.allow_spinning", "0") },
-		func() error { return options.AddSessionConfigEntry("session.inter_op.allow_spinning", "0") },
-	}
-	for _, set := range settings {
-		if err = set(); err != nil {
-			return nil, err
-		}
-	}
-	session, err := ort.NewDynamicAdvancedSessionWithONNXData(model, inputs, outputs, options)
+	session, err := environment.runtime.NewSession(model, inputs, outputs, e.threads, runtime.GOOS == "android" && runtime.GOARCH == "arm64")
 	if err != nil {
 		return nil, fmt.Errorf("oneocr %s: %w", stage, err)
 	}

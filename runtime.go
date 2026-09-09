@@ -3,68 +3,34 @@ package oneocr
 import (
 	"context"
 	"fmt"
-	"path/filepath"
-	"strings"
 	"sync"
 	"time"
 
-	ort "github.com/yalue/onnxruntime_go"
+	ort "github.com/shiyori/oneocr-native/internal/ort"
 )
 
 var environment struct {
 	sync.Mutex
 	references int
 	path       string
-	owned      bool
+	runtime    *ort.Runtime
 }
 
-func acquireRuntime(library string, existing bool) error {
+func acquireRuntime(library string) error {
 	environment.Lock()
 	defer environment.Unlock()
-	var e error
-	if library != "" && !strings.HasPrefix(library, "@rpath/") && strings.ContainsAny(library, "/\\") {
-		library, e = filepath.Abs(library)
-		if e != nil {
-			return e
-		}
-	}
 	if environment.references > 0 {
-		if library != "" && environment.path != "" && library != environment.path {
+		if library != environment.path && !environment.runtime.Matches(library) {
 			return fmt.Errorf("oneocr: a different ONNX Runtime is already in use")
 		}
 		environment.references++
 		return nil
 	}
-	if ort.IsInitialized() {
-		if !existing {
-			return fmt.Errorf("oneocr: host already initialized ONNX Runtime; set UseExistingORT and keep the host environment alive")
-		}
-		environment.owned = false
-		environment.path = ""
-	} else {
-		if existing {
-			return fmt.Errorf("oneocr: UseExistingORT requires an initialized host environment")
-		}
-		if library == "" {
-			return fmt.Errorf("oneocr: RuntimeLibrary is required (platform ONNX Runtime 1.29)")
-		}
-		ort.SetSharedLibraryPath(library)
-		if e = ort.InitializeEnvironment(ort.WithLogLevelError()); e != nil {
-			return e
-		}
-		environment.owned = true
-		environment.path = library
+	rt, err := ort.Open(library)
+	if err != nil {
+		return fmt.Errorf("oneocr: runtime %q: %w", library, err)
 	}
-	var major, minor int
-	if _, e = fmt.Sscanf(ort.GetVersion(), "%d.%d", &major, &minor); e != nil || major != 1 || minor < 29 {
-		if environment.owned {
-			ort.DestroyEnvironment()
-		}
-		environment.path = ""
-		environment.owned = false
-		return fmt.Errorf("oneocr: ONNX Runtime 1.29 or compatible newer 1.x is required")
-	}
-	environment.references = 1
+	environment.runtime, environment.path, environment.references = rt, library, 1
 	return nil
 }
 func releaseRuntime() error {
@@ -74,16 +40,11 @@ func releaseRuntime() error {
 		return nil
 	}
 	environment.references--
-	if environment.references > 0 {
-		return nil
+	if environment.references == 0 {
+		environment.runtime.Close()
+		environment.runtime, environment.path = nil, ""
 	}
-	var e error
-	if environment.owned {
-		e = ort.DestroyEnvironment()
-	}
-	environment.owned = false
-	environment.path = ""
-	return e
+	return nil
 }
 
 type floatTensor struct {
@@ -91,7 +52,7 @@ type floatTensor struct {
 	data  []float32
 }
 type network struct {
-	session     *ort.DynamicAdvancedSession
+	session     *ort.Session
 	outputs     []string
 	diagnostics StageDiagnostics
 }
@@ -117,31 +78,33 @@ func (n *network) runBorrowed(ctx context.Context, data floatTensor, extraFloat 
 	inputs := []ort.Value{}
 	outputs := make([]ort.Value, len(n.outputs))
 	defer func() {
-		for _, v := range inputs {
-			if v != nil {
-				v.Destroy()
-			}
-		}
+		// Outputs may alias input storage. Release them while inputs remain pinned.
 		for _, v := range outputs {
 			if v != nil {
 				v.Destroy()
 			}
 		}
+		for _, v := range inputs {
+			if v != nil {
+				v.Destroy()
+			}
+		}
 	}()
-	t, err := ort.NewTensor(ort.Shape(data.shape), data.data)
+
+	t, err := ort.NewTensor(environment.runtime, ort.Shape(data.shape), data.data)
 	if err != nil {
 		return err
 	}
 	inputs = append(inputs, t)
 	if extraFloat != nil {
-		v, err := ort.NewTensor(ort.Shape(extraFloat.shape), extraFloat.data)
+		v, err := ort.NewTensor(environment.runtime, ort.Shape(extraFloat.shape), extraFloat.data)
 		if err != nil {
 			return err
 		}
 		inputs = append(inputs, v)
 	}
 	if sequence != nil {
-		v, err := ort.NewTensor(ort.NewShape(1), []int32{*sequence})
+		v, err := ort.NewTensor(environment.runtime, ort.NewShape(1), []int32{*sequence})
 		if err != nil {
 			return err
 		}
@@ -151,7 +114,7 @@ func (n *network) runBorrowed(ctx context.Context, data floatTensor, extraFloat 
 	if ctx.Done() == nil {
 		err = n.session.Run(inputs, outputs)
 	} else {
-		options, e := ort.NewRunOptions()
+		options, e := environment.runtime.NewRunOptions()
 		if e != nil {
 			return e
 		}

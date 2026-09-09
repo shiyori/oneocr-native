@@ -1,8 +1,6 @@
 #ifndef ONEOCR_HPP
 #define ONEOCR_HPP
 #include "oneocr.h"
-#include <cstdint>
-#include <fstream>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -10,11 +8,31 @@
 #include <vector>
 
 namespace oneocr {
-// Header-only C++17 ownership wrapper. Recognition returns standard UTF-8 JSON.
+enum class PixelFormat { RGB = ONEOCR_RGB, RGBA = ONEOCR_RGBA, BGRA = ONEOCR_BGRA, RGBX = ONEOCR_RGBX, BGRX = ONEOCR_BGRX };
+struct Options {
+    std::string modelPath, runtimeLibrary;
+    int32_t threads = 0, maxSide = 0;
+    uint32_t characterClasses = 0;
+};
+struct CallOptions { std::string script; int64_t timeoutMs = 0; };
+// Owns the file path; byte buffers remain borrowed until the call returns.
+class Input {
+    friend class Engine;
+    OneOCRInput value_{};
+    std::string path_;
+    OneOCRInput descriptor() const { auto v = value_; v.path = path_.c_str(); return v; }
+public:
+    static Input fromFile(std::string path) { Input i; i.value_.kind = ONEOCR_FILE; i.path_ = std::move(path); return i; }
+    static Input fromEncoded(const uint8_t *data, size_t length) { Input i; i.value_.kind = ONEOCR_ENCODED; i.value_.data = data; i.value_.length = length; return i; }
+    static Input fromEncoded(const std::vector<uint8_t> &data) { return fromEncoded(data.data(), data.size()); }
+    static Input fromEncoded(std::vector<uint8_t> &&) = delete;
+    static Input fromPixels(const uint8_t *data, size_t length, int32_t width, int32_t height, int32_t stride, PixelFormat format = PixelFormat::RGB, bool premultiplied = false) {
+        Input i; i.value_ = {ONEOCR_PIXELS, nullptr, data, length, width, height, stride, static_cast<int32_t>(format), premultiplied ? 1 : 0}; return i;
+    }
+};
+// C++17 ownership wrapper. Operations return UTF-8 JSON.
 class Engine {
     uint64_t handle_ = 0;
-    struct AdoptHandle {};
-    Engine(uint64_t handle, AdoptHandle) noexcept : handle_(handle) {}
     using OwnedString = std::unique_ptr<char, decltype(&OneOCRFree)>;
     [[noreturn]] static void fail(char *error) {
         OwnedString owned(error, OneOCRFree);
@@ -22,9 +40,16 @@ class Engine {
     }
     static std::string take(char *result, char *error) {
         if (!result) fail(error);
-        OwnedString owned(result, OneOCRFree);
-        OneOCRFree(error);
+        OwnedString owned(result, OneOCRFree), ownedError(error, OneOCRFree);
         return std::string(result);
+    }
+    using Operation = char *(*)(uint64_t, OneOCRInput *, OneOCRCallOptions *, char **);
+    std::string run(Operation operation, const Input &input, const CallOptions &options) const {
+        auto descriptor = input.descriptor();
+        OneOCRCallOptions call{options.script.c_str(), options.timeoutMs};
+        char *error = nullptr;
+        char *result = operation(handle_, &descriptor, &call, &error);
+        return take(result, error);
     }
     void release() noexcept {
         if (!handle_) return;
@@ -33,17 +58,10 @@ class Engine {
         OneOCRFree(error);
     }
 public:
-    // JSON follows the Go Config schema; omitted model paths use the default.
-    static Engine fromOptions(const std::string &optionsJson) {
+    explicit Engine(const Options &options = {}) {
+        OneOCRConfig config{options.modelPath.c_str(), options.runtimeLibrary.c_str(), options.threads, options.maxSide, options.characterClasses};
         char *error = nullptr;
-        uint64_t handle = OneOCROpenWithOptions(optionsJson.c_str(), &error);
-        if (!handle) fail(error);
-        OneOCRFree(error);
-        return Engine(handle, AdoptHandle{});
-    }
-    explicit Engine(const std::string &model = "", const std::string &runtime = "", int32_t threads = 2) {
-        char *error = nullptr;
-        handle_ = OneOCROpen(model.c_str(), runtime.empty() ? nullptr : runtime.c_str(), threads, &error);
+        handle_ = OneOCROpen(&config, &error);
         if (!handle_) fail(error);
         OneOCRFree(error);
     }
@@ -71,57 +89,9 @@ public:
         char *result = OneOCRDiagnostics(handle_, &error);
         return take(result, error);
     }
-    std::string closeWithDiagnostics() {
-        char *error = nullptr;
-        char *result = OneOCRCloseWithDiagnostics(std::exchange(handle_, 0), &error);
-        return take(result, error);
-    }
-    std::string recognize(const uint8_t *bytes, size_t size, const std::string &script = "", int64_t timeoutMs = 0) const {
-        char *error = nullptr;
-        char *result = OneOCRRecognizeEncodedWithTimeout(handle_, bytes, size, script.empty() ? nullptr : script.c_str(), timeoutMs, &error);
-        return take(result, error);
-    }
-    std::string recognize(const std::vector<uint8_t> &bytes, const std::string &script = "", int64_t timeoutMs = 0) const {
-        return recognize(bytes.data(), bytes.size(), script, timeoutMs);
-    }
-    std::string recognizeFile(const std::string &filename, const std::string &script = "", int64_t timeoutMs = 0) const {
-        std::ifstream stream(filename, std::ios::binary | std::ios::ate);
-        if (!stream) throw std::runtime_error("cannot open image: " + filename);
-        auto size = stream.tellg();
-        if (size < 0 || size > 128 * 1024 * 1024) throw std::runtime_error("invalid encoded image size");
-        stream.seekg(0);
-        std::vector<uint8_t> data(static_cast<size_t>(size));
-        if (!data.empty() && !stream.read(reinterpret_cast<char *>(data.data()), size))
-            throw std::runtime_error("cannot read image: " + filename);
-        return recognize(data, script, timeoutMs);
-    }
-    std::string recognizeRGB(const uint8_t *bytes, size_t size, int32_t width, int32_t height,
-                             int32_t stride, const std::string &script = "", int64_t timeoutMs = 0) const {
-        char *error = nullptr;
-        char *result = OneOCRRecognizeRGBWithTimeout(handle_, bytes, size, width, height, stride,
-                                          script.empty() ? nullptr : script.c_str(), timeoutMs, &error);
-        return take(result, error);
-    }
-    std::string detect(const uint8_t *bytes, size_t size, int64_t timeoutMs = 0) const {
-        char *error = nullptr;
-        char *result = OneOCRDetectEncoded(handle_, bytes, size, timeoutMs, &error);
-        return take(result, error);
-    }
-    std::string detectRGB(const uint8_t *bytes, size_t size, int32_t width, int32_t height, int32_t stride, int64_t timeoutMs = 0) const {
-        char *error = nullptr;
-        char *result = OneOCRDetectRGB(handle_, bytes, size, width, height, stride, timeoutMs, &error);
-        return take(result, error);
-    }
-    std::string recognizeLine(const uint8_t *bytes, size_t size, const std::string &script = "", int64_t timeoutMs = 0) const {
-        char *error = nullptr;
-        char *result = OneOCRRecognizeLineEncoded(handle_, bytes, size, script.empty() ? nullptr : script.c_str(), timeoutMs, &error);
-        return take(result, error);
-    }
-    std::string recognizeLineRGB(const uint8_t *bytes, size_t size, int32_t width, int32_t height, int32_t stride, const std::string &script = "", int64_t timeoutMs = 0) const {
-        char *error = nullptr;
-        char *result = OneOCRRecognizeLineRGB(handle_, bytes, size, width, height, stride, script.empty() ? nullptr : script.c_str(), timeoutMs, &error);
-        return take(result, error);
-    }
+    std::string recognize(const Input &input, const CallOptions &options = {}) const { return run(OneOCRRecognize, input, options); }
+    std::string detect(const Input &input, const CallOptions &options = {}) const { return run(OneOCRDetect, input, options); }
+    std::string recognizeLine(const Input &input, const CallOptions &options = {}) const { return run(OneOCRRecognizeLine, input, options); }
 };
 }
 #endif

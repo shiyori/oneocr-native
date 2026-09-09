@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 import cv2
 import numpy as np
-import onnxruntime as ort
+
+if TYPE_CHECKING:
+    import onnxruntime as ort
 
 from .config import PipelineConfig
 from .errors import UnsupportedModelError

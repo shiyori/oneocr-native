@@ -1,6 +1,8 @@
 package oneocr
 
 import (
+	"fmt"
+	ort "github.com/shiyori/oneocr-native/internal/ort"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -26,10 +28,20 @@ func resolveRuntimeLibrary(explicit, modelPath, bundleDir string) (string, error
 		explicit = os.Getenv("ONEOCR_RUNTIME")
 	}
 	if explicit != "" {
+		if strings.IndexByte(explicit, 0) >= 0 {
+			return "", fmt.Errorf("oneocr: NUL in runtime path")
+		}
 		if runtime.GOOS == "android" && !strings.ContainsAny(explicit, "/\\") {
 			return explicit, nil
 		}
 		return filepath.Abs(explicit)
+	}
+	loaded, err := ort.LoadedPath()
+	if err != nil {
+		return "", err
+	}
+	if loaded != "" {
+		return loaded, nil
 	}
 	name := runtimeLibraryName()
 	if runtime.GOOS == "android" {
@@ -45,6 +57,10 @@ func resolveRuntimeLibrary(explicit, modelPath, bundleDir string) (string, error
 	if executable, err := os.Executable(); err == nil {
 		roots = append(roots, filepath.Dir(executable), filepath.Dir(filepath.Dir(executable)))
 	}
+	if module := ort.ModulePath(); module != "" {
+		directory := filepath.Dir(module)
+		roots = append(roots, directory, filepath.Dir(directory))
+	}
 	if cwd, err := os.Getwd(); err == nil {
 		roots = append(roots, cwd)
 	}
@@ -57,7 +73,7 @@ func resolveRuntimeLibrary(explicit, modelPath, bundleDir string) (string, error
 		}
 	}
 	// A local default model can share the runtime installed by the CLI.
-	if installed, err := LoadInstallation(""); err == nil {
+	if installed, err := LoadInstallation(""); err == nil && installed.RuntimeLibrary != "" {
 		return installed.RuntimeLibrary, nil
 	}
 	if runtime.GOOS == "darwin" {

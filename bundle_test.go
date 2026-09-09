@@ -73,10 +73,10 @@ func TestZeroEngineAndInvalidDimensions(t *testing.T) {
 	if err := e.Close(); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := e.RecognizeEncoded(context.Background(), nil, Options{}); err != ErrClosed {
+	if _, err := e.Recognize(context.Background(), FromEncoded(nil), Options{}); err != ErrClosed {
 		t.Fatalf("got %v", err)
 	}
-	if _, err := e.RecognizeRGB(context.Background(), []byte{1}, int(^uint(0)>>1), 2, 6, Options{}); err == nil {
+	if _, err := e.Recognize(context.Background(), FromPixels(Pixels{Data: []byte{1}, Width: int(^uint(0) >> 1), Height: 2, Stride: 6, Format: RGB}), Options{}); err == nil {
 		t.Fatal("accepted overflow dimensions")
 	}
 }

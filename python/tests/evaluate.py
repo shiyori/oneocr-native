@@ -19,7 +19,7 @@ from pathlib import Path
 
 import onnxruntime as ort
 
-from oneocr_native import OneOcrEngine
+from oneocr_native import EngineConfig, OneOcrEngine
 
 
 def edit_distance(a: str, b: str) -> int:
@@ -40,7 +40,7 @@ def main():
     parser.add_argument("--cache-dir", type=Path)
     args = parser.parse_args()
     begin = time.perf_counter()
-    engine = OneOcrEngine(args.model, cache_dir=args.cache_dir)
+    engine = OneOcrEngine(EngineConfig(args.model, cache_dir=args.cache_dir))
     report = {
         "platform": platform.platform(),
         "machine": platform.machine(),

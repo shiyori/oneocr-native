@@ -1,0 +1,23 @@
+name: release-publish
+on:
+  push:
+    tags: ['v0.1.0-rc.1']
+permissions:
+  contents: write
+  actions: read
+env:
+  PYTHONUTF8: '1'
+  GH_TOKEN: ${{ github.token }}
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Audit tested artifacts and publish complete prerelease
+        run: python scripts/publish_release.py publish

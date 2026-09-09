@@ -1,5 +1,5 @@
-# Native SDK sources
+# SDK
 
-[SDK usage](SDK.md) · [Build instructions](../docs/BUILD.md) · [Independent Python](../python/README.md)
+[简体中文](../docs/zh-CN/native.md) · [English](../docs/en/native.md) · [日本語](../docs/ja/native.md)
 
-`include/`: stable C ABI and C++17 RAII wrapper. `cpp/`: example and ABI test. `android/`: JNI, Java API and build script. `cmake/`: relocatable `OneOCR::oneocr` target.
+[Android · 简体中文](../docs/zh-CN/android.md) · [Android · English](../docs/en/android.md) · [Android · 日本語](../docs/ja/android.md)

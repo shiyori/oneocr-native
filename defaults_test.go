@@ -46,8 +46,11 @@ func TestNativeDefaultInstallAndOpen(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if local.config.RuntimeLibrary != installed.RuntimeLibrary {
-		t.Fatal("local model did not reuse the installed runtime")
+	t.Cleanup(func() { local.Close() })
+	actual, actualErr := os.Stat(local.config.RuntimeLibrary)
+	expected, expectedErr := os.Stat(installed.RuntimeLibrary)
+	if actualErr != nil || expectedErr != nil || !os.SameFile(actual, expected) {
+		t.Fatalf("local model did not reuse the installed runtime: %q != %q", local.config.RuntimeLibrary, installed.RuntimeLibrary)
 	}
 	if err = local.Close(); err != nil {
 		t.Fatal(err)
@@ -58,7 +61,7 @@ func TestNativeDefaultInstallAndOpen(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer engine.Close()
-	result, err := engine.RecognizeFile(context.Background(), filepath.Join(root, "testdata", "CJK.png"), Options{})
+	result, err := engine.Recognize(context.Background(), FromFile(filepath.Join(root, "testdata", "CJK.png")), Options{})
 	if err != nil || result.Text != "你好世界 日本語テスト 한국어 123" {
 		t.Fatal(result.Text, err)
 	}

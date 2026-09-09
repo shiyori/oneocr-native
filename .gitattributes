@@ -1,0 +1,7 @@
+* text=auto eol=lf
+*.ocrpack binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.onnx binary

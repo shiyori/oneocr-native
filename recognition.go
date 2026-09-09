@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	ort "github.com/yalue/onnxruntime_go"
+	ort "github.com/shiyori/oneocr-native/internal/ort"
 	"math"
 	"strconv"
 	"strings"
