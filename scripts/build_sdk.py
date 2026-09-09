@@ -92,7 +92,7 @@ def go_proxy(source: Path, destination: Path) -> None:
         target = destination / module["Path"] / "@v"
         for field, suffix in (("GoMod", "mod"), ("Zip", "zip"), ("Info", "info")):
             copy(Path(module[field]), target / f"{module['Version']}.{suffix}")
-        (target / "list").write_text(module["Version"] + "\n", encoding="utf-8")
+        (target / "list").write_text(module["Version"] + "\n", encoding="utf-8", newline="\n")
 
 
 def write_record(stage: Path, platform: str, **extra) -> None:
@@ -169,8 +169,6 @@ def build_desktop(args: argparse.Namespace) -> list[Path]:
             "target_link_libraries(oneocr-example PRIVATE OneOCR::oneocr)\n"
             "oneocr_copy_dependencies(oneocr-example)\n"
             "if(MINGW)\n  target_link_options(oneocr-example PRIVATE -municode)\nendif()\n", encoding="utf-8")
-        copy_go(stage / "go")
-        go_proxy(stage / "go", stage / "go-proxy")
         copy_docs(stage)
         licenses(stage / "licenses", runtime_directory)
         # Core keeps the same SDK layout and setup tool; only model/ORT are omitted.
@@ -181,7 +179,7 @@ def build_desktop(args: argparse.Namespace) -> list[Path]:
                 if "onnxruntime" not in path.name:
                     copy(path, core / "bin" / path.name)
                     copy(path, stage / "bin" / path.name)
-        write_record(core, target, runtime_included=False, models_included=False, languages=["C", "C++17", "Go"])
+        write_record(core, target, runtime_included=False, models_included=False, languages=["C", "C++17", "CLI"])
         core_zip = args.output / f"{core.name}-{VERSION}.zip"
         archive(core, core_zip); outputs.append(core_zip)
         for path in runtime_directory.iterdir():
@@ -189,14 +187,9 @@ def build_desktop(args: argparse.Namespace) -> list[Path]:
                 copy(path, stage / "lib" / path.name)
         copy(ROOT / "models/oneocr-cjk-en.ocrpack", stage / "models/oneocr-cjk-en.ocrpack")
         copy(ROOT / "models/LICENSE", stage / "models/LICENSE")
-        write_record(stage, target, runtime_included=True, models_included=True, languages=["C", "C++17", "Go"])
+        write_record(stage, target, runtime_included=True, models_included=True, languages=["C", "C++17", "CLI"])
         complete_zip = args.output / f"{stage.name}-{VERSION}.zip"
         archive(stage, complete_zip); outputs.append(complete_zip)
-        # Shared across desktop builds; the publisher verifies identical bytes.
-        source = temporary / "oneocr-go-sdk"
-        copy_go(source / "go"); go_proxy(source / "go", source / "go-proxy"); copy_docs(source)
-        go_zip = args.output / f"oneocr-go-sdk-{VERSION}.zip"
-        archive(source, go_zip); outputs.append(go_zip)
         runtime_zip = args.output / f"oneocr-runtime-{RUNTIME_VERSION}-{target}.zip"
         archive(runtime_directory, runtime_zip, include_root=False); outputs.append(runtime_zip)
     return outputs
@@ -246,13 +239,6 @@ def build_android(args: argparse.Namespace) -> list[Path]:
         runtime_zip = args.output / f"oneocr-runtime-{RUNTIME_VERSION}-android.zip"
         archive(runtime, runtime_zip, include_root=False); outputs.append(runtime_zip)
         run("javac", "--release", "17", "-cp", os.pathsep.join([str(android_jar), str(stage / "classes.jar")]), "-d", temporary / "consumer", ROOT / "sdk/android/sdk-example/Example.java")
-        kit = temporary / "oneocr-android-sdk"
-        copy(core, kit / "libs" / core.name); copy(complete, kit / "libs" / complete.name)
-        copy_docs(kit)
-        copy(ROOT / "sdk/android/sdk-example/Example.java", kit / "Example.java")
-        write_record(kit, "android", abis=["arm64-v8a", "x86_64"], min_sdk=26, runtime_included=True, models_included=True, upstream_aar_sha256=digest(upstream_aar))
-        kit_zip = args.output / f"oneocr-android-sdk-{VERSION}.zip"
-        archive(kit, kit_zip); outputs.append(kit_zip)
     return outputs
 
 

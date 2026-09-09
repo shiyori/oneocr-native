@@ -2,7 +2,16 @@
 
 [简体中文](../zh-CN/go.md) | [English](../en/go.md) | [日本語](../ja/go.md)
 
-[完全版デスクトップ SDK](installation.md) をダウンロードして展開します。Go 1.24 以上と C コンパイラーが必要です。自分のアプリの `main.go` に次のコードを保存します。
+Go 1.24 以上と C コンパイラーが必要です。自分のプロジェクトに Go モジュールを追加します。デスクトップ SDK のダウンロードは不要です。
+
+```sh
+go mod init example.com/ocr-app
+go get github.com/shiyori/oneocr-native@v0.1.0
+```
+
+既に `go.mod` がある場合は `go mod init` を省略してください。
+
+次のコードを自分の `main.go` に保存します。`Install` は不足しているモデルと依存関係を準備します。準備済みの環境では直接 `Open` を呼べます。
 
 ```go
 package main
@@ -14,6 +23,7 @@ import (
 )
 
 func main() {
+    if _, err := oneocr.Install(oneocr.InstallOptions{}); err != nil { panic(err) }
     engine, err := oneocr.Open(oneocr.Config{})
     if err != nil { panic(err) }
     defer engine.Close()
@@ -23,17 +33,21 @@ func main() {
 }
 ```
 
-**自分のアプリのディレクトリ**で次を実行します。既存の `go.mod` がある場合は `go mod init` を省略します。
-
 ```sh
-go mod init example.com/ocr-app
-/path/to/sdk/bin/oneocr install --go-project .
 go run .
 ```
 
-Windows では SDK の `bin\oneocr.exe` を使用します。準備コマンドが Go モジュールを OneOCR の管理ディレクトリへ保存し、プロジェクトを設定します。クローンや `replace` パスの手入力は不要です。完全版に含まれる依存関係だけで処理するには `--offline` を追加します。ホストの ORT バインディングのバージョンは変更しません。
+## コマンドのインストール
 
-コア版でも同じコマンドを使用でき、不足するモデルとランタイムを先に準備します。ソース依存関係を独自に管理するビルドシステム向けに、[Go ソースパッケージ](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-go-sdk-0.1.0.zip) も用意しています。
+Go でコマンドをインストールした後、任意のディレクトリでリソースを準備して画像を認識できます。
+
+```sh
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.0
+oneocr install
+oneocr recognize image.png
+```
+
+Go の実行ファイル用ディレクトリ（通常は `GOPATH/bin`）を `PATH` に追加してください。どちらの方法も互換 runtime を自動検出して再利用し、不足分を必要に応じて取得します。通常の呼び出しに runtime パスは不要で、ホストの ORT Go バインディングのバージョンも変更しません。
 
 ## 入力と操作
 

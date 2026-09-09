@@ -2,7 +2,16 @@
 
 [简体中文](../zh-CN/go.md) | [English](../en/go.md) | [日本語](../ja/go.md)
 
-Download and extract a [complete desktop SDK](installation.md). Go 1.24+ and a C compiler are required. Put the following in your application's `main.go`:
+Requires Go 1.24+ and a C compiler. Add the Go module to your own project; no desktop SDK download is needed:
+
+```sh
+go mod init example.com/ocr-app
+go get github.com/shiyori/oneocr-native@v0.1.0
+```
+
+Skip `go mod init` if the project already has `go.mod`.
+
+Place this in your own `main.go`. `Install` prepares missing models and dependencies; an already prepared environment can call `Open` directly:
 
 ```go
 package main
@@ -14,6 +23,7 @@ import (
 )
 
 func main() {
+    if _, err := oneocr.Install(oneocr.InstallOptions{}); err != nil { panic(err) }
     engine, err := oneocr.Open(oneocr.Config{})
     if err != nil { panic(err) }
     defer engine.Close()
@@ -23,17 +33,21 @@ func main() {
 }
 ```
 
-Run these commands in **your application's directory**. Skip `go mod init` if it already has a `go.mod`.
-
 ```sh
-go mod init example.com/ocr-app
-/path/to/sdk/bin/oneocr install --go-project .
 go run .
 ```
 
-On Windows use the SDK's `bin\oneocr.exe`. The setup command copies the Go module into OneOCR's managed installation and configures your project; you do not need a repository checkout or a hand-written `replace` path. Add `--offline` to use only the dependencies included in the complete SDK. This does not change your application's ORT binding dependency.
+## Command-line installation
 
-With the core SDK, the same command prepares missing model/runtime resources first. The standalone [Go source package](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-go-sdk-0.1.0.zip) is also available for build systems that manage source dependencies themselves.
+Install the command with Go, then prepare resources and recognize images from any directory:
+
+```sh
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.0
+oneocr install
+oneocr recognize image.png
+```
+
+Add the Go executable directory (usually `GOPATH/bin`) to `PATH`. Both paths discover and reuse a compatible runtime, downloading missing dependencies on demand. Normal calls need no runtime path and do not change the host’s ORT Go binding version.
 
 ## Inputs and operations
 

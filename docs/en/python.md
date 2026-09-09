@@ -34,12 +34,10 @@ with OneOcrEngine(EngineConfig(threads=2)) as engine:
 
 `OneOcrEngine()` is the single creation entry. `EngineConfig` contains optional thread, image-size, cache and model settings; normal use needs none of them. The Python package does not load the Go SDK.
 
-## Complete offline installation
+## Optional Linux offline installation
 
-Download the bundle for your system. Each includes the model and dependency wheels for Python 3.11, 3.12 and 3.13:
+Linux users may download a complete package with the model and dependency wheels for Python 3.11, 3.12 and 3.13. Windows/macOS use the universal wheel above and prepare dependencies on demand:
 
-- [Windows x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-windows-amd64-0.1.0.zip)
-- [macOS ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-darwin-arm64-0.1.0.zip)
 - [Linux x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-amd64-0.1.0.zip)
 - [Linux ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-arm64-0.1.0.zip)
 

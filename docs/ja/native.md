@@ -2,7 +2,7 @@
 
 [简体中文](../zh-CN/native.md) | [English](../en/native.md) | [日本語](../ja/native.md)
 
-[完全版デスクトップ SDK](installation.md) を使用します。ランタイムのパス指定は不要です。C++17 以上が必要です。
+Linux では[完全版 SDK](installation.md)を使用し、runtime パスは指定しません。C++17 が必要です。Windows/macOS の C/C++ 共有ライブラリーは[開発ガイド](development.md)に従ってローカルでビルドします。OS 別の制品は公開しません。
 
 ## CMake と C++
 

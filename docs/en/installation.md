@@ -2,55 +2,67 @@
 
 [简体中文](../zh-CN/installation.md) | [English](../en/installation.md) | [日本語](../ja/installation.md)
 
-Download from [GitHub Releases v0.1.0](https://github.com/shiyori/oneocr-native/releases/tag/v0.1.0). No source checkout is needed. Normal installation and recognition require no runtime path.
+Go and Python use their language package managers; Android uses AAR downloads. No Windows/macOS platform-specific artifacts are published. Linux prebuilt packages are optional. Normal integration needs no runtime path.
 
-| Platform | Complete, offline | Core |
+[GitHub Releases v0.1.0](https://github.com/shiyori/oneocr-native/releases/tag/v0.1.0)
+
+## Go
+
+For code integration, run `go get github.com/shiyori/oneocr-native@v0.1.0` in your project, prepare resources with `oneocr.Install`, then call `oneocr.Open`. See [Go integration](go.md). For the CLI:
+
+```sh
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.0
+oneocr install
+oneocr recognize image.png
+```
+
+## Python
+
+The universal wheel supports Python 3.11–3.13 and installs from any directory:
+
+```sh
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr_native-0.1.0-py3-none-any.whl"
+python -m oneocr_native install
+```
+
+## Android
+
+[AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-0.1.0.aar) · [Core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-core-0.1.0.aar)
+
+The complete AAR includes the default model and runtime. Apps with an existing host ORT use the Core AAR. Both contain arm64-v8a / x86_64 and require Android API 26+. See [Android integration](android.md).
+
+## Optional Linux downloads
+
+| | SDK | Core |
 |---|---|---|
-| Windows x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-windows-amd64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-windows-amd64-0.1.0.zip) |
-| macOS ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-darwin-arm64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-darwin-arm64-0.1.0.zip) |
 | Linux x64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-linux-amd64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-linux-amd64-0.1.0.zip) |
 | Linux ARM64 | [SDK](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-sdk-linux-arm64-0.1.0.zip) | [Core](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-core-linux-arm64-0.1.0.zip) |
-| Android arm64-v8a / x86_64 | [AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-0.1.0.aar) | [Core AAR](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-android-core-0.1.0.aar) |
 
+The complete package contains the CLI, C/C++ headers, shared library, default model and ORT. Core keeps the interfaces and CLI without the model or ORT. Linux builds use Ubuntu 22.04. Go integration does not require these packages.
 
-The complete desktop SDK includes the CLI, model, ONNX Runtime, C/C++ headers, Go sources, offline Go dependencies and these guides. The core SDK includes the same integration tools without the model or ORT. Desktop targets are Windows x64, macOS ARM64 and Linux x64/ARM64; Linux builds use an Ubuntu 22.04 baseline. Android requires API 26 or later.
-
-## Complete desktop SDK
-
-Extract the ZIP anywhere. Run its CLI directly:
+Run the complete package after extraction; prepare the Core package first:
 
 ```sh
 /path/to/sdk/bin/oneocr recognize image.png
-```
-
-On Windows use `C:\path\to\sdk\bin\oneocr.exe`. Images can be anywhere; pass their paths. To make the resources available to your own Go program and future CLI calls, run:
-
-```sh
-/path/to/sdk/bin/oneocr install --offline
-```
-
-Installation records the resources in your user configuration directory. Keep using the CLI by its path, or add the SDK's `bin` directory to your `PATH`.
-
-## Core SDK
-
-```sh
 /path/to/core-sdk/bin/oneocr install
 /path/to/core-sdk/bin/oneocr recognize image.png
 ```
 
-The installer reuses a compatible local runtime, otherwise downloads the pinned model and runtime from the same GitHub Release. Repeating the command reuses verified resources. Recognition never accesses the network.
+## Dependencies and offline preparation
 
-For offline core installation, download `release-manifest.json`, `SHA256SUMS`, the model asset and your platform's runtime ZIP into one directory, then run:
+The installer reuses a compatible existing runtime. Otherwise Windows/macOS download a pinned official ONNX Runtime release and verify SHA-256; Linux can use this project’s runtime archive. Python uses pip to install missing ORT from upstream and preserves compatible CPU/GPU distributions. Recognition never downloads files.
+
+For offline preparation, place this release’s `release-manifest.json`, `SHA256SUMS` and default model in one directory. Also save the official `onnxruntime-win-x64-1.29.0.zip` / `onnxruntime-osx-arm64-1.29.0.tgz` archive for Windows/macOS, or this project’s runtime ZIP for Linux. The installer extracts it; no runtime path is needed:
 
 ```sh
-/path/to/core-sdk/bin/oneocr install --source /path/to/release-files --offline
+oneocr install --source /path/to/resources --offline
 ```
 
-Assets are checked for the correct version, platform and SHA-256 before installation. Configuration is updated only after model sessions can be created. Existing host runtimes are preserved.
+Windows must satisfy [ONNX Runtime’s Visual C++ runtime prerequisite](https://onnxruntime.ai/docs/install/#requirements). Go also requires a C compiler. Installation configuration changes only after model sessions validate.
 
-## Language-specific setup
+## Language guides
 
-[Go](go.md) · [C/C++](native.md) · [Python](python.md) · [Android](android.md) · [Existing runtime](runtime.md)
+[Go](go.md) · [C/C++](native.md) · [Python](python.md) · [Android](android.md)
 
 ---
 

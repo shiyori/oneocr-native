@@ -18,7 +18,7 @@ go vet ./...
 
 ```sh
 python scripts/build_sdk.py --target desktop --output dist/release
-python scripts/build_python.py --output dist/release
+python scripts/build_python.py --wheel-only --output dist/release
 ```
 
 构建工具下载固定的上游运行库，打包默认模型，生成完整/精简归档并保留第三方许可证。Windows 需要 C 编译器、Visual Studio C++ 工具和可再分发文件；macOS 需要 Apple 命令行工具；Linux 以 Ubuntu 22.04 为构建基线。
@@ -36,6 +36,8 @@ Release 工作流在仓库外验证消费者接入，同时执行运行库兼容
 [模型包格式](model-format.md)
 
 Python 构建需要 `uv`。开发模型转换工具时，使用 `python -m pip install "./python[conversion]"` 安装可选依赖；普通 wheel 安装不需要这些工具。
+
+Release 只收集 Android AAR、通用 Python wheel/sdist、共享资源及可选 Linux 包。Windows/macOS 的上述桌面构建命令仅供本地 C/C++ 开发，不发布其平台包。Linux 可省略 `--wheel-only` 生成 Python 离线包。Go 模块和命令通过 Go 工具链安装；`scripts/verify_go.py` 使用空缓存验证 `go get` / `go install`，无需桌面 SDK。
 
 ---
 

@@ -34,12 +34,10 @@ with OneOcrEngine(EngineConfig(threads=2)) as engine:
 
 生成入口は `OneOcrEngine()` のみです。`EngineConfig` にはスレッド数、画像サイズ、キャッシュ、モデル設定がありますが、通常は指定不要です。Python パッケージは Go SDK を使用しません。
 
-## 完全オフラインインストール
+## Linux の任意オフラインインストール
 
-対象システムのパッケージをダウンロードします。モデルと Python 3.11、3.12、3.13 用の依存 wheel が含まれます。
+Linux ではモデルと Python 3.11、3.12、3.13 用の依存 wheel を含むパッケージを任意で利用できます。Windows/macOS は上記の汎用 wheel を使い、依存関係を必要に応じて取得します。
 
-- [Windows x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-windows-amd64-0.1.0.zip)
-- [macOS ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-darwin-arm64-0.1.0.zip)
 - [Linux x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-amd64-0.1.0.zip)
 - [Linux ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-arm64-0.1.0.zip)
 

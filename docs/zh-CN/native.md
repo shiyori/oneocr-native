@@ -2,7 +2,7 @@
 
 [简体中文](../zh-CN/native.md) | [English](../en/native.md) | [日本語](../ja/native.md)
 
-使用[完整桌面 SDK](installation.md)，无需指定运行库路径。C++ 要求 C++17。
+Linux 使用[完整 SDK](installation.md)，无需指定运行库路径。C++ 要求 C++17。Windows/macOS 如需 C/C++ 共享库，按[开发指南](development.md)自行构建；不发布平台专属包。
 
 ## CMake 与 C++
 

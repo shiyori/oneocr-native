@@ -12,7 +12,7 @@ If several different ORT libraries are already loaded, the host must explicitly 
 
 Python uses the environment's compatible `onnxruntime` module, including GPU distributions, while selecting the CPU provider for OneOCR sessions. The core wheel has no hard dependency on the CPU distribution. The Android core AAR similarly reuses the app's runtime; ARM64 CPU sessions apply `mlas.disable_kleidiai=1` for compatibility.
 
-An offline complete package carries the managed runtime and required redistributable files. Core packages use the same preparation command as complete ones. See [installation](installation.md).
+Windows/macOS use the Go module, Go command or universal Python wheel; setup obtains missing upstream dependencies on demand. Complete Linux packages and the complete Android AAR bundle a pinned runtime. See [installation](installation.md).
 
 ---
 

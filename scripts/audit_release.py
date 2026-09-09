@@ -10,7 +10,7 @@ import zipfile
 from pathlib import Path, PurePosixPath
 from release_manifest import expected_assets
 from runtime_assets import digest
-from version import ROOT, VERSION
+from version import ROOT, VERSION, TAG
 
 
 def require(condition, message):
@@ -42,14 +42,14 @@ def audit_zip(path: Path, kind: str):
                     sha = hashlib.file_digest(stream, "sha256").hexdigest()
                 require(sha == entry["sha256"] and archive.getinfo(name).file_size == entry["bytes"], f"SDK checksum mismatch: {name}")
             require(listed == set(names) - {record_name}, "SDK record omits archive files")
-        if kind in {"sdk-core", "android-core", "go-source", "python-wheel"}:
+        if kind in {"sdk-core", "android-core", "python-wheel"}:
             require(not any(n.endswith(".ocrpack") or re.search(r"(?:^|/)libonnxruntime[^/]*\.(?:so|dylib)$|(?:^|/)onnxruntime.dll$", n) for n in names), f"core includes model/runtime: {path.name}")
         if kind in {"sdk-full", "android-full", "python-offline"}:
             require(any(n.endswith("oneocr-cjk-en.ocrpack") for n in names), f"default model missing: {path.name}")
         require(any("LICENSE" in n or "NOTICE" in n for n in names), f"license missing: {path.name}")
-        if kind in {"sdk-full", "sdk-core", "go-source"}:
-            require(any(n.endswith("go/internal/ort/onnxruntime_c_api.h") for n in names), "Go SDK omits C bridge headers")
-            require(any(n.endswith("go/internal/ort/ONNXRUNTIME-LICENSE") for n in names), "Go SDK omits ORT header license")
+        if kind in {"sdk-full", "sdk-core"}:
+            require(any(n.endswith("include/oneocr.h") for n in names), "native SDK omits C header")
+            require(any(n.endswith("licenses/ONNXRuntime-Header-LICENSE.txt") for n in names), "native SDK omits ORT header license")
         if kind == "python-wheel":
             metadata = archive.read(next(n for n in names if n.endswith(".dist-info/METADATA"))).decode()
             require(not re.search(r"^Requires-Dist: onnxruntime", metadata, re.M | re.I), "core wheel forces a runtime")
@@ -68,6 +68,9 @@ def audit_docs():
         content = path.read_text(encoding="utf-8")
         require("\ufffd" not in content, f"invalid UTF-8 text: {path}")
         for link in re.findall(r"\]\(([^)]+)\)", content):
+            release_base = "https://github.com/shiyori/oneocr-native/releases/download/"
+            if link.startswith(release_base):
+                require(link in {release_base + TAG + "/" + name for name in expected_assets()}, f"invalid Release asset link: {path}: {link}")
             if "://" not in link and not link.startswith("#"):
                 require((path.parent / link.split("#")[0]).exists(), f"broken local link: {path}: {link}")
                 count += 1

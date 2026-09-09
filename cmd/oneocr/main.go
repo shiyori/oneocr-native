@@ -45,7 +45,6 @@ func run(args []string) error {
 		library := fs.String("runtime", "", "advanced override for an existing ONNX Runtime library")
 		source := fs.String("source", "", "offline Release assets directory")
 		offline := fs.Bool("offline", false, "use only local resources")
-		goProject := fs.String("go-project", "", "also add this SDK to an existing Go project")
 		androidProject := fs.String("android-project", "", "prepare an Android app module")
 		home := fs.String("home", "", "installation root (default ONEOCR_HOME or OS user config)")
 		bundle := fs.String("bundle-dir", "", "legacy expanded directory for original OneModel input")
@@ -54,9 +53,6 @@ func run(args []string) error {
 			return e
 		}
 		if *androidProject != "" {
-			if *goProject != "" {
-				return fmt.Errorf("choose one project type")
-			}
 			result, err := oneocr.InstallAndroid(oneocr.AndroidInstallOptions{ProjectDirectory: *androidProject, SourceDirectory: *source, Offline: *offline})
 			if err != nil {
 				return err
@@ -66,11 +62,6 @@ func run(args []string) error {
 		installed, e := oneocr.Install(oneocr.InstallOptions{ModelPath: *model, RuntimeLibrary: *library, Home: *home, BundleDir: *bundle, Profile: *profile, SourceDirectory: *source, Offline: *offline})
 		if e != nil {
 			return e
-		}
-		if *goProject != "" {
-			if e = integrateGo(*goProject, *home, *offline || *source != ""); e != nil {
-				return e
-			}
 		}
 		return emit(installed)
 	case "export":

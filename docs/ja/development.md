@@ -18,7 +18,7 @@ go vet ./...
 
 ```sh
 python scripts/build_sdk.py --target desktop --output dist/release
-python scripts/build_python.py --output dist/release
+python scripts/build_python.py --wheel-only --output dist/release
 ```
 
 ビルドツールは固定の上流ランタイムを取得し、既定モデルとライセンスを含む完全版・コア版を生成します。Windows は C コンパイラー、Visual Studio C++ ツール、再配布ファイルが必要です。macOS は Apple コマンドラインツール、Linux は Ubuntu 22.04 のビルド環境を使用します。
@@ -36,6 +36,8 @@ Release ワークフローではチェックアウト外での利用、ランタ
 [モデルパッケージ形式](model-format.md)
 
 Python のビルドには `uv` が必要です。モデル変換ツールの開発では `python -m pip install "./python[conversion]"` で追加依存関係を導入します。通常の wheel 利用には不要です。
+
+Release には Android AAR、汎用 Python wheel/sdist、共有リソース、任意の Linux パッケージを収録します。Windows/macOS のデスクトップビルドはローカル C/C++ 開発用で、公開しません。Linux では `--wheel-only` を省略すると Python オフライン版を生成できます。Go モジュールとコマンドは Go ツールチェーンで導入し、`scripts/verify_go.py` が空のキャッシュから SDK なしの `go get` / `go install` を検証します。
 
 ---
 

@@ -47,12 +47,17 @@ jobs:
           python -m pip install "./python[conversion]" pytest
       - name: Full CPU compatibility and original API comparisons
         run: python scripts/verify_native.py --output dist/reports/${{ matrix.platform }}
-      - name: Build native and Python distributions
+      - name: Build optional Linux packages
+        if: startsWith(matrix.platform, 'linux-')
         run: |
           python scripts/build_sdk.py --target desktop --output dist/assets
           python scripts/build_python.py --output dist/assets
-          python scripts/release_manifest.py --dist dist/assets --partial
-      - name: Independent offline consumers and archive audit
+      - name: Build universal Python distribution
+        if: runner.os != 'Linux'
+        run: python scripts/build_python.py --wheel-only --output dist/assets
+      - name: Prepare resource metadata
+        run: python scripts/release_manifest.py --dist dist/assets --partial
+      - name: Go module, Go command, Python and optional Linux consumers
         run: |
           python scripts/verify_distributions.py --dist dist/assets --report dist/reports/${{ matrix.platform }}/consumers.json
           python scripts/audit_release.py --dist dist/assets --partial --report dist/reports/${{ matrix.platform }}/audit.json

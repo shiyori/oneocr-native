@@ -11,7 +11,7 @@ from pathlib import Path
 from audit_release import audit, require
 from release_manifest import create, expected_assets
 from runtime_assets import digest
-from version import ROOT, VERSION, TAG
+from version import ROOT, VERSION, TAG, PYTHON_VERSION
 
 REPOSITORY = "shiyori/oneocr-native"
 PLATFORMS = ("windows-amd64", "darwin-arm64", "linux-amd64", "linux-arm64")
@@ -69,12 +69,19 @@ def collect(run_id: str, commit: str, output: Path, reports: Path):
             require(gpu.get("platform") == platform and gpu.get("runtime") == "1.26.0" and all(gpu.get(k) is True for k in ("passed", "host_survived", "gpu_distribution_kept", "cpu_provider", "native_host_survived")), "existing GPU runtime compatibility checks missing")
         consumer = one(platform, "consumers.json")
         require(consumer.get("platform") == platform and consumer.get("version") == VERSION, "consumer platform/version mismatch")
-        for check in ("complete_cli_cpp", "external_cmake_portable", "external_c_portable", "offline_go_no_cache", "offline_core_install_repeat", "corrupt_release_rejected"):
-            require(consumer.get(check) is True, "missing consumer check: " + check)
+        go = consumer.get("go", {})
+        require(go.get("source_commit") == commit and go.get("platform") == platform and go.get("version") == VERSION, "Go consumer source/platform mismatch")
+        for check in ("passed", "go_get", "library_install", "go_install", "cli_install", "empty_module_caches", "no_sdk", "no_replace", "host_binding_unchanged"):
+            require(go.get(check) is True, "missing Go integration check: " + check)
+        if platform.startswith("linux"):
+            for check in ("complete_cli_cpp", "external_cmake_portable", "external_c_portable", "offline_core_install_repeat", "corrupt_release_rejected"):
+                require(consumer.get(check) is True, "missing Linux consumer check: " + check)
         for version in ("3.11", "3.12", "3.13"):
             checks = consumer.get("python", {}).get(version, {})
-            require(all(checks.get(k) is True for k in ("core_import_without_ort", "offline_install", "cli", "api", "repeat")), "Python offline consumer checks incomplete")
-        needed = {f"{prefix}-{platform}-{VERSION}.zip" for prefix in ("oneocr-sdk", "oneocr-core", "oneocr-python")}
+            preparation = "offline_install" if platform.startswith("linux") else "automatic_runtime_install"
+            require(all(checks.get(k) is True for k in ("core_import_without_ort", preparation, "cli", "api", "repeat")), "Python consumer checks incomplete")
+        needed = {f"{prefix}-{platform}-{VERSION}.zip" for prefix in ("oneocr-sdk", "oneocr-core", "oneocr-python")} if platform.startswith("linux") else set()
+        needed.add(f"oneocr_native-{PYTHON_VERSION}-py3-none-any.whl")
         require(needed <= consumer.get("assets", {}).keys(), "consumer asset hashes missing")
         for name, checksum in consumer["assets"].items():
             require(name in expected_assets() and digest(output / name) == checksum, "consumer tested a different artifact")
@@ -100,14 +107,16 @@ def publish(receipt):
 
 Offline Chinese, Japanese, Korean and English OCR for Go, C, C++, Python and Android.
 
-- Full offline SDKs and Core SDKs without bundled models or ONNX Runtime.
+- Go integration through `go get` or `go install`, without a desktop SDK download.
+- Android full/Core AARs, a universal Python wheel, and optional Linux packages.
+- No Windows/macOS platform-specific artifacts; missing dependencies are prepared on demand.
 - Existing compatible ONNX Runtime 1.26+ can be reused; managed bundles include 1.29.0.
 - Windows x64, macOS ARM64, Linux x64/ARM64, Android ARM64/x86_64; Python 3.11–3.13.
 - Three operations: recognize, detect and recognize-line. File, memory and native pixel inputs are documented per language.
 
 [简体中文](https://github.com/{REPOSITORY}/blob/{TAG}/README.md) · [English](https://github.com/{REPOSITORY}/blob/{TAG}/README.en.md) · [日本語](https://github.com/{REPOSITORY}/blob/{TAG}/README.ja.md)
 
-All assets passed independent offline consumer checks, ORT 1.26/1.29 CPU compatibility, original-API output comparisons and archive audits. Both Android ABIs ran actual OCR and host-runtime coexistence checks on these exact AARs.
+All assets passed independent consumer checks, ORT 1.26/1.29 CPU compatibility, original-API output comparisons and archive audits. Go module and command integration were tested from empty module caches. Both Android ABIs ran actual OCR and host-runtime coexistence checks on these exact AARs.
 
 Verify downloads with `SHA256SUMS` and `release-manifest.json`. Code: AGPL-3.0-only. Review `Model-NOTICE.txt` for the separately provided model and bundled third-party notices.
 """, encoding="utf-8")

@@ -42,6 +42,7 @@ type runtimeManifest struct {
 type releaseSource struct {
 	directory string
 	offline   bool
+	baseURL   string // fixed upstream origin for pinned runtime archives only
 }
 
 func (s releaseSource) read(name string, limit int64) ([]byte, error) {
@@ -60,10 +61,14 @@ func (s releaseSource) open(name string) (io.ReadCloser, error) {
 		return os.Open(filepath.Join(s.directory, name))
 	}
 	if s.offline {
-		return nil, fmt.Errorf("oneocr: offline resources are missing; use a complete SDK or --source RELEASE_DIRECTORY")
+		return nil, fmt.Errorf("oneocr: offline resources are missing; pass --source RESOURCE_DIRECTORY or prepare them online")
 	}
 	client := &http.Client{Timeout: 10 * time.Minute}
-	response, err := client.Get(releaseURL + name)
+	base := s.baseURL
+	if base == "" {
+		base = releaseURL
+	}
+	response, err := client.Get(base + name)
 	if err != nil {
 		return nil, err
 	}
@@ -290,9 +295,12 @@ func prepareInstallResources(options *InstallOptions, temporary string) error {
 		return nil
 	}
 	source := releaseSource{directory: options.SourceDirectory, offline: options.Offline}
-	manifest, err := source.manifest()
-	if err != nil {
-		return err
+	var manifest releaseManifest
+	if options.ModelPath == "" || (!available && runtime.GOOS != "windows" && runtime.GOOS != "darwin") {
+		manifest, err = source.manifest()
+		if err != nil {
+			return err
+		}
 	}
 	if options.ModelPath == "" {
 		asset, err := manifest.asset("model", "")
@@ -305,6 +313,10 @@ func prepareInstallResources(options *InstallOptions, temporary string) error {
 		}
 	}
 	if !available {
+		if runtime.GOOS == "windows" || runtime.GOOS == "darwin" {
+			options.RuntimeLibrary, err = prepareUpstreamRuntime(source, temporary, runtime.GOOS+"-"+runtime.GOARCH)
+			return err
+		}
 		asset, err := manifest.asset("runtime", runtime.GOOS+"-"+runtime.GOARCH)
 		if err != nil {
 			return err

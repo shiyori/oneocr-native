@@ -18,7 +18,7 @@ Build desktop SDKs on the target architecture:
 
 ```sh
 python scripts/build_sdk.py --target desktop --output dist/release
-python scripts/build_python.py --output dist/release
+python scripts/build_python.py --wheel-only --output dist/release
 ```
 
 The build tools fetch pinned upstream runtimes, package the default model, generate complete/core archives and retain third-party licenses. Windows requires a C compiler plus the Visual Studio C++ tools and redistributable files. macOS requires Apple command-line tools. Linux builds use an Ubuntu 22.04 baseline.
@@ -36,6 +36,8 @@ Push to `main` to run `release-build` without publishing. After it succeeds, `py
 [Model package format](model-format.md)
 
 Python builds require `uv`. For model-conversion development, install the optional tools with `python -m pip install "./python[conversion]"`; ordinary wheel users do not need them.
+
+Releases collect Android AARs, the universal Python wheel/sdist, shared resources and optional Linux packages. Desktop builds on Windows/macOS are only for local C/C++ development and are not published. On Linux, omit `--wheel-only` to build the Python offline bundle. Go modules and commands install through the Go toolchain; `scripts/verify_go.py` checks `go get` / `go install` from empty caches without a desktop SDK.
 
 ---
 

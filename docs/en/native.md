@@ -2,7 +2,7 @@
 
 [简体中文](../zh-CN/native.md) | [English](../en/native.md) | [日本語](../ja/native.md)
 
-Use the [complete desktop SDK](installation.md). No runtime path is needed. C++ requires C++17.
+On Linux, use the [complete SDK](installation.md) with no runtime path. C++ requires C++17. For C/C++ shared libraries on Windows/macOS, follow the [development guide](development.md) to build locally; no platform-specific packages are published.
 
 ## CMake and C++
 

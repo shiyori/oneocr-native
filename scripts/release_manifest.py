@@ -10,17 +10,15 @@ from version import ROOT, VERSION, PYTHON_VERSION, RUNTIME_VERSION
 
 def expected_assets():
     assets = {}
-    for platform in ("windows-amd64", "darwin-arm64", "linux-amd64", "linux-arm64"):
+    for platform in ("linux-amd64", "linux-arm64"):
         for prefix, kind in (("oneocr-sdk", "sdk-full"), ("oneocr-core", "sdk-core"), ("oneocr-python", "python-offline")):
             assets[f"{prefix}-{platform}-{VERSION}.zip"] = (kind, platform)
         assets[f"oneocr-runtime-{RUNTIME_VERSION}-{platform}.zip"] = ("runtime", platform)
     assets.update({
         "Model-NOTICE.txt": ("model-notice", ""),
         "LICENSE": ("license", ""),
-        f"oneocr-go-sdk-{VERSION}.zip": ("go-source", ""),
         f"oneocr-android-{VERSION}.aar": ("android-full", "android"),
         f"oneocr-android-core-{VERSION}.aar": ("android-core", "android"),
-        f"oneocr-android-sdk-{VERSION}.zip": ("android-sdk", "android"),
         f"oneocr-runtime-{RUNTIME_VERSION}-android.zip": ("runtime", "android"),
         f"oneocr-model-cjk-en-{VERSION}.ocrpack": ("model", ""),
         f"oneocr_native-{PYTHON_VERSION}-py3-none-any.whl": ("python-wheel", ""),

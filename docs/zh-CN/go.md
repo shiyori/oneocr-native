@@ -2,7 +2,16 @@
 
 [简体中文](../zh-CN/go.md) | [English](../en/go.md) | [日本語](../ja/go.md)
 
-下载并解压[完整桌面 SDK](installation.md)。需要 Go 1.24+ 和 C 编译器。把以下代码放入自己应用的 `main.go`：
+需要 Go 1.24+ 和 C 编译器。在自己的项目中通过 Go 模块导入，不需要下载桌面 SDK：
+
+```sh
+go mod init example.com/ocr-app
+go get github.com/shiyori/oneocr-native@v0.1.0
+```
+
+已有 `go.mod` 时跳过 `go mod init`。
+
+将以下代码放入自己的 `main.go`。`Install` 用于准备缺失的模型与依赖；已经准备好的环境可直接 `Open`：
 
 ```go
 package main
@@ -14,6 +23,7 @@ import (
 )
 
 func main() {
+    if _, err := oneocr.Install(oneocr.InstallOptions{}); err != nil { panic(err) }
     engine, err := oneocr.Open(oneocr.Config{})
     if err != nil { panic(err) }
     defer engine.Close()
@@ -23,17 +33,21 @@ func main() {
 }
 ```
 
-在**自己的应用目录**运行以下命令；已有 `go.mod` 时跳过 `go mod init`。
-
 ```sh
-go mod init example.com/ocr-app
-/path/to/sdk/bin/oneocr install --go-project .
 go run .
 ```
 
-Windows 使用 SDK 的 `bin\oneocr.exe`。准备命令会将 Go 模块保存到 OneOCR 管理的安装目录，并配置当前项目，无需克隆仓库或手写 `replace` 路径。加上 `--offline` 即可只使用完整包内的依赖；宿主的 ORT 绑定版本不会被修改。
+## 命令行接入
 
-精简包使用同样的命令，先补齐缺失的模型和运行库。自行管理源码依赖的构建系统也可下载独立的 [Go 源码包](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-go-sdk-0.1.0.zip)。
+通过 Go 安装命令后，可在任意目录准备资源并识别图片：
+
+```sh
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.0
+oneocr install
+oneocr recognize image.png
+```
+
+把 Go 的可执行文件目录（通常为 `GOPATH/bin`）加入 `PATH`。两种接入方式都自动查找、复用兼容 runtime；缺失依赖按需下载，普通调用无需配置 runtime 路径，也不会修改宿主的 ORT Go 绑定版本。
 
 ## 输入与操作
 

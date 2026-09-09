@@ -12,7 +12,7 @@ Engine は独自のセッションとランタイム・環境参照を所有し�
 
 Python は GPU 配布パッケージを含む、現在の環境の互換 `onnxruntime` モジュールを再利用し、OneOCR のセッションには CPU provider を指定します。コア wheel は CPU 配布パッケージを必須依存にしません。Android コア AAR もアプリのランタイムを再利用します。ARM64 CPU セッションには互換性設定 `mlas.disable_kleidiai=1` を追加します。
 
-完全オフライン版には固定ランタイムと必要な再配布可能ファイルが含まれます。コア版も同じ準備コマンドを使用します。[インストール](installation.md)を参照してください。
+Windows/macOS は Go モジュール、Go コマンド、汎用 Python wheel を使い、準備時に不足する依存関係を上流から取得します。Linux 完全版と Android 完全版 AAR は固定 runtime を含みます。[インストール](installation.md)を参照してください。
 
 ---
 

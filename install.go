@@ -27,7 +27,7 @@ type Installation struct {
 type InstallOptions struct {
 	ModelPath, RuntimeLibrary, Home, BundleDir string
 	Profile                                    string // original OneModel conversion; defaults to cjk-en
-	SourceDirectory                            string // offline GitHub Release assets directory
+	SourceDirectory                            string // offline model metadata and runtime archives
 	Offline                                    bool   // never download missing assets
 }
 
@@ -114,8 +114,8 @@ func isPackageFile(filename string) (bool, error) {
 	return string(header) == packageMagic, nil
 }
 
-// Install prepares the default model and runtime from the SDK, an existing
-// installation, or this version's GitHub Release. Recognition never downloads.
+// Install prepares the model and runtime from local resources, this version's
+// Release, or pinned upstream runtime archives. Recognition never downloads.
 func Install(options InstallOptions) (Installation, error) {
 	result := Installation{Schema: "oneocr.install.v2", Platform: runtime.GOOS + "-" + runtime.GOARCH}
 	referenceRuntime := options.RuntimeLibrary != "" || os.Getenv("ONEOCR_RUNTIME") != ""
@@ -210,12 +210,12 @@ func Install(options InstallOptions) (Installation, error) {
 	if err != nil {
 		return result, err
 	}
-	loaded, err := ort.LoadedPath()
-	if err != nil {
-		return result, err
-	}
+	loaded, discoveryErr := ort.LoadedPath()
 	result.RuntimeSHA256 = runtimeHash
-	if loaded != "" || referenceRuntime {
+	// resolveRuntimeLibrary has already selected a path. Keep it when loaded
+	// modules are ambiguous; Open below validates an explicit selection without
+	// copying it or introducing a second runtime.
+	if loaded != "" || discoveryErr != nil || referenceRuntime {
 		result.RuntimeLibrary = library
 	} else {
 		runtimeDir := filepath.Join(home, "runtime", result.Platform, runtimeHash)

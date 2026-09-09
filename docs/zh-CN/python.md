@@ -34,12 +34,10 @@ with OneOcrEngine(EngineConfig(threads=2)) as engine:
 
 只保留 `OneOcrEngine()` 一个创建入口。`EngineConfig` 包含线程数、图片尺寸、缓存和模型路径等可选项，普通使用无需配置。Python 包不依赖 Go SDK。
 
-## 完整离线安装
+## Linux 可选离线安装
 
-下载对应系统的完整包，其中包含默认模型以及 Python 3.11、3.12、3.13 的依赖 wheel：
+Linux 可选下载完整包，其中包含默认模型以及 Python 3.11、3.12、3.13 的依赖 wheel。Windows/macOS 使用上文的通用 wheel，依赖按需下载：
 
-- [Windows x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-windows-amd64-0.1.0.zip)
-- [macOS ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-darwin-arm64-0.1.0.zip)
 - [Linux x64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-amd64-0.1.0.zip)
 - [Linux ARM64](https://github.com/shiyori/oneocr-native/releases/download/v0.1.0/oneocr-python-linux-arm64-0.1.0.zip)
 

@@ -12,7 +12,7 @@ Engine 持有自己的会话和运行库/环境引用。关闭时释放这些引
 
 Python 复用当前环境中兼容的 `onnxruntime` 模块，包括 GPU 发行包，但 OneOCR 会话指定 CPU provider。精简 wheel 不强制依赖 CPU 发行包。Android 精简 AAR 同样复用应用运行库；ARM64 CPU 会话设置 `mlas.disable_kleidiai=1` 以兼容相应设备。
 
-完整离线包携带固定运行库及所需可再分发文件；精简包使用相同的准备命令。详见[下载与安装](installation.md)。
+Windows/macOS 使用 Go 模块、Go 命令或通用 Python wheel，由准备步骤按需取得上游依赖。Linux 完整包和 Android 完整 AAR 携带固定运行库。详见[下载与安装](installation.md)。
 
 ---
 
