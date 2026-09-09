@@ -4,6 +4,10 @@
 
 このページは SDK 自体をビルドするためのものです。アプリへの導入は [Release のダウンロード](installation.md)から始めてください。
 
+Go ルートパッケージには公開入口（`oneocr.go`）、型エイリアス（`types.go`）、パッケージ説明（`doc.go`）のみを置きます。OCR、モデル解析、インストール処理と内部テストは `internal/engine/`、ランタイムバインディングは `internal/ort/`、インストールロックは `internal/installlock/` に配置します。コマンド入口は `cmd/` に置き、アプリの import は引き続き `github.com/shiyori/oneocr-native` です。
+
+通常の push/PR は 3 プラットフォームの Go 単体テストと vet（Linux は race 検査付き）、1 組の Python 単体テスト、バージョンとモデルのメタデータ検査のみを実行します。完全な OCR 比較、Android エミュレーター、リリースビルドは実行しません。同じブランチの新しい push は未完了の通常チェックをキャンセルします。完全検証は手動のリリースビルドでのみ実行します。
+
 ```sh
 git clone https://github.com/shiyori/oneocr-native.git
 cd oneocr-native
@@ -31,7 +35,7 @@ python scripts/build_sdk.py --target android --output dist/release --android-sdk
 
 Release ワークフローではチェックアウト外での利用、ランタイム互換性、Python 3.11–3.13、Android 両 ABI の実際の OCR、および制品・ライセンス・リンクを検証します。すべての制品が通過した場合にのみ正式リリースを公開します。研究資料と開発用に保持しているモデルは Release に含めません。
 
-`main` ブランチへの push で `release-build` が実行されます。この段階では公開しません。成功後、`python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` で同じ制品を取得して検証します。ARM64 デバイス上で `scripts/verify_android.py` を使い、完全版とホスト ORT 1.26.0・1.29.0 を使う Core 版を検証します。注釈付きのバージョン tag には JSON 形式の記録を保存します。項目は `schema: oneocr.release-receipt.v1`、`version`、`commit`、`build_run_id`、完全版/1.26/1.29 の順に並べた三つの `android_arm64` レポートです。tag ワークフローが各レポートと制品のハッシュを照合し、ドラフトへのアップロードとハッシュ検証を経て公開します。テスト後の再ビルドは行いません。
+Actions で `main` を選び `release-build` を手動実行するか、`gh workflow run release-build.yml --ref main` を実行します。この時間のかかるワークフローは push/PR では起動せず、自動公開もしません。成功後、`python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` で同じ制品を取得して検証します。ARM64 デバイス上で `scripts/verify_android.py` を使い、完全版とホスト ORT 1.26.0・1.29.0 を使う Core 版を検証します。注釈付きのバージョン tag には JSON 形式の記録を保存します。項目は `schema: oneocr.release-receipt.v1`、`version`、`commit`、`build_run_id`、完全版/1.26/1.29 の順に並べた三つの `android_arm64` レポートです。tag ワークフローが各レポートと制品のハッシュを照合し、ドラフトへのアップロードとハッシュ検証を経て公開します。テスト後の再ビルドは行いません。
 
 [モデルパッケージ形式](model-format.md)
 

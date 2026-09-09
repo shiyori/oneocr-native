@@ -22,7 +22,7 @@ def main():
     args=parser.parse_args()
     args.output=args.output.resolve();args.output.mkdir(parents=True,exist_ok=True)
     environment=dict(os.environ,ONEOCR_RUNTIME=str(args.runtime.resolve()),ONEOCR_EXPORT_REFERENCE=str(args.output))
-    subprocess.run(["go","test","-run","^TestExportReferenceCrops$","-count=1"],cwd=ROOT,env=environment,check=True)
+    subprocess.run(["go","test","-run","^TestExportReferenceCrops$","-count=1", "./internal/engine"],cwd=ROOT,env=environment,check=True)
     environment.pop("ONEOCR_EXPORT_REFERENCE")
     with tempfile.TemporaryDirectory(prefix="oneocr-original-cpu-") as temporary:
         temporary=Path(temporary)
@@ -64,7 +64,7 @@ def main():
             if (index+1)%6==0: print(f"reference: {index+1}/{len(cases)}",flush=True)
         (args.output / "reference.json").write_text(json.dumps(cases,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     environment["ONEOCR_REFERENCE"]=str(args.output)
-    result=subprocess.run(["go","test","-run","^TestAPIReference$","-count=1"],cwd=ROOT,env=environment,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+    result=subprocess.run(["go","test","-run","^TestAPIReference$","-count=1", "./internal/engine"],cwd=ROOT,env=environment,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     (args.output / "comparison.log").write_text(result.stdout,encoding="utf-8")
     if result.returncode: raise RuntimeError(result.stdout[-12000:])
     print(json.dumps({"baseline_commit":BASELINE,"fixtures":len(cases),"operations":3,"input_forms":4,"comparisons":len(cases)*3*4,"passed":True}))

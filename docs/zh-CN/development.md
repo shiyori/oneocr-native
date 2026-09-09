@@ -4,6 +4,10 @@
 
 本页用于构建 SDK 本身。应用接入请从 [Release 下载](installation.md)开始。
 
+Go 根包只保留公开入口（`oneocr.go`）、类型别名（`types.go`）和包说明（`doc.go`）。识别引擎、模型解析、安装逻辑及内部测试位于 `internal/engine/`；ONNX Runtime 绑定位于 `internal/ort/`，安装锁位于 `internal/installlock/`。命令入口保留在 `cmd/`。应用仍然导入 `github.com/shiyori/oneocr-native`。
+
+普通 push/PR 只运行三平台 Go 单元测试与 vet（Linux 同时检查数据竞争）、一套 Python 单元测试及版本/模型元数据检查。不会执行完整 OCR 对照、启动 Android 模拟器或构建发布包；新提交会取消同分支尚未完成的常规检查。完整验证仅在手动触发发布构建时运行。
+
 ```sh
 git clone https://github.com/shiyori/oneocr-native.git
 cd oneocr-native
@@ -31,7 +35,7 @@ python scripts/build_sdk.py --target android --output dist/release --android-sdk
 
 Release 工作流在仓库外验证消费者接入，同时执行运行库兼容检查、Python 3.11–3.13 测试、Android 两个 ABI 的实际 OCR，以及制品、许可证、链接校验。完整制品全部通过后才发布正式版本。研究资料和保留的开发模型不进入 Release。
 
-推送 `main` 分支会运行 `release-build`，此时不会发布。通过后执行 `python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` 下载并验证这批制品。使用 `scripts/verify_android.py` 在 ARM64 设备上验证这些 AAR：完整包，以及宿主 ORT 1.26.0、1.29.0 的 Core 包。带注释的版本 tag 保存 JSON 回执，包含 `schema: oneocr.release-receipt.v1`、`version`、`commit`、`build_run_id` 和按完整包/1.26/1.29 顺序排列的三个 `android_arm64` 报告对象。tag 工作流核对所有报告与制品哈希，上传草稿并校验上传结果后发布，不在测试后重新构建。
+在 Actions 页面手动触发 `release-build`（选择 `main`），或执行 `gh workflow run release-build.yml --ref main`。该耗时工作流不会随 push/PR 自动运行，也不会自动发布。通过后执行 `python scripts/publish_release.py collect --run-id RUN_ID --output ASSETS --reports REPORTS` 下载并验证这批制品。使用 `scripts/verify_android.py` 在 ARM64 设备上验证这些 AAR：完整包，以及宿主 ORT 1.26.0、1.29.0 的 Core 包。带注释的版本 tag 保存 JSON 回执，包含 `schema: oneocr.release-receipt.v1`、`version`、`commit`、`build_run_id` 和按完整包/1.26/1.29 顺序排列的三个 `android_arm64` 报告对象。tag 工作流核对所有报告与制品哈希，上传草稿并校验上传结果后发布，不在测试后重新构建。
 
 [模型包格式](model-format.md)
 

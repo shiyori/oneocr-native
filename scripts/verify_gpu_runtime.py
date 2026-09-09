@@ -71,7 +71,7 @@ def main():
         report = json.loads((output / "gpu.json").read_text(encoding="utf-8"))
         env["ONEOCR_RUNTIME"] = report["library"]
         with (output / "native-gpu.log").open("w", encoding="utf-8") as log:
-            subprocess.run(["go", "test", "-run", "^TestNativeLifecycle$", "-count=1"], cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
+            subprocess.run(["go", "test", "-run", "^TestNativeLifecycle$", "-count=1", "./internal/engine"], cwd=ROOT, env=env, stdout=log, stderr=subprocess.STDOUT, check=True)
         report.pop("library")
         report.update(native_host_survived=True, platform=require_platform, passed=True)
         (output / "gpu.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
