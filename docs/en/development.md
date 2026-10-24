@@ -25,6 +25,8 @@ python scripts/build_linux.py --output dist/release
 python scripts/build_python.py --wheel-only --output dist/release
 ```
 
+Use a new empty output directory for each release build. The audit rejects leftover files from older versions or other builds; use a separate directory such as `dist/native-dev` for development artifacts.
+
 The build tools fetch pinned upstream runtimes, package the default model, generate complete runtime packages and retain third-party licenses. Windows requires a C compiler plus the Visual Studio C++ tools and redistributable files. macOS requires Apple command-line tools. Linux builds use an Ubuntu 22.04 baseline.
 
 Android builds require the Android SDK, NDK 27+, JDK 17+ and CMake:

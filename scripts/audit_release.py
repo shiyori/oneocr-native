@@ -96,7 +96,8 @@ def audit_docs():
 def audit(directory: Path, partial: bool = False):
     expected = expected_assets()
     files = {p.name for p in directory.iterdir() if p.is_file() and not p.name.startswith(".")}
-    require(not (files - set(expected) - {"release-manifest.json", "SHA256SUMS"}), "unexpected release asset")
+    unexpected = sorted(files - set(expected) - {"release-manifest.json", "SHA256SUMS"})
+    require(not unexpected, "unexpected release asset(s): " + ", ".join(unexpected))
     if not partial:
         require(set(expected) <= files, "incomplete release asset set")
     manifest = json.loads((directory / "release-manifest.json").read_text(encoding="utf-8"))

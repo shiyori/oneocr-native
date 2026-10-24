@@ -25,6 +25,8 @@ python scripts/build_linux.py --output dist/release
 python scripts/build_python.py --wheel-only --output dist/release
 ```
 
+リリースごとに新しい空の出力ディレクトリを使用してください。監査は旧バージョンや別ビルドの残存ファイルを拒否します。開発用の成果物には `dist/native-dev` など別のディレクトリを使用してください。
+
 ビルドツールは固定の上流ランタイムを取得し、既定モデルとライセンスを含む完全実行パッケージを生成します。Windows は C コンパイラー、Visual Studio C++ ツール、再配布ファイルが必要です。macOS は Apple コマンドラインツール、Linux は Ubuntu 22.04 のビルド環境を使用します。
 
 Android には Android SDK、NDK 27 以上、JDK 17 以上、CMake が必要です。

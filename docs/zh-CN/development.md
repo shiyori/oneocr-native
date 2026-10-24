@@ -25,6 +25,8 @@ python scripts/build_linux.py --output dist/release
 python scripts/build_python.py --wheel-only --output dist/release
 ```
 
+发布输出目录必须是新的空目录；校验会拒绝其中残留的旧版本或其他文件。开发构建请使用单独目录，例如 `dist/native-dev`。
+
 构建工具下载固定的上游运行库，打包默认模型，生成完整运行包并保留第三方许可证。Windows 需要 C 编译器、Visual Studio C++ 工具和可再分发文件；macOS 需要 Apple 命令行工具；Linux 以 Ubuntu 22.04 为构建基线。
 
 Android 需要 Android SDK、NDK 27+、JDK 17+ 和 CMake：
