@@ -13,7 +13,7 @@ from pathlib import Path
 
 from build_sdk import add_zip_file, copy_go, go_proxy
 from runtime_assets import PLATFORMS, current_platform, digest
-from verify_distributions import check_text, isolated, run
+from verify_distributions import check_json_confidence, check_text, isolated, run
 from version import ROOT, RUNTIME_VERSION, TAG, VERSION
 
 APPLICATION = '''package main
@@ -24,6 +24,8 @@ func main(){
  e,err:=oneocr.Open(oneocr.Config{});if err!=nil{panic(err)};defer e.Close()
  input:=oneocr.FromFile(os.Args[1]);ctx:=context.Background()
  r,err:=e.Recognize(ctx,input,oneocr.Options{});if err!=nil{panic(err)}
+ if r.Confidence==nil || *r.Confidence<=0 || *r.Confidence>1 || len(r.Lines)==0 {panic("confidence failed")}
+ for _,line:=range r.Lines { if line.Confidence==nil || *line.Confidence<=0 || *line.Confidence>1 {panic("line confidence failed")} }
  if d,err:=e.Detect(ctx,input);err!=nil||len(d.Regions)==0{panic("detect failed")}
  if line,err:=e.RecognizeLine(ctx,input,oneocr.Options{});err!=nil||line.Text==""{panic("recognize line failed")}
  fmt.Println(r.Text)
@@ -89,6 +91,7 @@ def main():
         cli = root / "command-bin" / ("oneocr.exe" if os.name == "nt" else "oneocr")
         run(cli, "install", "--source", resources, "--offline", cwd=app, env=cli_env)
         check_text(run(cli, "recognize", image, cwd=app, env=cli_env).stdout)
+        check_json_confidence(run(cli, "recognize", "--format", "json", image, cwd=app, env=cli_env).stdout)
         run(cli, "install", "--offline", cwd=app, env=cli_env)
         report = {"version":VERSION, "platform":target, "source_commit":subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                   "test_module_sha256":checksum, "go_get":True, "library_install":True, "go_install":True,

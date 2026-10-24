@@ -43,6 +43,22 @@ def check_text(output: str):
         raise RuntimeError("consumer OCR text mismatch: " + output[:2000])
 
 
+def check_json_confidence(output: str):
+    result = json.loads(output)
+    confidence = result.get("confidence")
+    lines = result.get("lines") or []
+    if result.get("confidence_method") != "ctc_token_geometric_mean":
+        raise RuntimeError("consumer JSON confidence method missing or invalid")
+    if not isinstance(confidence, (int, float)) or not 0 < confidence <= 1:
+        raise RuntimeError("consumer JSON confidence missing or invalid")
+    if not lines or any(
+        not isinstance(line.get("confidence"), (int, float))
+        or not 0 < line["confidence"] <= 1
+        for line in lines
+    ):
+        raise RuntimeError("consumer JSON line confidence missing or invalid")
+
+
 def verify_python_upstream(dist: Path, root: Path, versions: list[str], report: dict):
     work = root / "Python application"
     work.mkdir()
@@ -66,6 +82,7 @@ def verify_python_upstream(dist: Path, root: Path, versions: list[str], report: 
         shutil.copy2(ROOT / "models/oneocr-cjk-en.ocrpack", bootstrap / "models/oneocr-cjk-en.ocrpack")
         run(python, "-m", "oneocr_native", "install", cwd=bootstrap, env=env)
         check_text(run(python, "-m", "oneocr_native", "recognize", "image.png", cwd=work, env=env).stdout)
+        check_json_confidence(run(python, "-m", "oneocr_native", "recognize", "image.png", "--format", "json", cwd=work, env=env).stdout)
         check_text(run(python, "-c", "from oneocr_native import OneOcrEngine; e=OneOcrEngine(); print(e.recognize('image.png').text); assert e.detect('image.png').regions; assert e.recognize_line('image.png').text; e.close()", cwd=work, env=env).stdout)
         run(python, "-m", "oneocr_native", "install", "--offline", cwd=work, env=env)
         report["python"][version] = {"core_import_without_ort":True, "automatic_runtime_install":True, "cli":True, "api":True, "repeat":True}

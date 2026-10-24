@@ -424,7 +424,7 @@ class OneOcrEngine:
             perf_counter() - start,
             self.prepared.manifest["source_sha256"],
             [
-                "Experimental segment grouping and reading order; original rejection/calibration are not applied."
+                "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."
             ]
             + [f"Skipped unavailable script: {name}" for name in sorted(unavailable)],
             confidence=Recognition(
