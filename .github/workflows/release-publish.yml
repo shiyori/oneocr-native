@@ -51,7 +51,7 @@ jobs:
           from version import TAG
           publishing = os.environ["PUBLISH_RELEASE"] == "true"
           if publishing:
-              assert os.environ["RELEASE_TAG"] == TAG, "Select the version tag for publication"
+              assert os.environ["RELEASE_TAG"] == TAG, f"Select the version tag for publication (workflow tag={os.environ['RELEASE_TAG']}, version.json tag={TAG})"
           run = os.environ.get("BUILD_RUN_ID", "")
           if not run and publishing:
               message = subprocess.check_output(["git", "for-each-ref", "--format=%(contents)", "refs/tags/" + TAG], text=True)
