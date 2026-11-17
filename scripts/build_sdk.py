@@ -148,7 +148,13 @@ def _native_library(stage: Path, target: str) -> Path:
     if generated.exists():
         generated.unlink()
     if target.startswith("windows"):
-        exports = ["OneOCROpen", "OneOCRRecognize", "OneOCRDetect", "OneOCRRecognizeLine", "OneOCRWarmup", "OneOCRDiagnostics", "OneOCRClose", "OneOCRFree"]
+        exports = [
+            "OneOCROpen", "OneOCROpenEx", "OneOCRRecognize", "OneOCRRecognizeEx",
+            "OneOCRDetect", "OneOCRRecognizeLine", "OneOCRRecognizeLineEx",
+            "OneOCRRecognizeBatch", "OneOCRRecognizeBatchEx", "OneOCRDetectBatch",
+            "OneOCRRecognizeLineBatch", "OneOCRRecognizeLineBatchEx", "OneOCRWarmup",
+            "OneOCRDiagnostics", "OneOCRClose", "OneOCRFree",
+        ]
         definition = stage / "lib/oneocr.def"
         definition.parent.mkdir(parents=True, exist_ok=True)
         definition.write_text("LIBRARY oneocr.dll\nEXPORTS\n" + "\n".join(exports) + "\n", encoding="utf-8")

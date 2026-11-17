@@ -27,6 +27,10 @@ const (
 	CharactersHangul            = engine.CharactersHangul
 	CharactersLatin             = engine.CharactersLatin
 	CharactersDigits            = engine.CharactersDigits
+	ReadingOrderAuto            = engine.ReadingOrderAuto
+	ReadingOrderLTR             = engine.ReadingOrderLTR
+	ReadingOrderRTL             = engine.ReadingOrderRTL
+	ReadingOrderNone            = engine.ReadingOrderNone
 )
 
 // InstallAndroid prepares an app module without replacing existing resources.

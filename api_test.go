@@ -50,6 +50,12 @@ func TestPublicEngineBoundary(t *testing.T) {
 	if _, err := oneocr.Open(oneocr.Config{Threads: -1}); err == nil {
 		t.Fatal("Open lost configuration validation")
 	}
+	if _, err := oneocr.Open(oneocr.Config{MaxInFlight: 5}); err == nil {
+		t.Fatal("Open accepted invalid MaxInFlight")
+	}
+	if _, err := engine.RecognizeBatch(context.Background(), nil, oneocr.Options{}); !errors.Is(err, oneocr.ErrClosed) {
+		t.Fatalf("RecognizeBatch closed error: %v", err)
+	}
 	config := (oneocr.Installation{ModelPath: "model.ocrpack", RuntimeLibrary: "runtime"}).Config()
 	if config.ModelPath != "model.ocrpack" || config.RuntimeLibrary != "runtime" {
 		t.Fatal("Installation.Config changed")

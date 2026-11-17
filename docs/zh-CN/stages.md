@@ -62,6 +62,8 @@ Go 返回有 JSON tag 的 `Result`，可使用 `json.NewEncoder(writer).Encode(r
 
 `Detect` 返回 `coordinate_space`、`regions`、图像尺寸、耗时和模型哈希；每个 region 包含 `quad`、`bbox`、`score`、`vertical`。`RecognizeLine` 返回 `text`、`confidence`、`confidence_method`、`script`、`rotated_180`、裁剪图尺寸、耗时和模型哈希；该操作不执行检测，因此没有行框或检测分数。
 
+Go、Python、C/C++ 和 Android 还提供批量入口。批量结果按输入顺序返回，单项失败写入 `error.code` 和 `error.message`，不会丢弃其他项；单实例默认仍只运行一个任务。
+
 紧凑的短文本区域会参考同页可靠长文本的方向，避免把孤立数字误作竖排或将 `6/9` 误翻转。分类器未确定书写系统时，仅对检测分数达标、Latin/CJK 两个识别器读数一致且满足确认分数要求的短数字补识别。单独裁剪的短数字缺少页面方向依据时，弱翻转信号会保持输入方向。
 
 `rotation_degrees` 表示识别前对矫正裁剪图实际执行的**顺时针**旋转角度，取值为 `0/90/180/270`。绘制识别文字时应使用其逆变换映射回 `quad`。`vertical` 保留检测方向信息，`rotated_180` 保留半周翻转兼容信息；短数字的实际旋转应以 `rotation_degrees` 为准。

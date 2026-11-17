@@ -1,0 +1,221 @@
+{
+  "schema": "oneocr.benchmark.v1",
+  "version": "0.2.0",
+  "baseline_version": "0.1.7",
+  "platform": {
+    "system": "darwin",
+    "machine": "arm64",
+    "python": "3.13.14",
+    "go": "go1.26.5"
+  },
+  "runtime": "1.29.0",
+  "model": "models/oneocr-cjk-en.ocrpack",
+  "model_sha256": "c0fe8fd89104d9c3e8154c03385232f8b6e4bfc92c1fdb59ff1ef5b93c4e1aa3",
+  "model_source_sha256": "f6cef38b839012cd824abf8b854ee9fa4f87d4c5265440661d66b23f4fab5155",
+  "fixtures": {
+    "count": 42,
+    "source": "testdata",
+    "repeats": 2,
+    "warmup": true
+  },
+  "accuracy": {
+    "go_json": {
+      "baseline_commit": "v0.1.7",
+      "fixtures": 42,
+      "operations": 3,
+      "input_forms": 4,
+      "comparisons": 504,
+      "exact_stable_matches": 504,
+      "differences": 0
+    },
+    "python_json": {
+      "baseline_commit": "v0.1.7",
+      "fixtures": 42,
+      "operations": 3,
+      "input_forms": 2,
+      "comparisons": 252,
+      "exact_stable_matches": 252,
+      "differences": 0
+    },
+    "go_python_texts": {
+      "fixtures": 42,
+      "v0.1.7_matches": 32,
+      "v0.2.0_matches": 32,
+      "v0.1.7_differences": 10,
+      "v0.2.0_differences": 10,
+      "interpretation": "Existing Go/Python decoder and preprocessing differences are unchanged."
+    }
+  },
+  "performance": {
+    "go": {
+      "baseline_v0_1_7": {
+        "version": "0.1.7",
+        "max_inflight": 1,
+        "repeats": 2,
+        "single_seconds": {
+          "p50": 0.176312458,
+          "p95": 2.083244791,
+          "mean": 0.5581855263571429
+        },
+        "batch_seconds": {
+          "p50": 14.078910375,
+          "p95": 17.053922709,
+          "mean": 15.566416541999999
+        },
+        "batch_images_per_second": {
+          "mean": 2.6981161583771787,
+          "p95": 2.462776495277243
+        },
+        "peak_rss_bytes": 487669760,
+        "final_go_alloc_bytes": 2167960
+      },
+      "v0_2_0_max_inflight_1": {
+        "version": "0.2.0",
+        "max_inflight": 1,
+        "repeats": 2,
+        "single_seconds": {
+          "p50": 0.108786,
+          "p95": 1.101345708,
+          "mean": 0.32675384323809525
+        },
+        "batch_seconds": {
+          "p50": 12.392551833,
+          "p95": 13.260889834,
+          "mean": 12.826720833500001
+        },
+        "batch_images_per_second": {
+          "mean": 3.274414446622017,
+          "p95": 3.167208273785287
+        },
+        "peak_rss_bytes": 561332224,
+        "final_go_alloc_bytes": 3540520
+      },
+      "v0_2_0_max_inflight_2": {
+        "version": "0.2.0",
+        "max_inflight": 2,
+        "repeats": 2,
+        "single_seconds": {
+          "p50": 0.224111458,
+          "p95": 1.778398041,
+          "mean": 0.43834302233333333
+        },
+        "batch_seconds": {
+          "p50": 12.31614075,
+          "p95": 20.260559875,
+          "mean": 16.2883503125
+        },
+        "batch_images_per_second": {
+          "mean": 2.578530004218314,
+          "p95": 2.072993059378622
+        },
+        "peak_rss_bytes": 630702080,
+        "final_go_alloc_bytes": 5504200
+      },
+      "v0_2_0_max_inflight_4": {
+        "version": "0.2.0",
+        "max_inflight": 4,
+        "repeats": 2,
+        "single_seconds": {
+          "p50": 0.162899625,
+          "p95": 1.6898444160000001,
+          "mean": 0.3983292886904762
+        },
+        "batch_seconds": {
+          "p50": 6.48234325,
+          "p95": 7.147695458,
+          "mean": 6.815019354
+        },
+        "batch_images_per_second": {
+          "mean": 6.162858506828534,
+          "p95": 5.876019795022442
+        },
+        "peak_rss_bytes": 883195904,
+        "final_go_alloc_bytes": 5501640
+      }
+    },
+    "python": {
+      "baseline_v0_1_7": {
+        "version": "0.1.7",
+        "max_inflight": 1,
+        "repeats": 2,
+        "single_seconds": {
+          "p50": 0.17299654200178338,
+          "p95": 1.8408875000022817,
+          "mean": 0.4410025536070905
+        },
+        "batch_seconds": {
+          "p50": 14.878187834001437,
+          "p95": 15.27110304099915,
+          "mean": 15.074645437500294
+        },
+        "batch_images_per_second": {
+          "mean": 2.7861351813634774,
+          "p95": 2.750292489497343
+        }
+      },
+      "v0_2_0_max_inflight_1": {
+        "version": "0.2.0",
+        "max_inflight": 1,
+        "repeats": 2,
+        "single_seconds": {
+          "p50": 0.09620404199813493,
+          "p95": 0.7141641249982058,
+          "mean": 0.24235493397637106
+        },
+        "batch_seconds": {
+          "p50": 9.796047541000007,
+          "p95": 10.063240999996196,
+          "mean": 9.929644270498102
+        },
+        "batch_images_per_second": {
+          "mean": 4.229758776433302,
+          "p95": 4.173605700192997
+        }
+      },
+      "v0_2_0_max_inflight_2": {
+        "version": "0.2.0",
+        "max_inflight": 2,
+        "repeats": 2,
+        "single_seconds": {
+          "p50": 0.10367616700386861,
+          "p95": 0.8311570410005515,
+          "mean": 0.26733610463036583
+        },
+        "batch_seconds": {
+          "p50": 6.775203665994923,
+          "p95": 7.762505833001342,
+          "mean": 7.268854749498132
+        },
+        "batch_images_per_second": {
+          "mean": 5.778076663713748,
+          "p95": 5.410623953600415
+        }
+      },
+      "v0_2_0_max_inflight_4": {
+        "version": "0.2.0",
+        "max_inflight": 4,
+        "repeats": 2,
+        "single_seconds": {
+          "p50": 0.10198975000093924,
+          "p95": 0.8161910000053467,
+          "mean": 0.2424983799170323
+        },
+        "batch_seconds": {
+          "p50": 5.0087563330016565,
+          "p95": 6.492933166999137,
+          "mean": 5.750844750000397
+        },
+        "batch_images_per_second": {
+          "mean": 7.30327487974651,
+          "p95": 6.468571124906757
+        }
+      }
+    }
+  },
+  "commands": {
+    "go_accuracy": "python3 scripts/api_reference.py --baseline v0.1.7 ...",
+    "python_accuracy": "python3 scripts/python_reference.py --baseline v0.1.7 --runtime-version 1.29.0 ...",
+    "go_benchmark": "in-process Engine benchmark, /usr/bin/time -l, repeats=2",
+    "python_benchmark": "in-process OneOcrEngine benchmark, repeats=2, warmup=42 images"
+  }
+}

@@ -55,7 +55,7 @@ public final class MainActivity extends Activity {
         Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
         require(bitmap != null, "decode failed");
         HostProbe.open(this);
-        OneOcr.Options config = new OneOcr.Options(); config.threads = 1;
+        OneOcr.Options config = new OneOcr.Options(); config.threads = 1; config.maxInFlight = 2;
         OneOcr engine = OneOcr.open(this, config);
         String reference = engine.recognize(OneOcr.Input.fromEncoded(data));
         require(new JSONObject(reference).getString("text").equals("你好世界 日本語テスト 한국어 123"), reference);
@@ -80,9 +80,12 @@ public final class MainActivity extends Activity {
         int right=Math.min(w,(int)Math.ceil(maxX)+2), bottom=Math.min(h,(int)Math.ceil(maxY)+2);
         Bitmap line=Bitmap.createBitmap(bitmap,left,top,right-left,bottom-top);
         OneOcr.CallOptions call = new OneOcr.CallOptions(); call.script="CJK"; call.timeoutMs=30000;
+        call.readingOrder = OneOcr.CallOptions.READING_ORDER_LTR; call.minLineConfidence = 0.0;
         String lineResult=engine.recognizeLine(OneOcr.Input.fromBitmap(line),call);
         same(lineResult,engine.recognizeLine(OneOcr.Input.fromEncoded(png(line)),call),"line bitmap");
         require(!new JSONObject(lineResult).getString("text").isEmpty(),"empty cropped-line result");
+        String[] batch = engine.recognizeBatch(new OneOcr.Input[]{OneOcr.Input.fromEncoded(data), OneOcr.Input.fromBitmap(bitmap)}, call);
+        require(batch.length == 2 && new JSONObject(batch[0]).has("result") && new JSONObject(batch[1]).has("result"), "batch result shape");
         Bitmap alpha=Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);
         Canvas canvas=new Canvas(alpha); android.graphics.Paint paint=new android.graphics.Paint();paint.setAlpha(192);canvas.drawBitmap(bitmap,0,0,paint);
         // Compare the stored premultiplied pixels composited onto white.

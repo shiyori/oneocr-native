@@ -35,17 +35,22 @@ OneOcr.CallOptions options = new OneOcr.CallOptions();
 options.timeoutMs = 30000;
 String regions = engine.detect(OneOcr.Input.fromEncoded(pngBytes), options);
 options.script = "CJK";
+options.readingOrder = OneOcr.CallOptions.READING_ORDER_RTL;
+options.minLineConfidence = 0.70;
 String line = engine.recognizeLine(OneOcr.Input.fromBitmap(lineBitmap), options);
+String[] batch = engine.recognizeBatch(new OneOcr.Input[] {
+    OneOcr.Input.fromEncoded(pngBytes), OneOcr.Input.fromBitmap(lineBitmap)
+}, options);
 ```
 
-Do not recycle or modify an input bitmap/buffer until the call returns. Calls serialize per instance. `OneOcr.Options` supplies optional thread and image-size settings through `OneOcr.open(context, options)`.
+Do not recycle or modify an input bitmap/buffer until the call returns. Calls are serial by default; `OneOcr.Options.maxInFlight` enables 1–4 bounded operations. Batch methods return one JSON item per input in input order; each item contains `index` and either `result` or a structured `error`.
 
 ## Existing ORT / core AAR
 
 Use the [Core AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-core.aar) with an existing host ORT. It contains OneOCR Java/JNI without the model or ORT. Save the default model as `src/main/assets/oneocr-cjk-en.ocrpack`, or prepare the app module using the Go-installed command:
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.2.0
 oneocr install --android-project /path/to/your-app/app
 ```
 

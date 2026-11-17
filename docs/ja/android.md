@@ -35,17 +35,22 @@ OneOcr.CallOptions options = new OneOcr.CallOptions();
 options.timeoutMs = 30000;
 String regions = engine.detect(OneOcr.Input.fromEncoded(pngBytes), options);
 options.script = "CJK";
+options.readingOrder = OneOcr.CallOptions.READING_ORDER_RTL;
+options.minLineConfidence = 0.70;
 String line = engine.recognizeLine(OneOcr.Input.fromBitmap(lineBitmap), options);
+String[] batch = engine.recognizeBatch(new OneOcr.Input[] {
+    OneOcr.Input.fromEncoded(pngBytes), OneOcr.Input.fromBitmap(lineBitmap)
+}, options);
 ```
 
-呼び出しが戻るまで Bitmap やバッファーを変更・解放しないでください。同じインスタンス内では操作が直列化されます。`OneOcr.open(context, options)` の `OneOcr.Options` でスレッド数や画像サイズを設定できます。
+呼び出しが戻るまで Bitmap やバッファーを変更・解放しないでください。同じインスタンスは既定で直列実行され、`OneOcr.Options.maxInFlight` で 1～4 件に制限できます。バッチメソッドは入力順の JSON 配列を返し、各項目に `index` と `result` または構造化された `error` が含まれます。
 
 ## 既存 ORT / コア AAR
 
 ホスト ORT がある場合は [Core AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-core.aar) を使います。OneOCR Java/JNI のみを含み、モデルと ORT は含みません。既定モデルを `src/main/assets/oneocr-cjk-en.ocrpack` に保存するか、Go で導入したコマンドでアプリを準備します。
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.2.0
 oneocr install --android-project /path/to/your-app/app
 ```
 

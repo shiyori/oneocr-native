@@ -48,6 +48,15 @@ func lookup(handle C.uint64_t) (*oneocr.Engine, error) {
 
 //export OneOCROpen
 func OneOCROpen(options *C.OneOCRConfig, errorOut **C.char) (result C.uint64_t) {
+	return oneOCROpen(options, 1, errorOut)
+}
+
+//export OneOCROpenEx
+func OneOCROpenEx(options *C.OneOCRConfig, maxInFlight C.int32_t, errorOut **C.char) (result C.uint64_t) {
+	return oneOCROpen(options, int(maxInFlight), errorOut)
+}
+
+func oneOCROpen(options *C.OneOCRConfig, maxInFlight int, errorOut **C.char) (result C.uint64_t) {
 	if errorOut != nil {
 		*errorOut = nil
 	}
@@ -73,6 +82,7 @@ func OneOCROpen(options *C.OneOCRConfig, errorOut **C.char) (result C.uint64_t) 
 			}
 		}
 	}
+	config.MaxInFlight = maxInFlight
 	e, err := oneocr.Open(config)
 	if err != nil {
 		setError(errorOut, err)
@@ -186,6 +196,23 @@ func readInput(input *C.OneOCRInput) (oneocr.Input, error) {
 	}
 }
 
+// readBatchInputs deliberately keeps malformed descriptors as zero Inputs so
+// that the engine can report an item-scoped invalid_input error while allowing
+// every other item in the same batch to complete.
+func readBatchInputs(descriptors *C.OneOCRInput, count C.size_t) []oneocr.Input {
+	inputs := make([]oneocr.Input, int(count))
+	if descriptors == nil {
+		return inputs
+	}
+	descriptorsSlice := unsafe.Slice(descriptors, int(count))
+	for i := range descriptorsSlice {
+		if input, err := readInput(&descriptorsSlice[i]); err == nil {
+			inputs[i] = input
+		}
+	}
+	return inputs
+}
+
 func operate(handle C.uint64_t, descriptor *C.OneOCRInput, options *C.OneOCRCallOptions, operation int, errorOut **C.char) (result *C.char) {
 	if errorOut != nil {
 		*errorOut = nil
@@ -229,9 +256,78 @@ func operate(handle C.uint64_t, descriptor *C.OneOCRInput, options *C.OneOCRCall
 	return encodeJSON(output, errorOut)
 }
 
+// readCallOptionsEx maps the ABI's numeric reading-order values to the public
+// Go options.  Keeping this conversion at the bridge boundary lets the old
+// OneOCRCallOptions entry points retain their exact ABI and behavior.
+func readCallOptionsEx(options *C.OneOCRCallOptionsEx) (oneocr.Options, C.int64_t) {
+	selected := oneocr.Options{}
+	if options == nil {
+		return selected, 0
+	}
+	selected.Script = goString(options.script)
+	switch options.reading_order {
+	case 0:
+		selected.ReadingOrder = oneocr.ReadingOrderAuto
+	case 1:
+		selected.ReadingOrder = oneocr.ReadingOrderLTR
+	case 2:
+		selected.ReadingOrder = oneocr.ReadingOrderRTL
+	case 3:
+		selected.ReadingOrder = oneocr.ReadingOrderNone
+	default:
+		// Leave validation and the stable error text to the Go options layer.
+		selected.ReadingOrder = oneocr.ReadingOrderMode(fmt.Sprintf("%d", options.reading_order))
+	}
+	selected.MinLineConfidence = float64(options.min_line_confidence)
+	return selected, options.timeout_ms
+}
+
+func operateEx(handle C.uint64_t, descriptor *C.OneOCRInput, options *C.OneOCRCallOptionsEx, operation int, errorOut **C.char) (result *C.char) {
+	if errorOut != nil {
+		*errorOut = nil
+	}
+	defer guard(errorOut)
+	e, err := lookup(handle)
+	if err != nil {
+		setError(errorOut, err)
+		return nil
+	}
+	selected, timeout := readCallOptionsEx(options)
+	ctx, cancel, err := timeoutContext(timeout)
+	if err != nil {
+		setError(errorOut, err)
+		return nil
+	}
+	defer cancel()
+	input, err := readInput(descriptor)
+	if err != nil {
+		setError(errorOut, err)
+		return nil
+	}
+	var output interface{}
+	switch operation {
+	case 0:
+		output, err = e.Recognize(ctx, input, selected)
+	case 2:
+		output, err = e.RecognizeLine(ctx, input, selected)
+	default:
+		err = fmt.Errorf("oneocr: unsupported extended operation %d", operation)
+	}
+	if err != nil {
+		setError(errorOut, err)
+		return nil
+	}
+	return encodeJSON(output, errorOut)
+}
+
 //export OneOCRRecognize
 func OneOCRRecognize(handle C.uint64_t, input *C.OneOCRInput, options *C.OneOCRCallOptions, errorOut **C.char) *C.char {
 	return operate(handle, input, options, 0, errorOut)
+}
+
+//export OneOCRRecognizeEx
+func OneOCRRecognizeEx(handle C.uint64_t, input *C.OneOCRInput, options *C.OneOCRCallOptionsEx, errorOut **C.char) *C.char {
+	return operateEx(handle, input, options, 0, errorOut)
 }
 
 //export OneOCRDetect
@@ -242,6 +338,117 @@ func OneOCRDetect(handle C.uint64_t, input *C.OneOCRInput, options *C.OneOCRCall
 //export OneOCRRecognizeLine
 func OneOCRRecognizeLine(handle C.uint64_t, input *C.OneOCRInput, options *C.OneOCRCallOptions, errorOut **C.char) *C.char {
 	return operate(handle, input, options, 2, errorOut)
+}
+
+//export OneOCRRecognizeLineEx
+func OneOCRRecognizeLineEx(handle C.uint64_t, input *C.OneOCRInput, options *C.OneOCRCallOptionsEx, errorOut **C.char) *C.char {
+	return operateEx(handle, input, options, 2, errorOut)
+}
+
+func operateBatch(handle C.uint64_t, descriptors *C.OneOCRInput, count C.size_t, options *C.OneOCRCallOptions, operation int, errorOut **C.char) (result *C.char) {
+	if errorOut != nil {
+		*errorOut = nil
+	}
+	defer guard(errorOut)
+	if count > 10000 {
+		setError(errorOut, fmt.Errorf("oneocr: batch contains too many inputs"))
+		return nil
+	}
+	e, err := lookup(handle)
+	if err != nil {
+		setError(errorOut, err)
+		return nil
+	}
+	var timeout C.int64_t
+	selected := oneocr.Options{}
+	if options != nil {
+		timeout = options.timeout_ms
+		selected.Script = goString(options.script)
+	}
+	ctx, cancel, err := timeoutContext(timeout)
+	if err != nil {
+		setError(errorOut, err)
+		return nil
+	}
+	defer cancel()
+	inputs := readBatchInputs(descriptors, count)
+	var output interface{}
+	switch operation {
+	case 0:
+		output, err = e.RecognizeBatch(ctx, inputs, selected)
+	case 1:
+		output, err = e.DetectBatch(ctx, inputs)
+	case 2:
+		output, err = e.RecognizeLineBatch(ctx, inputs, selected)
+	}
+	if err != nil {
+		setError(errorOut, err)
+		return nil
+	}
+	return encodeJSON(output, errorOut)
+}
+
+func operateBatchEx(handle C.uint64_t, descriptors *C.OneOCRInput, count C.size_t, options *C.OneOCRCallOptionsEx, operation int, errorOut **C.char) (result *C.char) {
+	if errorOut != nil {
+		*errorOut = nil
+	}
+	defer guard(errorOut)
+	if count > 10000 {
+		setError(errorOut, fmt.Errorf("oneocr: batch contains too many inputs"))
+		return nil
+	}
+	e, err := lookup(handle)
+	if err != nil {
+		setError(errorOut, err)
+		return nil
+	}
+	selected, timeout := readCallOptionsEx(options)
+	ctx, cancel, err := timeoutContext(timeout)
+	if err != nil {
+		setError(errorOut, err)
+		return nil
+	}
+	defer cancel()
+	inputs := readBatchInputs(descriptors, count)
+	var output interface{}
+	switch operation {
+	case 0:
+		output, err = e.RecognizeBatch(ctx, inputs, selected)
+	case 2:
+		output, err = e.RecognizeLineBatch(ctx, inputs, selected)
+	default:
+		err = fmt.Errorf("oneocr: unsupported extended batch operation %d", operation)
+	}
+	if err != nil {
+		setError(errorOut, err)
+		return nil
+	}
+	return encodeJSON(output, errorOut)
+}
+
+//export OneOCRRecognizeBatch
+func OneOCRRecognizeBatch(handle C.uint64_t, inputs *C.OneOCRInput, count C.size_t, options *C.OneOCRCallOptions, errorOut **C.char) *C.char {
+	return operateBatch(handle, inputs, count, options, 0, errorOut)
+}
+
+//export OneOCRRecognizeBatchEx
+func OneOCRRecognizeBatchEx(handle C.uint64_t, inputs *C.OneOCRInput, count C.size_t, options *C.OneOCRCallOptionsEx, errorOut **C.char) *C.char {
+	return operateBatchEx(handle, inputs, count, options, 0, errorOut)
+}
+
+//export OneOCRDetectBatch
+func OneOCRDetectBatch(handle C.uint64_t, inputs *C.OneOCRInput, count C.size_t, options *C.OneOCRCallOptions, errorOut **C.char) *C.char {
+	return operateBatch(handle, inputs, count, options, 1, errorOut)
+}
+
+//export OneOCRRecognizeLineBatch
+func OneOCRRecognizeLineBatch(handle C.uint64_t, inputs *C.OneOCRInput, count C.size_t, options *C.OneOCRCallOptions, errorOut **C.char) *C.char {
+	return operateBatch(handle, inputs, count, options, 2, errorOut)
+}
+
+//export OneOCRRecognizeLineBatchEx
+func OneOCRRecognizeLineBatchEx(handle C.uint64_t, inputs *C.OneOCRInput, count C.size_t, options *C.OneOCRCallOptionsEx, errorOut **C.char) *C.char {
+	return operateBatchEx(handle, inputs, count, options, 2, errorOut)
 }
 
 // OneOCRClose removes the handle before waiting for active recognition.

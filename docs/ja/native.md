@@ -72,7 +72,7 @@ int main(void) {
 }
 ```
 
-`OneOCROpen` は省略可能な `OneOCRConfig` を受け取ります。各操作は `OneOCRInput` と省略可能な `OneOCRCallOptions` を使用します。`timeout_ms=0` は期限なしです。戻り値は [結果構造](stages.md)に従う UTF-8 JSON です。非 NULL の結果とエラー文字列は、それぞれ `OneOCRFree` で解放します。
+`OneOCROpen` は省略可能な `OneOCRConfig` を受け取ります。並行数を指定する場合は旧 ABI と互換な `OneOCROpenEx` を使用します。各操作は `OneOCRInput` と省略可能な `OneOCRCallOptions` を使用し、認識系には `reading_order`（`0=auto`、`1=ltr`、`2=rtl`、`3=none`）と `min_line_confidence`（`0` で無効）を持つ `*Ex` 入口もあります。バッチ入口は入力順を保持し、各項目は `result` または構造化された `error` を返します。`timeout_ms=0` は期限なしです。戻り値は [結果構造](stages.md)に従う UTF-8 JSON です。非 NULL の結果とエラー文字列は、それぞれ `OneOCRFree` で解放します。
 
 エンコード済み画像は `ONEOCR_ENCODED` と `data/length`、ピクセルは `ONEOCR_PIXELS` とサイズ、行ストライド、形式、乗算済み Alpha フラグを使用します。ファイルは `ONEOCR_FILE` と `path` を使用します。SDK は呼び出し終了後に入力ポインターを保持しません。ハンドルを閉じる前に新規呼び出しを停止してください。
 

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"math"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -16,10 +18,20 @@ type Engine struct {
 	characters           map[string]CharacterModel
 	recognizers          map[string]*recognizer
 	threads, maxSide     int
-	gate                 chan struct{}
-	closed, heldRuntime  bool
-	config               Config
-	runtimeVersion       string
+	maxInFlight          int
+	slots                chan struct{}
+	// gate is retained as an internal test/compatibility alias for slots.
+	gate                chan struct{}
+	stateMu             sync.Mutex
+	active              sync.WaitGroup
+	activeCount         atomic.Int64
+	queueWaitNanos      atomic.Int64
+	batchRequests       atomic.Uint64
+	recognizerMu        sync.Mutex
+	resourceMu          sync.RWMutex
+	closed, heldRuntime bool
+	config              Config
+	runtimeVersion      string
 }
 
 // Open validates the complete bundle and initializes native model sessions.
@@ -35,8 +47,11 @@ func Open(config Config) (*Engine, error) {
 	if config.MaxSide == 0 {
 		config.MaxSide = 1600
 	}
-	if config.Threads < 1 || config.Threads > 16 || config.MaxSide < 128 || config.MaxSide > 4096 {
-		return nil, fmt.Errorf("oneocr: invalid Threads or MaxSide")
+	if config.MaxInFlight == 0 {
+		config.MaxInFlight = 1
+	}
+	if config.Threads < 1 || config.Threads > 16 || config.MaxSide < 128 || config.MaxSide > 4096 || config.MaxInFlight < 1 || config.MaxInFlight > 4 {
+		return nil, fmt.Errorf("oneocr: invalid Threads, MaxSide or MaxInFlight")
 	}
 	if err := applyDefaultConfig(&config); err != nil {
 		return nil, err
@@ -55,7 +70,8 @@ func Open(config Config) (*Engine, error) {
 		source.close()
 		return nil, err
 	}
-	e := &Engine{bundle: bundle, source: source, characters: map[string]CharacterModel{}, recognizers: map[string]*recognizer{}, threads: config.Threads, maxSide: config.MaxSide, gate: make(chan struct{}, 1), heldRuntime: true, config: config, runtimeVersion: environment.runtime.Version()}
+	slots := make(chan struct{}, config.MaxInFlight)
+	e := &Engine{bundle: bundle, source: source, characters: map[string]CharacterModel{}, recognizers: map[string]*recognizer{}, threads: config.Threads, maxSide: config.MaxSide, maxInFlight: config.MaxInFlight, slots: slots, gate: slots, heldRuntime: true, config: config, runtimeVersion: environment.runtime.Version()}
 	success := false
 	defer func() {
 		if !success {
@@ -78,17 +94,34 @@ func (e *Engine) lock(ctx context.Context) error {
 	if ctx == nil {
 		return fmt.Errorf("oneocr: nil context")
 	}
-	if e == nil || e.gate == nil {
+	if e == nil || (e.slots == nil && e.gate == nil) {
 		return ErrClosed
 	}
+	if e.slots == nil {
+		e.slots = e.gate
+	}
+	e.stateMu.Lock()
+	if e.closed {
+		e.stateMu.Unlock()
+		return ErrClosed
+	}
+	slots := e.slots
+	e.stateMu.Unlock()
+	waitStart := time.Now()
 	select {
-	case e.gate <- struct{}{}:
+	case slots <- struct{}{}:
+		e.queueWaitNanos.Add(time.Since(waitStart).Nanoseconds())
+		e.stateMu.Lock()
 		if e.closed {
-			<-e.gate
+			e.stateMu.Unlock()
+			<-slots
 			return ErrClosed
 		}
+		e.active.Add(1)
+		e.activeCount.Add(1)
+		e.stateMu.Unlock()
 		if ctx.Err() != nil {
-			<-e.gate
+			e.unlock()
 			return ctx.Err()
 		}
 		return nil
@@ -96,20 +129,50 @@ func (e *Engine) lock(ctx context.Context) error {
 		return ctx.Err()
 	}
 }
-func (e *Engine) unlock() { <-e.gate }
+func (e *Engine) unlock() {
+	if e == nil || e.slots == nil {
+		if e != nil && e.gate != nil {
+			e.slots = e.gate
+		} else {
+			return
+		}
+	}
+	if e.slots == nil {
+		return
+	}
+	<-e.slots
+	for {
+		count := e.activeCount.Load()
+		if count <= 0 {
+			return
+		}
+		if e.activeCount.CompareAndSwap(count, count-1) {
+			e.active.Done()
+			return
+		}
+	}
+}
 
 // Close waits for an active recognition to finish. It is idempotent. An ORT
 // environment owned by the SDK is released when its last Engine closes.
 func (e *Engine) Close() error {
-	if e == nil || e.gate == nil {
+	if e == nil || (e.slots == nil && e.gate == nil) {
 		return nil
 	}
-	e.gate <- struct{}{}
-	defer e.unlock()
+	if e.slots == nil {
+		e.slots = e.gate
+	}
+	e.stateMu.Lock()
 	if e.closed {
+		e.stateMu.Unlock()
+		e.active.Wait()
 		return nil
 	}
 	e.closed = true
+	e.stateMu.Unlock()
+	e.active.Wait()
+	e.resourceMu.Lock()
+	defer e.resourceMu.Unlock()
 	var failures []error
 	failures = append(failures, e.detector.close(), e.classifier.close())
 	for _, r := range e.recognizers {
@@ -133,6 +196,8 @@ func (e *Engine) AvailableScripts() []string {
 	return out
 }
 func (e *Engine) getRecognizer(script string) (*recognizer, error) {
+	e.recognizerMu.Lock()
+	defer e.recognizerMu.Unlock()
 	if r := e.recognizers[script]; r != nil {
 		return r, nil
 	}
@@ -209,6 +274,9 @@ func (e *Engine) Recognize(ctx context.Context, input Input, options Options) (R
 
 func (e *Engine) recognize(ctx context.Context, r raster, options Options) (Result, error) {
 	start := time.Now()
+	if err := validateOptions(options); err != nil {
+		return Result{}, err
+	}
 	if options.Script != "" {
 		if _, ok := e.characters[options.Script]; !ok {
 			return Result{}, fmt.Errorf("oneocr: unknown script %q", options.Script)
@@ -224,6 +292,7 @@ func (e *Engine) recognize(ctx context.Context, r raster, options Options) (Resu
 	lines := []Line{}
 	summary := recognitionResult{}
 	unsupported := map[string]int{}
+	filtered := 0
 	quads := []Quad{}
 	angles := []float64{}
 	regions := make([]regionRecognition, len(detections))
@@ -260,6 +329,13 @@ func (e *Engine) recognize(ctx context.Context, r raster, options Options) (Resu
 			}
 			continue
 		}
+		if options.MinLineConfidence > 0 {
+			confidence := region.recognition.confidence()
+			if confidence == nil || *confidence < options.MinLineConfidence {
+				filtered++
+				continue
+			}
+		}
 		lines = append(lines, region.line)
 		summary.logProbability += region.recognition.logProbability
 		summary.tokens += region.recognition.tokens
@@ -286,7 +362,20 @@ func (e *Engine) recognize(ctx context.Context, r raster, options Options) (Resu
 			rtl++
 		}
 	}
-	order := readingOrder(layout, rtl*2 > len(lines))
+	var order []int
+	switch options.ReadingOrder {
+	case ReadingOrderNone:
+		order = make([]int, len(lines))
+		for i := range order {
+			order[i] = i
+		}
+	case ReadingOrderLTR:
+		order = readingOrder(layout, false)
+	case ReadingOrderRTL:
+		order = readingOrder(layout, true)
+	default:
+		order = readingOrder(layout, rtl*2 > len(lines))
+	}
 	ordered := make([]Line, 0, len(lines))
 	text := make([]string, 0, len(lines))
 	for _, i := range order {
@@ -299,6 +388,21 @@ func (e *Engine) recognize(ctx context.Context, r raster, options Options) (Resu
 			warnings = append(warnings, fmt.Sprintf("Skipped %d line(s) classified as %s: recognizer not included in this model package.", count, script))
 		}
 	}
+	if filtered > 0 {
+		warnings = append(warnings, fmt.Sprintf("Filtered %d line(s) below min_line_confidence %.3f.", filtered, options.MinLineConfidence))
+	}
 	summary.text = strings.Join(text, "\n")
 	return Result{Text: summary.text, Confidence: summary.confidence(), ConfidenceMethod: RecognitionConfidenceMethod, CoordinateSpace: "oriented_image", Lines: ordered, Width: r.width, Height: r.height, ElapsedSeconds: time.Since(start).Seconds(), ModelSHA256: e.bundle.SourceSHA256, Warnings: warnings}, nil
+}
+
+func validateOptions(options Options) error {
+	switch options.ReadingOrder {
+	case "", ReadingOrderAuto, ReadingOrderLTR, ReadingOrderRTL, ReadingOrderNone:
+	default:
+		return fmt.Errorf("oneocr: invalid reading order %q", options.ReadingOrder)
+	}
+	if math.IsNaN(options.MinLineConfidence) || math.IsInf(options.MinLineConfidence, 0) || options.MinLineConfidence < 0 || options.MinLineConfidence > 1 {
+		return fmt.Errorf("oneocr: min line confidence must be between 0 and 1")
+	}
+	return nil
 }

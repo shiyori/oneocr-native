@@ -18,10 +18,10 @@
 
 ## Go の導入
 
-コードからの利用は `go get github.com/shiyori/oneocr-native@v0.1.3` を使用します。[Go ガイド](docs/ja/go.md)を参照してください。CLI は次の方法で導入します。
+コードからの利用は `go get github.com/shiyori/oneocr-native@v0.2.0` を使用します。[Go ガイド](docs/ja/go.md)を参照してください。CLI は次の方法で導入します。
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.2.0
 oneocr install
 oneocr recognize image.png
 oneocr recognize --format json image.png
@@ -30,7 +30,7 @@ oneocr recognize --format json image.png
 ## Python
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.3/oneocr_native-0.1.3-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.2.0/oneocr_native-0.2.0-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 python -m oneocr_native recognize --format json image.png

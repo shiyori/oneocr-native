@@ -59,6 +59,9 @@ func (e *Engine) detectOnly(ctx context.Context, r raster) (DetectionResult, err
 }
 func (e *Engine) recognizeLine(ctx context.Context, r raster, options Options) (LineResult, error) {
 	start := time.Now()
+	if err := validateOptions(options); err != nil {
+		return LineResult{}, err
+	}
 	script := options.Script
 	rotated := false
 	compact := float64(max(r.width, r.height)) <= 2*float64(min(r.width, r.height))

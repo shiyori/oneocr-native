@@ -5,7 +5,7 @@
 支持 Python 3.11–3.13。直接安装 GitHub Release 中的 wheel，再准备模型和运行库。**以下命令可在任意目录运行**，无需克隆仓库。
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.3/oneocr_native-0.1.3-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.2.0/oneocr_native-0.2.0-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 python -m oneocr_native recognize --format json image.png
@@ -32,6 +32,8 @@ with OneOcrEngine(EngineConfig(threads=2)) as engine:
     regions = engine.detect("page.png")
     line = engine.recognize_line("line.png", script="CJK")
 ```
+
+批量处理可设置 `EngineConfig(max_inflight=2)` 到 4，并调用 `recognize_batch`、`detect_batch` 或 `recognize_line_batch`。批量结果保持输入顺序，每项包含 `result` 或结构化 `error`；默认 `max_inflight=1`，不会改变旧程序的串行行为。`recognize` 还支持 `reading_order="auto|ltr|rtl|none"` 和 `min_line_confidence`。
 
 只保留 `OneOcrEngine()` 一个创建入口。`EngineConfig` 包含线程数、图片尺寸、缓存和模型路径等可选项，普通使用无需配置。Python 包不依赖 Go SDK。
 

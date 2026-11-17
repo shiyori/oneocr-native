@@ -72,7 +72,7 @@ int main(void) {
 }
 ```
 
-`OneOCROpen` takes an optional `OneOCRConfig`. Each operation takes `OneOCRInput` and optional `OneOCRCallOptions`; `timeout_ms=0` means no deadline. The returned UTF-8 JSON follows the [result structures](stages.md). Free each non-null result or error with `OneOCRFree`.
+`OneOCROpen` takes an optional `OneOCRConfig`; use the ABI-compatible `OneOCROpenEx` when setting a concurrency limit. Each operation takes `OneOCRInput` and optional `OneOCRCallOptions`; recognition and recognition-line also have `*Ex` forms accepting `reading_order` (`0=auto`, `1=ltr`, `2=rtl`, `3=none`) and `min_line_confidence` (`0` disables filtering). Batch entry points take an input array and preserve its order; each item contains either `index` plus `result` or `index` plus a structured `error`. `timeout_ms=0` means no deadline. The returned UTF-8 JSON follows the [result structures](stages.md). Free each non-null result or error with `OneOCRFree`.
 
 Use `ONEOCR_ENCODED` with `data/length`, or `ONEOCR_PIXELS` with buffer dimensions, row stride, pixel format and premultiplied-alpha flag. File inputs use `ONEOCR_FILE` and `path`. The SDK does not retain these pointers after return. Stop submitting calls before closing a handle.
 

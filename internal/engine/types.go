@@ -56,8 +56,9 @@ type Config struct {
 	ModelPath      string `json:"model_path,omitempty"` // optional; defaults to oneocr-cjk-en.ocrpack; exclusive with BundleDir
 	BundleDir      string `json:"bundle_dir,omitempty"`
 	RuntimeLibrary string `json:"runtime_library,omitempty"`
-	Threads        int    `json:"threads,omitempty"`  // default 2, range 1..16, per Engine
-	MaxSide        int    `json:"max_side,omitempty"` // default 1600, range 128..4096
+	Threads        int    `json:"threads,omitempty"`      // default 2, range 1..16, per Engine
+	MaxSide        int    `json:"max_side,omitempty"`     // default 1600, range 128..4096
+	MaxInFlight    int    `json:"max_inflight,omitempty"` // default 1, range 1..4
 	// CharacterClasses restricts CJK/Latin decoding, not language identification.
 	// Empty selects han,kana,hangul,latin,digits. Spaces and punctuation remain.
 	CharacterClasses []CharacterClass `json:"character_classes,omitempty"`
@@ -82,7 +83,44 @@ type PackOptions struct {
 	Output    string // new .ocrpack output, never overwritten
 }
 type Options struct {
-	Script string // empty selects the script automatically
+	Script            string           // empty selects the script automatically
+	ReadingOrder      ReadingOrderMode // empty is Auto
+	MinLineConfidence float64          // zero disables post-recognition filtering
+}
+
+// ReadingOrderMode controls the optional final line ordering policy.
+// Auto preserves the existing geometry and script heuristic.
+type ReadingOrderMode string
+
+const (
+	ReadingOrderAuto ReadingOrderMode = "auto"
+	ReadingOrderLTR  ReadingOrderMode = "ltr"
+	ReadingOrderRTL  ReadingOrderMode = "rtl"
+	ReadingOrderNone ReadingOrderMode = "none"
+)
+
+// BatchError is the stable, per-item error returned by batch operations.
+type BatchError struct {
+	Code    string `json:"code"`
+	Message string `json:"message"`
+}
+
+type RecognitionBatchItem struct {
+	Index  int         `json:"index"`
+	Result *Result     `json:"result,omitempty"`
+	Error  *BatchError `json:"error,omitempty"`
+}
+
+type DetectionBatchItem struct {
+	Index  int              `json:"index"`
+	Result *DetectionResult `json:"result,omitempty"`
+	Error  *BatchError      `json:"error,omitempty"`
+}
+
+type LineBatchItem struct {
+	Index  int         `json:"index"`
+	Result *LineResult `json:"result,omitempty"`
+	Error  *BatchError `json:"error,omitempty"`
 }
 
 const maxImagePixels = 40_000_000

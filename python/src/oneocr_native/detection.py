@@ -144,7 +144,31 @@ class Detector:
                         candidates.append(Detection(quad, confidence, direction == "vert"))
         candidates.sort(key=lambda item: item.score, reverse=True)
         kept: list[Detection] = []
+        cell_size = 128.0
+        grid: dict[tuple[int, int], list[int]] = {}
+        large: list[int] = []
         for candidate in candidates:
-            if not any(polygon_iou(candidate.quad, prior.quad) > 0.2 for prior in kept):
-                kept.append(candidate)
+            xs, ys = candidate.quad[:, 0], candidate.quad[:, 1]
+            min_x, max_x = int(np.floor(xs.min() / cell_size)), int(np.floor(xs.max() / cell_size))
+            min_y, max_y = int(np.floor(ys.min() / cell_size)), int(np.floor(ys.max() / cell_size))
+            span = (max_x - min_x + 1) * (max_y - min_y + 1)
+            indices = set(large)
+            if span <= 4096:
+                for y in range(min_y, max_y + 1):
+                    for x in range(min_x, max_x + 1):
+                        indices.update(grid.get((x, y), ()))
+            else:
+                # Avoid enumerating an enormous number of cells while keeping
+                # the original all-kept NMS semantics for oversized proposals.
+                indices.update(range(len(kept)))
+            if any(polygon_iou(candidate.quad, kept[index].quad) > 0.2 for index in indices):
+                continue
+            index = len(kept)
+            kept.append(candidate)
+            if span > 4096:
+                large.append(index)
+            else:
+                for y in range(min_y, max_y + 1):
+                    for x in range(min_x, max_x + 1):
+                        grid.setdefault((x, y), []).append(index)
         return kept

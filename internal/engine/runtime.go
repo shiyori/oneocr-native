@@ -52,9 +52,10 @@ type floatTensor struct {
 	data  []float32
 }
 type network struct {
-	session     *ort.Session
-	outputs     []string
-	diagnostics StageDiagnostics
+	session       *ort.Session
+	outputs       []string
+	diagnostics   StageDiagnostics
+	diagnosticsMu sync.Mutex
 }
 
 func (n *network) close() error {
@@ -64,6 +65,15 @@ func (n *network) close() error {
 	err := n.session.Destroy()
 	n.session = nil
 	return err
+}
+
+func (n *network) snapshotDiagnostics() StageDiagnostics {
+	if n == nil {
+		return StageDiagnostics{}
+	}
+	n.diagnosticsMu.Lock()
+	defer n.diagnosticsMu.Unlock()
+	return n.diagnostics
 }
 
 // runBorrowed owns every ORT value until consume returns. Consumers must not

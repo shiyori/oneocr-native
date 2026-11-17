@@ -19,11 +19,14 @@ from oneocr_native import OneOcrEngine
 from oneocr_native.errors import OneOcrError
 import onnxruntime
 root, crops, mode, output = map(Path, sys.argv[1:])
-if str(mode) == "new":
+try:
     from oneocr_native import EngineConfig
-    engine = OneOcrEngine(EngineConfig(root / "models/oneocr-cjk-en.ocrpack", threads=1))
-else:
+except ImportError:
+    # Pre-EngineConfig releases accepted the model path and thread count
+    # directly. Keep the comparison helper usable for those revisions.
     engine = OneOcrEngine(root / "models/oneocr-cjk-en.ocrpack", threads=1)
+else:
+    engine = OneOcrEngine(EngineConfig(root / "models/oneocr-cjk-en.ocrpack", threads=1))
 records = []
 for index, case in enumerate(json.loads((crops / "cases.json").read_text(encoding="utf-8"))):
     for operation in ("recognize", "detect", "recognize_line"):
@@ -48,6 +51,7 @@ def main():
     parser.add_argument("--crops", type=Path, required=True, help="api_reference.py output")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--runtime-version", required=True, choices=("1.26.0", "1.29.0"))
+    parser.add_argument("--baseline", default=BASELINE, help="git revision used for the Python baseline")
     args = parser.parse_args()
     args.output = args.output.resolve()
     args.output.mkdir(parents=True, exist_ok=True)
@@ -57,7 +61,7 @@ def main():
         snapshot.mkdir()
         archive = temporary / "source.tar"
         with archive.open("wb") as output:
-            subprocess.run(["git", "archive", BASELINE], cwd=ROOT, stdout=output, check=True)
+            subprocess.run(["git", "archive", args.baseline], cwd=ROOT, stdout=output, check=True)
         with tarfile.open(archive) as source:
             source.extractall(snapshot, filter="data")
         environment = temporary / "venv"
@@ -73,7 +77,7 @@ def main():
         if old != new:
             differences = [a for a, b in zip(old["records"], new["records"], strict=True) if a != b]
             raise RuntimeError(f"Python baseline mismatch: {len(differences)} cases; see old.json/new.json")
-        report = {"baseline_commit":BASELINE, "runtime":args.runtime_version, "fixtures":len(new["records"]) // 6, "operations":3, "input_forms":2, "comparisons":len(new["records"]), "passed":True}
+        report = {"baseline_commit":args.baseline, "runtime":args.runtime_version, "fixtures":len(new["records"]) // 6, "operations":3, "input_forms":2, "comparisons":len(new["records"]), "passed":True}
         (args.output / "report.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         print(json.dumps(report))
 

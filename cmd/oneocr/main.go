@@ -35,7 +35,7 @@ func defaultConfig(home string) (oneocr.Config, error) {
 }
 func run(args []string) error {
 	if len(args) == 0 {
-		return fmt.Errorf("usage: oneocr install|pack|unpack|export|inspect|recognize|detect|recognize-line (run a command with -h for flags)")
+		return fmt.Errorf("usage: oneocr install|pack|unpack|export|inspect|recognize|recognize-batch|detect|recognize-line (run a command with -h for flags)")
 	}
 	command := args[0]
 	fs := flag.NewFlagSet(command, flag.ContinueOnError)
@@ -140,14 +140,22 @@ func run(args []string) error {
 			return err
 		}
 		return emit(b)
-	case "recognize", "detect", "recognize-line":
+	case "recognize", "recognize-batch", "detect", "recognize-line":
 		model := fs.String("model", "", "single .ocrpack")
 		bundle := fs.String("bundle", "", "portable bundle directory; defaults to installed configuration")
 		library := fs.String("runtime", "", "platform ONNX Runtime shared library")
 		home := fs.String("home", "", "installation root")
-		format := fs.String("format", "text", "text or json")
+		defaultFormat := "text"
+		if command == "recognize-batch" {
+			defaultFormat = "json"
+		}
+		format := fs.String("format", defaultFormat, "text or json")
 		script := fs.String("script", "", "optional script override, e.g. CJK")
 		threads := fs.Int("threads", 2, "CPU threads per Engine")
+		maxInFlight := fs.Int("max-inflight", 1, "maximum concurrent operations per Engine (1..4)")
+		readingOrder := fs.String("reading-order", "auto", "auto, ltr, rtl or none")
+		minConfidence := fs.Float64("min-confidence", 0, "optional minimum line confidence (0..1)")
+		inputList := fs.String("input-list", "", "newline-delimited image paths for recognize-batch")
 		classes := fs.String("characters", "", "comma-separated han,kana,hangul,latin,digits; default all")
 		diagnostics := fs.String("diagnostics", "", "optional diagnostics JSON output file")
 		warmup := fs.Bool("warmup", false, "load and warm all included recognizers first")
@@ -156,11 +164,17 @@ func run(args []string) error {
 		if e := fs.Parse(args[1:]); e != nil {
 			return e
 		}
-		if fs.NArg() != 1 {
+		if command != "recognize-batch" && fs.NArg() != 1 {
 			return fmt.Errorf("%s requires one image filename after all flags", command)
+		}
+		if command == "recognize-batch" && fs.NArg() == 0 && *inputList == "" {
+			return fmt.Errorf("recognize-batch requires image filenames or --input-list")
 		}
 		if *format != "text" && *format != "json" {
 			return fmt.Errorf("--format must be text or json")
+		}
+		if command == "recognize-batch" && *format != "json" {
+			return fmt.Errorf("recognize-batch requires --format json")
 		}
 		if *model != "" && *bundle != "" {
 			return fmt.Errorf("--model and --bundle are mutually exclusive")
@@ -175,7 +189,7 @@ func run(args []string) error {
 				*library = defaults.RuntimeLibrary
 			}
 		}
-		config := oneocr.Config{ModelPath: *model, BundleDir: *bundle, RuntimeLibrary: *library, Threads: *threads, MaxSide: *maxSide}
+		config := oneocr.Config{ModelPath: *model, BundleDir: *bundle, RuntimeLibrary: *library, Threads: *threads, MaxSide: *maxSide, MaxInFlight: *maxInFlight}
 		if *classes != "" {
 			for _, class := range strings.Split(*classes, ",") {
 				config.CharacterClasses = append(config.CharacterClasses, oneocr.CharacterClass(strings.TrimSpace(class)))
@@ -201,15 +215,33 @@ func run(args []string) error {
 		var result any
 		var resultText string
 		switch command {
+		case "recognize-batch":
+			paths := append([]string(nil), fs.Args()...)
+			if *inputList != "" {
+				data, err := os.ReadFile(*inputList)
+				if err != nil {
+					return err
+				}
+				for _, line := range strings.Split(string(data), "\n") {
+					if value := strings.TrimSpace(line); value != "" {
+						paths = append(paths, value)
+					}
+				}
+			}
+			inputs := make([]oneocr.Input, len(paths))
+			for i, path := range paths {
+				inputs[i] = oneocr.FromFile(path)
+			}
+			result, e = engine.RecognizeBatch(ctx, inputs, oneocr.Options{Script: *script, ReadingOrder: oneocr.ReadingOrderMode(*readingOrder), MinLineConfidence: *minConfidence})
 		case "detect":
 			result, e = engine.Detect(ctx, oneocr.FromFile(fs.Arg(0)))
 		case "recognize-line":
 			var line oneocr.LineResult
-			line, e = engine.RecognizeLine(ctx, oneocr.FromFile(fs.Arg(0)), oneocr.Options{Script: *script})
+			line, e = engine.RecognizeLine(ctx, oneocr.FromFile(fs.Arg(0)), oneocr.Options{Script: *script, ReadingOrder: oneocr.ReadingOrderMode(*readingOrder), MinLineConfidence: *minConfidence})
 			result, resultText = line, line.Text
 		default:
 			var full oneocr.Result
-			full, e = engine.Recognize(ctx, oneocr.FromFile(fs.Arg(0)), oneocr.Options{Script: *script})
+			full, e = engine.Recognize(ctx, oneocr.FromFile(fs.Arg(0)), oneocr.Options{Script: *script, ReadingOrder: oneocr.ReadingOrderMode(*readingOrder), MinLineConfidence: *minConfidence})
 			result, resultText = full, full.Text
 		}
 		if closeErr := engine.Close(); e == nil {

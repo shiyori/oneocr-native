@@ -6,7 +6,7 @@ Go 1.24 以上と C コンパイラーが必要です。自分のプロジェク
 
 ```sh
 go mod init example.com/ocr-app
-go get github.com/shiyori/oneocr-native@v0.1.3
+go get github.com/shiyori/oneocr-native@v0.2.0
 ```
 
 既に `go.mod` がある場合は `go mod init` を省略してください。
@@ -43,7 +43,7 @@ go run .
 Go でコマンドをインストールした後、任意のディレクトリでリソースを準備して画像を認識できます。
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.2.0
 oneocr install
 oneocr recognize image.png
 oneocr recognize --format json image.png
@@ -70,9 +70,11 @@ regions, err := engine.Detect(ctx, oneocr.FromFile("page.png"))
 line, err := engine.RecognizeLine(ctx, oneocr.FromFile("line.png"), oneocr.Options{})
 ```
 
-連続した処理では Engine を再利用します。同じインスタンスの操作は直列化され、Context の期限には待機時間も含まれます。`Close` は処理中の呼び出しを待ち、繰り返し呼び出せます。`Warmup(ctx)` は認識器を事前に読み込みます。終了後も `Diagnostics()` を取得できます。
+連続した処理では Engine を再利用します。同じインスタンスは既定で直列実行され、`Config.MaxInFlight` を 2～4 にすると同時実行数を制限できます。Context の期限には待機時間も含まれます。`Close` は処理中の呼び出しを待ち、繰り返し呼び出せます。`Warmup(ctx)` は認識器を事前に読み込みます。終了後も `Diagnostics()` を取得できます。
 
 `oneocr.Config` で `Threads`、`MaxSide`、`CharacterClasses` などを調整できます。既定設定ではモデルやランタイムのパスは不要です。[認識操作](stages.md)と[ランタイム再利用](runtime.md)も参照してください。
+
+複数画像には `RecognizeBatch`、`DetectBatch`、`RecognizeLineBatch` を使用します。結果は入力順を保持し、各項目は `result` または `code` と `message` を持つ構造化 `error` を返します。`Options.ReadingOrder` は `auto`、`ltr`、`rtl`、`none` に対応し、`MinLineConfidence` は明示した場合だけ低信頼度行を除外します。
 
 ---
 

@@ -27,10 +27,10 @@ Android 完全版 AAR は arm64-v8a / x86_64 を含み、API 26 以上に対応�
 
 ### Go
 
-プロジェクトで `go get github.com/shiyori/oneocr-native@v0.1.3` を実行し、`oneocr.Install` で依存関係を揃えてから `oneocr.Open` を呼びます。コマンドラインでは：
+プロジェクトで `go get github.com/shiyori/oneocr-native@v0.2.0` を実行し、`oneocr.Install` で依存関係を揃えてから `oneocr.Open` を呼びます。コマンドラインでは：
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.2.0
 oneocr install
 oneocr recognize image.png
 oneocr recognize --format json image.png
@@ -41,7 +41,7 @@ oneocr recognize --format json image.png
 Python 3.11–3.13 は共通 wheel を利用します。準備コマンドがモデルと不足しているランタイムを揃えます。
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.3/oneocr_native-0.1.3-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.2.0/oneocr_native-0.2.0-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 python -m oneocr_native recognize --format json image.png

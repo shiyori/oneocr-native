@@ -5,7 +5,7 @@
 Python 3.11–3.13 is supported. Install the wheel directly from GitHub Releases, then prepare the model and runtime. **Run these commands from any directory**; no checkout is needed.
 
 ```sh
-python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.1.3/oneocr_native-0.1.3-py3-none-any.whl"
+python -m pip install "https://github.com/shiyori/oneocr-native/releases/download/v0.2.0/oneocr_native-0.2.0-py3-none-any.whl"
 python -m oneocr_native install
 python -m oneocr_native recognize image.png
 python -m oneocr_native recognize --format json image.png
@@ -32,6 +32,8 @@ with OneOcrEngine(EngineConfig(threads=2)) as engine:
     regions = engine.detect("page.png")
     line = engine.recognize_line("line.png", script="CJK")
 ```
+
+Set `EngineConfig(max_inflight=2)` through 4 for bounded concurrent work. `recognize_batch`, `detect_batch` and `recognize_line_batch` preserve input order and return an item with either `result` or a structured `error`. `recognize` accepts `reading_order="auto"`, `"ltr"`, `"rtl"` or `"none"`, plus an optional `min_line_confidence` filter.
 
 `OneOcrEngine()` is the single creation entry. `EngineConfig` contains optional thread, image-size, cache and model settings; normal use needs none of them. The Python package does not load the Go SDK.
 

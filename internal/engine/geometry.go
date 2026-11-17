@@ -18,11 +18,21 @@ func orderedQuad(q Quad) Quad {
 	}
 	points := q
 	sort.SliceStable(points[:], func(i, j int) bool {
-		return math.Atan2(points[i][1]-center[1], points[i][0]-center[0]) < math.Atan2(points[j][1]-center[1], points[j][0]-center[0])
+		a := math.Atan2(points[i][1]-center[1], points[i][0]-center[0])
+		b := math.Atan2(points[j][1]-center[1], points[j][0]-center[0])
+		if a != b {
+			return a < b
+		}
+		if points[i][0] != points[j][0] {
+			return points[i][0] < points[j][0]
+		}
+		return points[i][1] < points[j][1]
 	})
 	start := 0
 	for i := 1; i < 4; i++ {
-		if points[i][0]+points[i][1] < points[start][0]+points[start][1] {
+		currentSum := points[i][0] + points[i][1]
+		startSum := points[start][0] + points[start][1]
+		if currentSum < startSum || (currentSum == startSum && (points[i][0] < points[start][0] || (points[i][0] == points[start][0] && points[i][1] < points[start][1]))) {
 			start = i
 		}
 	}

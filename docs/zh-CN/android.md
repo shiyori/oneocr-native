@@ -35,17 +35,22 @@ OneOcr.CallOptions options = new OneOcr.CallOptions();
 options.timeoutMs = 30000;
 String regions = engine.detect(OneOcr.Input.fromEncoded(pngBytes), options);
 options.script = "CJK";
+options.readingOrder = OneOcr.CallOptions.READING_ORDER_RTL;
+options.minLineConfidence = 0.70;
 String line = engine.recognizeLine(OneOcr.Input.fromBitmap(lineBitmap), options);
+String[] batch = engine.recognizeBatch(new OneOcr.Input[] {
+    OneOcr.Input.fromEncoded(pngBytes), OneOcr.Input.fromBitmap(lineBitmap)
+}, options);
 ```
 
-调用返回前不要修改、回收 Bitmap 或缓冲区。同一实例内串行执行。通过 `OneOcr.open(context, options)` 传入 `OneOcr.Options`，可调整线程数和图片尺寸。
+调用返回前不要修改、回收 Bitmap 或缓冲区。同一实例默认串行执行；`OneOcr.Options.maxInFlight` 可设置 1–4 个并发任务。批量方法按输入顺序返回每项 JSON；每项包含 `index` 以及 `result` 或结构化 `error`。
 
 ## 已有 ORT / 精简 AAR
 
 已有宿主 ORT 时使用 [Core AAR](https://github.com/shiyori/oneocr-native/releases/latest/download/oneocr-android-core.aar)。它只包含 OneOCR Java/JNI，不含模型或 ORT。可下载默认模型并以 `oneocr-cjk-en.ocrpack` 保存到 `src/main/assets`，或使用 Go 安装的命令准备应用模块：
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.2.0
 oneocr install --android-project /path/to/your-app/app
 ```
 

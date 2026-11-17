@@ -72,7 +72,7 @@ int main(void) {
 }
 ```
 
-`OneOCROpen` 接受可选的 `OneOCRConfig`。每种操作只使用一个 `OneOCRInput` 和可选的 `OneOCRCallOptions`；`timeout_ms=0` 表示不设置超时。返回 UTF-8 JSON，字段见[识别结果](stages.md)。每个非空结果或错误字符串均需用 `OneOCRFree` 释放。
+`OneOCROpen` 接受可选的 `OneOCRConfig`；需要设置并发上限时使用保持旧结构体兼容的 `OneOCROpenEx`。每种操作只使用一个 `OneOCRInput` 和可选的 `OneOCRCallOptions`；识别和单行识别还提供 `*Ex` 入口，可设置 `reading_order`（`0=auto`、`1=ltr`、`2=rtl`、`3=none`）和 `min_line_confidence`（`0` 关闭过滤）。批量入口接收输入数组并按原顺序返回，每项包含 `index` 加 `result` 或结构化 `error`；`timeout_ms=0` 表示不设置超时。返回 UTF-8 JSON，字段见[识别结果](stages.md)。每个非空结果或错误字符串均需用 `OneOCRFree` 释放。
 
 编码图片使用 `ONEOCR_ENCODED` 和 `data/length`；像素缓冲区使用 `ONEOCR_PIXELS`，填写尺寸、行跨度、像素格式与预乘 Alpha 标志；文件使用 `ONEOCR_FILE` 和 `path`。返回后 SDK 不保留这些指针。关闭句柄前停止提交新调用。
 

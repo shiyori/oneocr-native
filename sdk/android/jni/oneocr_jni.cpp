@@ -49,14 +49,14 @@ static std::vector<uint8_t> readBytes(JNIEnv *env, jbyteArray bytes, bool zeroTe
     return result;
 }
 extern "C" JNIEXPORT jlong JNICALL Java_dev_oneocr_OneOcr_nativeOpen(
-        JNIEnv *env, jclass, jbyteArray model, jbyteArray runtime, jint threads, jint maxSide, jint classes) {
+        JNIEnv *env, jclass, jbyteArray model, jbyteArray runtime, jint threads, jint maxSide, jint maxInFlight, jint classes) {
     auto b = readBytes(env, model, true);
     if (env->ExceptionCheck()) return 0;
     auto r = readBytes(env, runtime, true);
     if (env->ExceptionCheck()) return 0;
     OneOCRConfig config{reinterpret_cast<const char *>(b.data()), reinterpret_cast<const char *>(r.data()), threads, maxSide, static_cast<uint32_t>(classes)};
     char *error = nullptr;
-    uint64_t handle = OneOCROpen(&config, &error);
+    uint64_t handle = OneOCROpenEx(&config, maxInFlight, &error);
     if (!handle) fail(env, error); else OneOCRFree(error);
     return static_cast<jlong>(handle);
 }
@@ -68,7 +68,7 @@ static jstring resultString(JNIEnv *env, char *result, char *error) {
 extern "C" JNIEXPORT jstring JNICALL Java_dev_oneocr_OneOcr_nativeOperate(
         JNIEnv *env, jclass, jlong handle, jint kind, jbyteArray path, jbyteArray bytes, jobject bitmap,
         jint width, jint height, jint stride, jint format, jboolean premultiplied,
-        jbyteArray script, jlong timeoutMs, jint operation) {
+        jbyteArray script, jlong timeoutMs, jint readingOrder, jdouble minLineConfidence, jint operation) {
     auto file = readBytes(env, path, true);
     if (env->ExceptionCheck()) return nullptr;
     auto data = readBytes(env, bytes, false, kind == ONEOCR_PIXELS ? 256 * 1024 * 1024 : 128 * 1024 * 1024);
@@ -89,11 +89,17 @@ extern "C" JNIEXPORT jstring JNICALL Java_dev_oneocr_OneOcr_nativeOperate(
             static_cast<int32_t>(info.width), static_cast<int32_t>(info.height), static_cast<int32_t>(info.stride),
             format, premultiplied ? 1 : 0};
     }
-    OneOCRCallOptions options{reinterpret_cast<const char *>(selected.data()), timeoutMs};
     char *error = nullptr;
-    char *result = operation == 1 ? OneOCRDetect(handle, &input, &options, &error)
-        : operation == 2 ? OneOCRRecognizeLine(handle, &input, &options, &error)
-        : OneOCRRecognize(handle, &input, &options, &error);
+    char *result = nullptr;
+    if (operation == 1) {
+        OneOCRCallOptions options{reinterpret_cast<const char *>(selected.data()), timeoutMs};
+        result = OneOCRDetect(handle, &input, &options, &error);
+    } else {
+        OneOCRCallOptionsEx options{reinterpret_cast<const char *>(selected.data()), timeoutMs,
+            readingOrder, minLineConfidence};
+        result = operation == 2 ? OneOCRRecognizeLineEx(handle, &input, &options, &error)
+            : OneOCRRecognizeEx(handle, &input, &options, &error);
+    }
     if (pixels) AndroidBitmap_unlockPixels(env, bitmap);
     return resultString(env, result, error);
 }

@@ -19,6 +19,7 @@ def main():
     parser.add_argument("--runtime",type=Path,required=True)
     parser.add_argument("--output",type=Path,required=True)
     parser.add_argument("--baseline-cli",type=Path)
+    parser.add_argument("--baseline",default=BASELINE,help="git revision used for the native baseline")
     args=parser.parse_args()
     args.output=args.output.resolve();args.output.mkdir(parents=True,exist_ok=True)
     environment=dict(os.environ,ONEOCR_RUNTIME=str(args.runtime.resolve()),ONEOCR_EXPORT_REFERENCE=str(args.output))
@@ -31,7 +32,7 @@ def main():
             snapshot=temporary / "source";snapshot.mkdir()
             archive=temporary / "source.tar"
             with archive.open("wb") as output:
-                subprocess.run(["git","archive",BASELINE],cwd=ROOT,stdout=output,check=True)
+                subprocess.run(["git","archive",args.baseline],cwd=ROOT,stdout=output,check=True)
             with tarfile.open(archive) as source: source.extractall(snapshot,filter="data")
             # Only adapt the original runtime binding's capability request. The
             # baseline's model graph, preprocessing and OCR algorithms stay intact.
@@ -67,6 +68,6 @@ def main():
     result=subprocess.run(["go","test","-run","^TestAPIReference$","-count=1", "./internal/engine"],cwd=ROOT,env=environment,text=True,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
     (args.output / "comparison.log").write_text(result.stdout,encoding="utf-8")
     if result.returncode: raise RuntimeError(result.stdout[-12000:])
-    print(json.dumps({"baseline_commit":BASELINE,"fixtures":len(cases),"operations":3,"input_forms":4,"comparisons":len(cases)*3*4,"passed":True}))
+    print(json.dumps({"baseline_commit":args.baseline,"fixtures":len(cases),"operations":3,"input_forms":4,"comparisons":len(cases)*3*4,"passed":True}))
 if __name__ == "__main__":
     main()

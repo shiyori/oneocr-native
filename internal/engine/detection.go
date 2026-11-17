@@ -149,16 +149,54 @@ func (e *Engine) detect(ctx context.Context, r raster) ([]detection, error) {
 	}
 	sort.SliceStable(candidates, func(i, j int) bool { return candidates[i].score > candidates[j].score })
 	kept := make([]detection, 0, len(candidates))
+	const cellSize = 128.0
+	type cell struct{ x, y int }
+	grid := make(map[cell][]int)
+	large := []int{}
 	for _, d := range candidates {
 		suppress := false
-		for _, other := range kept {
-			if polygonIoU(d.quad, other.quad) > .2 {
+		bounds := quadBounds(d.quad)
+		minX, maxX := int(math.Floor(bounds.X/cellSize)), int(math.Floor((bounds.X+bounds.Width)/cellSize))
+		minY, maxY := int(math.Floor(bounds.Y/cellSize)), int(math.Floor((bounds.Y+bounds.Height)/cellSize))
+		span := int64(maxX-minX+1) * int64(maxY-minY+1)
+		indices := make(map[int]struct{})
+		for _, index := range large {
+			indices[index] = struct{}{}
+		}
+		if span <= 4096 {
+			for y := minY; y <= maxY; y++ {
+				for x := minX; x <= maxX; x++ {
+					for _, index := range grid[cell{x, y}] {
+						indices[index] = struct{}{}
+					}
+				}
+			}
+		} else {
+			// A very large proposal would touch too many cells. Fall back to the
+			// complete kept set so spatial bucketing never changes NMS semantics.
+			for index := range kept {
+				indices[index] = struct{}{}
+			}
+		}
+		for index := range indices {
+			if polygonIoU(d.quad, kept[index].quad) > .2 {
 				suppress = true
 				break
 			}
 		}
 		if !suppress {
+			index := len(kept)
 			kept = append(kept, d)
+			if span > 4096 {
+				large = append(large, index)
+			} else {
+				for y := minY; y <= maxY; y++ {
+					for x := minX; x <= maxX; x++ {
+						key := cell{x, y}
+						grid[key] = append(grid[key], index)
+					}
+				}
+			}
 		}
 	}
 	return kept, nil

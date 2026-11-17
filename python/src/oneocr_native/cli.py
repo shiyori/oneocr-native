@@ -17,7 +17,7 @@ def main(argv: list[str] | None = None) -> int:
     setup.add_argument("--source", type=Path, help="offline Release or complete Python bundle directory")
     setup.add_argument("--offline", action="store_true", help="use only local files")
     setup.add_argument("--home", type=Path, help="installation directory")
-    for command in ("inspect", "prepare", "recognize", "detect", "recognize-line", "export"):
+    for command in ("inspect", "prepare", "recognize", "recognize-batch", "detect", "recognize-line", "export"):
         sub = commands.add_parser(command)
         sub.add_argument(
             "--model",
@@ -39,6 +39,18 @@ def main(argv: list[str] | None = None) -> int:
             )
             sub.add_argument("--max-side", type=int, default=1600)
             sub.add_argument("--threads", type=int, default=2)
+            sub.add_argument("--max-inflight", type=int, default=1)
+        if command in ("recognize", "recognize-batch"):
+            sub.add_argument("--reading-order", choices=("auto", "ltr", "rtl", "none"), default="auto")
+            sub.add_argument("--min-confidence", type=float, default=0.0)
+        if command == "recognize-batch":
+            sub.add_argument("images", type=Path, nargs="*")
+            sub.add_argument("--input-list", type=Path)
+            sub.add_argument("--format", choices=("json",), default="json")
+            sub.add_argument("--script", help="override automatic script detection")
+            sub.add_argument("--max-side", type=int, default=1600)
+            sub.add_argument("--threads", type=int, default=2)
+            sub.add_argument("--max-inflight", type=int, default=1)
     args = parser.parse_args(argv)
     try:
         if args.command == "install":
@@ -101,16 +113,40 @@ def main(argv: list[str] | None = None) -> int:
             from .engine import EngineConfig, OneOcrEngine
 
             with OneOcrEngine(EngineConfig(
-                args.model, cache_dir=args.cache_dir, max_side=args.max_side, threads=args.threads
+                args.model, cache_dir=args.cache_dir, max_side=args.max_side, threads=args.threads,
+                max_inflight=args.max_inflight,
             )) as engine:
                 if args.command == "detect":
                     result = engine.detect(args.image)
                 elif args.command == "recognize-line":
                     result = engine.recognize_line(args.image, script=args.script)
+                elif args.command == "recognize-batch":
+                    paths = list(args.images)
+                    if args.input_list:
+                        paths.extend(
+                            Path(line.strip())
+                            for line in args.input_list.read_text(encoding="utf-8").splitlines()
+                            if line.strip()
+                        )
+                    if not paths:
+                        raise ValueError("recognize-batch requires images or --input-list")
+                    result = engine.recognize_batch(
+                        paths,
+                        script=args.script,
+                        reading_order=args.reading_order,
+                        min_line_confidence=args.min_confidence,
+                    )
                 else:
-                    result = engine.recognize(args.image, script=args.script)
+                    result = engine.recognize(
+                        args.image,
+                        script=args.script,
+                        reading_order=args.reading_order,
+                        min_line_confidence=args.min_confidence,
+                    )
             content = (
-                json.dumps(result.to_dict(), ensure_ascii=False, indent=2)
+                json.dumps([item.to_dict() for item in result], ensure_ascii=False, indent=2)
+                if args.command == "recognize-batch"
+                else json.dumps(result.to_dict(), ensure_ascii=False, indent=2)
                 if args.format == "json" or args.command == "detect"
                 else result.text
             )

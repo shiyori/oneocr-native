@@ -9,8 +9,14 @@ def ordered_quad(points: np.ndarray) -> np.ndarray:
     points = np.asarray(points, dtype=np.float32).reshape(4, 2)
     center = points.mean(axis=0)
     angles = np.arctan2(points[:, 1] - center[1], points[:, 0] - center[0])
-    points = points[np.argsort(angles)]
-    start = int(np.argmin(points.sum(axis=1)))
+    # Lexicographic tie-breaks make equal-angle/duplicate corners stable
+    # across NumPy versions and match the Go geometry implementation.
+    points = points[np.lexsort((points[:, 1], points[:, 0], angles))]
+    sums = points.sum(axis=1)
+    start = min(
+        range(4),
+        key=lambda i: (float(sums[i]), float(points[i, 0]), float(points[i, 1])),
+    )
     return np.roll(points, -start, axis=0).copy()
 
 

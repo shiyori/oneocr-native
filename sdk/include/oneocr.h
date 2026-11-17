@@ -7,7 +7,7 @@ extern "C" {
 #endif
 /* UTF-8 strings. Inputs are borrowed only for each synchronous call.
  * Free every returned non-NULL result/error once with OneOCRFree.
- * Calls on an engine serialize; Close waits for active work. */
+ * Calls are bounded by the engine's max-inflight setting; Close waits for active work. */
 typedef enum OneOCRInputKind { ONEOCR_FILE = 1, ONEOCR_ENCODED = 2, ONEOCR_PIXELS = 3 } OneOCRInputKind;
 typedef enum OneOCRPixelFormat { ONEOCR_RGB = 1, ONEOCR_RGBA = 2, ONEOCR_BGRA = 3, ONEOCR_RGBX = 4, ONEOCR_BGRX = 5 } OneOCRPixelFormat;
 typedef struct OneOCRInput {
@@ -32,12 +32,28 @@ typedef struct OneOCRCallOptions {
     const char *script;
     int64_t timeout_ms;
 } OneOCRCallOptions;
+/* Extended call options; reading_order: 0=auto, 1=ltr, 2=rtl, 3=none. */
+typedef struct OneOCRCallOptionsEx {
+    const char *script;
+    int64_t timeout_ms;
+    int32_t reading_order;
+    double min_line_confidence;
+} OneOCRCallOptionsEx;
 #ifndef ONEOCR_IMPLEMENTATION
 /* NULL config/options selects defaults. Input structs are never modified. */
 uint64_t OneOCROpen(OneOCRConfig *config, char **error);
+/* Extended open keeps OneOCRConfig layout ABI-compatible with older callers. */
+uint64_t OneOCROpenEx(OneOCRConfig *config, int32_t max_inflight, char **error);
 char *OneOCRRecognize(uint64_t handle, OneOCRInput *input, OneOCRCallOptions *options, char **error);
+char *OneOCRRecognizeEx(uint64_t handle, OneOCRInput *input, OneOCRCallOptionsEx *options, char **error);
 char *OneOCRDetect(uint64_t handle, OneOCRInput *input, OneOCRCallOptions *options, char **error);
 char *OneOCRRecognizeLine(uint64_t handle, OneOCRInput *input, OneOCRCallOptions *options, char **error);
+char *OneOCRRecognizeLineEx(uint64_t handle, OneOCRInput *input, OneOCRCallOptionsEx *options, char **error);
+char *OneOCRRecognizeBatch(uint64_t handle, OneOCRInput *inputs, size_t count, OneOCRCallOptions *options, char **error);
+char *OneOCRRecognizeBatchEx(uint64_t handle, OneOCRInput *inputs, size_t count, OneOCRCallOptionsEx *options, char **error);
+char *OneOCRDetectBatch(uint64_t handle, OneOCRInput *inputs, size_t count, OneOCRCallOptions *options, char **error);
+char *OneOCRRecognizeLineBatch(uint64_t handle, OneOCRInput *inputs, size_t count, OneOCRCallOptions *options, char **error);
+char *OneOCRRecognizeLineBatchEx(uint64_t handle, OneOCRInput *inputs, size_t count, OneOCRCallOptionsEx *options, char **error);
 int32_t OneOCRWarmup(uint64_t handle, int64_t timeout_ms, char **error);
 char *OneOCRDiagnostics(uint64_t handle, char **error);
 int32_t OneOCRClose(uint64_t handle, char **error);

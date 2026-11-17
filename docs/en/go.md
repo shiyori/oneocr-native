@@ -6,7 +6,7 @@ Requires Go 1.24+ and a C compiler. Add the Go module to your own project; no de
 
 ```sh
 go mod init example.com/ocr-app
-go get github.com/shiyori/oneocr-native@v0.1.3
+go get github.com/shiyori/oneocr-native@v0.2.0
 ```
 
 Skip `go mod init` if the project already has `go.mod`.
@@ -43,7 +43,7 @@ go run .
 Install the command with Go, then prepare resources and recognize images from any directory:
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.2.0
 oneocr install
 oneocr recognize image.png
 oneocr recognize --format json image.png
@@ -70,9 +70,11 @@ regions, err := engine.Detect(ctx, oneocr.FromFile("page.png"))
 line, err := engine.RecognizeLine(ctx, oneocr.FromFile("line.png"), oneocr.Options{})
 ```
 
-Reuse an engine for repeated work. Operations on one engine serialize; a context deadline includes queue time. `Close` waits for active work and is idempotent. `Warmup(ctx)` loads all recognizers; `Diagnostics()` remains available after close.
+Reuse an engine for repeated work. Operations on one engine are serial by default; set `Config.MaxInFlight` to 2–4 for bounded concurrency. A context deadline includes queue time. `Close` waits for active work and is idempotent. `Warmup(ctx)` loads all recognizers; `Diagnostics()` remains available after close.
 
 Optional configuration belongs in `oneocr.Config`, including `Threads`, `MaxSide` and `CharacterClasses`. Default values work without model or runtime paths. See [operations](stages.md) and [runtime reuse](runtime.md).
+
+For multiple images, use `RecognizeBatch`, `DetectBatch` or `RecognizeLineBatch`. Results preserve input order and each item contains either `result` or a structured `error` with `code` and `message`; one item failure does not cancel the others. `Options.ReadingOrder` accepts `auto`, `ltr`, `rtl` and `none`; `MinLineConfidence` filters low-confidence lines when explicitly set.
 
 ---
 

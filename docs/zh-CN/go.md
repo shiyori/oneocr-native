@@ -6,7 +6,7 @@
 
 ```sh
 go mod init example.com/ocr-app
-go get github.com/shiyori/oneocr-native@v0.1.3
+go get github.com/shiyori/oneocr-native@v0.2.0
 ```
 
 已有 `go.mod` 时跳过 `go mod init`。
@@ -43,7 +43,7 @@ go run .
 通过 Go 安装命令后，可在任意目录准备资源并识别图片：
 
 ```sh
-go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.1.3
+go install github.com/shiyori/oneocr-native/cmd/oneocr@v0.2.0
 oneocr install
 oneocr recognize image.png
 oneocr recognize --format json image.png
@@ -70,9 +70,13 @@ regions, err := engine.Detect(ctx, oneocr.FromFile("page.png"))
 line, err := engine.RecognizeLine(ctx, oneocr.FromFile("line.png"), oneocr.Options{})
 ```
 
-连续识别时复用 Engine。同一实例的操作会串行执行，Context 超时包含排队时间。`Close` 等待当前调用结束，可重复调用。`Warmup(ctx)` 预加载识别器；关闭后仍可读取 `Diagnostics()`。
+连续识别时复用 Engine。同一实例默认串行执行，设置 `MaxInFlight` 后可受控并发；Context 超时包含排队时间。`Close` 等待当前调用结束，可重复调用。`Warmup(ctx)` 预加载识别器；关闭后仍可读取 `Diagnostics()`。
 
 可通过 `oneocr.Config` 调整 `Threads`、`MaxSide`、`CharacterClasses` 等选项。默认配置无需模型或运行库路径。另见[识别操作](stages.md)和[运行库复用](runtime.md)。
+
+需要处理多张图片时，可设置 `Config.MaxInFlight` 为 2–4，并使用 `RecognizeBatch`、`DetectBatch` 或 `RecognizeLineBatch`。默认值为 1，因此旧程序仍保持串行行为。批量结果按输入顺序返回，每项包含 `result` 或带有 `code`、`message` 的 `error`；单项失败不会取消其他项目。
+
+`Options.ReadingOrder` 支持 `auto`、`ltr`、`rtl` 和 `none`，`MinLineConfidence` 可选择性过滤低置信度行；两者默认不改变现有结果。
 
 ---
 

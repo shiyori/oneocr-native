@@ -12,9 +12,16 @@ enum class PixelFormat { RGB = ONEOCR_RGB, RGBA = ONEOCR_RGBA, BGRA = ONEOCR_BGR
 struct Options {
     std::string modelPath, runtimeLibrary;
     int32_t threads = 0, maxSide = 0;
+    int32_t maxInFlight = 0;
     uint32_t characterClasses = 0;
 };
-struct CallOptions { std::string script; int64_t timeoutMs = 0; };
+enum class ReadingOrder : int32_t { Auto = 0, LTR = 1, RTL = 2, None = 3 };
+struct CallOptions {
+    std::string script;
+    int64_t timeoutMs = 0;
+    ReadingOrder readingOrder = ReadingOrder::Auto;
+    double minLineConfidence = 0;
+};
 // Owns the file path; byte buffers remain borrowed until the call returns.
 class Input {
     friend class Engine;
@@ -44,11 +51,43 @@ class Engine {
         return std::string(result);
     }
     using Operation = char *(*)(uint64_t, OneOCRInput *, OneOCRCallOptions *, char **);
+    using BatchOperation = char *(*)(uint64_t, OneOCRInput *, size_t, OneOCRCallOptions *, char **);
+    using OperationEx = char *(*)(uint64_t, OneOCRInput *, OneOCRCallOptionsEx *, char **);
+    using BatchOperationEx = char *(*)(uint64_t, OneOCRInput *, size_t, OneOCRCallOptionsEx *, char **);
     std::string run(Operation operation, const Input &input, const CallOptions &options) const {
         auto descriptor = input.descriptor();
         OneOCRCallOptions call{options.script.c_str(), options.timeoutMs};
         char *error = nullptr;
         char *result = operation(handle_, &descriptor, &call, &error);
+        return take(result, error);
+    }
+    std::string runBatch(BatchOperation operation, const std::vector<Input> &inputs, const CallOptions &options) const {
+        std::vector<OneOCRInput> descriptors;
+        descriptors.reserve(inputs.size());
+        for (const auto &input : inputs) descriptors.push_back(input.descriptor());
+        OneOCRCallOptions call{options.script.c_str(), options.timeoutMs};
+        char *error = nullptr;
+        char *result = operation(handle_, descriptors.data(), descriptors.size(), &call, &error);
+        return take(result, error);
+    }
+    OneOCRCallOptionsEx callOptions(const CallOptions &options) const {
+        return OneOCRCallOptionsEx{options.script.c_str(), options.timeoutMs,
+            static_cast<int32_t>(options.readingOrder), options.minLineConfidence};
+    }
+    std::string runEx(OperationEx operation, const Input &input, const CallOptions &options) const {
+        auto descriptor = input.descriptor();
+        auto call = callOptions(options);
+        char *error = nullptr;
+        char *result = operation(handle_, &descriptor, &call, &error);
+        return take(result, error);
+    }
+    std::string runBatchEx(BatchOperationEx operation, const std::vector<Input> &inputs, const CallOptions &options) const {
+        std::vector<OneOCRInput> descriptors;
+        descriptors.reserve(inputs.size());
+        for (const auto &input : inputs) descriptors.push_back(input.descriptor());
+        auto call = callOptions(options);
+        char *error = nullptr;
+        char *result = operation(handle_, descriptors.data(), descriptors.size(), &call, &error);
         return take(result, error);
     }
     void release() noexcept {
@@ -61,7 +100,7 @@ public:
     explicit Engine(const Options &options = {}) {
         OneOCRConfig config{options.modelPath.c_str(), options.runtimeLibrary.c_str(), options.threads, options.maxSide, options.characterClasses};
         char *error = nullptr;
-        handle_ = OneOCROpen(&config, &error);
+        handle_ = options.maxInFlight > 0 ? OneOCROpenEx(&config, options.maxInFlight, &error) : OneOCROpen(&config, &error);
         if (!handle_) fail(error);
         OneOCRFree(error);
     }
@@ -89,9 +128,12 @@ public:
         char *result = OneOCRDiagnostics(handle_, &error);
         return take(result, error);
     }
-    std::string recognize(const Input &input, const CallOptions &options = {}) const { return run(OneOCRRecognize, input, options); }
+    std::string recognize(const Input &input, const CallOptions &options = {}) const { return runEx(OneOCRRecognizeEx, input, options); }
     std::string detect(const Input &input, const CallOptions &options = {}) const { return run(OneOCRDetect, input, options); }
-    std::string recognizeLine(const Input &input, const CallOptions &options = {}) const { return run(OneOCRRecognizeLine, input, options); }
+    std::string recognizeLine(const Input &input, const CallOptions &options = {}) const { return runEx(OneOCRRecognizeLineEx, input, options); }
+    std::string recognizeBatch(const std::vector<Input> &inputs, const CallOptions &options = {}) const { return runBatchEx(OneOCRRecognizeBatchEx, inputs, options); }
+    std::string detectBatch(const std::vector<Input> &inputs, const CallOptions &options = {}) const { return runBatch(OneOCRDetectBatch, inputs, options); }
+    std::string recognizeLineBatch(const std::vector<Input> &inputs, const CallOptions &options = {}) const { return runBatchEx(OneOCRRecognizeLineBatchEx, inputs, options); }
 };
 }
 #endif

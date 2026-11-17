@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import math
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from threading import RLock
+from threading import BoundedSemaphore, Condition, RLock
 from time import perf_counter
 
 import cv2
@@ -13,7 +15,8 @@ from PIL import Image, ImageOps
 from .config import CLASSIFIER_SCRIPTS
 from .detection import Detector
 from .errors import OneOcrError, UnsupportedModelError
-from .geometry import ordered_quad, reading_order, rectify
+from .geometry import ordered_quad, rectify
+from .geometry import reading_order as reading_order_fn
 from .recognition import CONFIDENCE_METHOD, Alphabet, Recognition, Recognizer, normalize_line
 from .routing import (
     ascii_digits,
@@ -96,6 +99,57 @@ class LineResult:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class BatchError:
+    code: str
+    message: str
+
+
+@dataclass(frozen=True)
+class RecognitionBatchItem:
+    index: int
+    result: OcrResult | None = None
+    error: BatchError | None = None
+
+    def to_dict(self) -> dict:
+        value = asdict(self)
+        if self.result is None:
+            value.pop("result", None)
+        if self.error is None:
+            value.pop("error", None)
+        return value
+
+
+@dataclass(frozen=True)
+class DetectionBatchItem:
+    index: int
+    result: DetectionResult | None = None
+    error: BatchError | None = None
+
+    def to_dict(self) -> dict:
+        value = asdict(self)
+        if self.result is None:
+            value.pop("result", None)
+        if self.error is None:
+            value.pop("error", None)
+        return value
+
+
+@dataclass(frozen=True)
+class LineBatchItem:
+    index: int
+    result: LineResult | None = None
+    error: BatchError | None = None
+
+    def to_dict(self) -> dict:
+        value = asdict(self)
+        if self.result is None:
+            value.pop("result", None)
+        if self.error is None:
+            value.pop("error", None)
+        return value
+
+
 @dataclass
 class _RegionRecognition:
     line: OcrLine | None = None
@@ -132,6 +186,7 @@ class EngineConfig:
     cache_dir: str | Path | None = None
     max_side: int = 1600
     threads: int = 2
+    max_inflight: int = 1
 
 
 class OneOcrEngine:
@@ -145,6 +200,8 @@ class OneOcrEngine:
             raise ValueError("max_side must be between 128 and 4096")
         if not 1 <= config.threads <= 16:
             raise ValueError("threads must be between 1 and 16")
+        if not 1 <= config.max_inflight <= 4:
+            raise ValueError("max_inflight must be between 1 and 4")
         from .defaults import default_model_path
         from .ocrpack import MAGIC, PackageSource
 
@@ -162,21 +219,26 @@ class OneOcrEngine:
                 from .cache import prepare
 
                 self.prepared = prepare(path, config.cache_dir)
-        self._initialize(config.max_side, config.threads)
+        self._initialize(config.max_side, config.threads, config.max_inflight)
 
     def close(self):
         """Idempotently release owned session references and the package descriptor."""
-        with self._lock:
+        with self._state:
             if self._closed:
+                while self._pending or self._active:
+                    self._state.wait()
                 return
             self._closed = True
+            while self._pending or self._active:
+                self._state.wait()
+        with self._recognizer_lock:
             self.recognizers.clear()
-            self.detector = None
-            self.classifier = None
-            self.prepared.close()
+        self.detector = None
+        self.classifier = None
+        self.prepared.close()
 
     def __enter__(self):
-        with self._lock:
+        with self._state:
             if self._closed:
                 raise OneOcrError("engine is closed")
             return self
@@ -184,9 +246,14 @@ class OneOcrEngine:
     def __exit__(self, *_):
         self.close()
 
-    def _initialize(self, max_side: int, threads: int):
-        self._lock = RLock()
+    def _initialize(self, max_side: int, threads: int, max_inflight: int):
+        self._state = Condition()
+        self._recognizer_lock = RLock()
         self._closed = False
+        self._pending = 0
+        self._active = 0
+        self._slots = BoundedSemaphore(max_inflight)
+        self.max_inflight = max_inflight
         self.threads = threads
         self.recognizers: dict[str, Recognizer] = {}
         self.detector = None
@@ -205,22 +272,52 @@ class OneOcrEngine:
             self.close()
             raise
 
+    @contextmanager
+    def _operation(self):
+        with self._state:
+            if self._closed:
+                raise OneOcrError("engine is closed")
+            self._pending += 1
+        acquired = False
+        entered = False
+        try:
+            self._slots.acquire()
+            acquired = True
+            with self._state:
+                self._pending -= 1
+                if self._closed:
+                    self._state.notify_all()
+                    raise OneOcrError("engine is closed")
+                self._active += 1
+                entered = True
+                self._state.notify_all()
+            yield
+        finally:
+            if acquired:
+                self._slots.release()
+            with self._state:
+                if entered:
+                    self._active -= 1
+                self._pending = max(0, self._pending - (0 if acquired else 1))
+                self._state.notify_all()
+
     @property
     def available_scripts(self) -> tuple[str, ...]:
         """Scripts provided by the active model."""
         return tuple(self.characters)
 
     def _recognizer(self, script: str) -> Recognizer:
-        if script not in self.recognizers:
-            char = self.characters[script]
-            alphabet = Alphabet(
-                self.prepared.read(char.alphabet_path),
-                self.prepared.read(char.composite_path) if char.composite_path else None,
-            )
-            self.recognizers[script] = Recognizer(
-                session(self.prepared.read(char.model_path), self.threads), char, alphabet
-            )
-        return self.recognizers[script]
+        with self._recognizer_lock:
+            if script not in self.recognizers:
+                char = self.characters[script]
+                alphabet = Alphabet(
+                    self.prepared.read(char.alphabet_path),
+                    self.prepared.read(char.composite_path) if char.composite_path else None,
+                )
+                self.recognizers[script] = Recognizer(
+                    session(self.prepared.read(char.model_path), self.threads), char, alphabet
+                )
+            return self.recognizers[script]
 
     def _classify(self, crop: np.ndarray) -> tuple[str | None, float]:
         data = normalize_line(crop)
@@ -298,23 +395,31 @@ class OneOcrEngine:
         )
         return result
 
-    def recognize(self, image: str | Path | Image.Image, *, script: str | None = None) -> OcrResult:
+    def recognize(
+        self,
+        image: str | Path | Image.Image,
+        *,
+        script: str | None = None,
+        reading_order: str = "auto",
+        min_line_confidence: float = 0.0,
+    ) -> OcrResult:
         """Recognize an image; optional script overrides automatic script selection.
 
         Coordinates refer to the EXIF-oriented input image, before detector
         resizing. Confidence summarizes emitted CTC token probabilities; it is
         uncalibrated and is not an estimated probability of a correct result.
         """
-        with self._lock:
-            if self._closed:
-                raise OneOcrError("engine is closed")
-            return self._recognize(image, script=script)
+        with self._operation():
+            return self._recognize(
+                image,
+                script=script,
+                reading_order=reading_order,
+                min_line_confidence=min_line_confidence,
+            )
 
     def detect(self, image: str | Path | Image.Image) -> DetectionResult:
         """Detect proposals only. Scores are uncalibrated; region order is unspecified."""
-        with self._lock:
-            if self._closed:
-                raise OneOcrError("engine is closed")
+        with self._operation():
             start = perf_counter()
             pil, rgb = _load_image(image)
             detections = self.detector.run(rgb)
@@ -344,9 +449,7 @@ class OneOcrEngine:
         Empty script auto-classifies and corrects a 180-degree rotation. Explicit
         script skips classification and requires an upright line crop.
         """
-        with self._lock:
-            if self._closed:
-                raise OneOcrError("engine is closed")
+        with self._operation():
             start = perf_counter()
             pil, crop = _load_image(image)
             rotated = False
@@ -375,8 +478,85 @@ class OneOcrEngine:
                 rotation_degrees=180 if rotated else 0,
             )
 
-    def _recognize(self, image: str | Path | Image.Image, *, script: str | None) -> OcrResult:
+    @staticmethod
+    def _batch_error(error: Exception) -> BatchError:
+        if isinstance(error, TimeoutError):
+            code = "timeout"
+        elif isinstance(error, (ValueError, TypeError, OSError)):
+            code = "invalid_input"
+        elif isinstance(error, UnsupportedModelError):
+            code = "unsupported"
+        elif isinstance(error, OneOcrError) and "closed" in str(error).lower():
+            code = "closed"
+        elif isinstance(error, OneOcrError) and "cancel" in str(error).lower():
+            code = "canceled"
+        else:
+            code = "inference"
+        return BatchError(code, str(error))
+
+    def recognize_batch(
+        self,
+        images: list[str | Path | Image.Image],
+        *,
+        script: str | None = None,
+        reading_order: str = "auto",
+        min_line_confidence: float = 0.0,
+    ) -> list[RecognitionBatchItem]:
+        self._validate_recognition_options(reading_order, min_line_confidence)
+        if script and script not in self.characters:
+            raise ValueError(f"unknown script {script!r}; available: {', '.join(self.characters)}")
+
+        def run(image):
+            return self.recognize(
+                image,
+                script=script,
+                reading_order=reading_order,
+                min_line_confidence=min_line_confidence,
+            )
+
+        return self._run_batch(images, run, RecognitionBatchItem)
+
+    def detect_batch(self, images: list[str | Path | Image.Image]) -> list[DetectionBatchItem]:
+        return self._run_batch(images, self.detect, DetectionBatchItem)
+
+    def recognize_line_batch(
+        self, images: list[str | Path | Image.Image], *, script: str | None = None
+    ) -> list[LineBatchItem]:
+        return self._run_batch(images, lambda image: self.recognize_line(image, script=script), LineBatchItem)
+
+    def _run_batch(self, images, operation, item_type):
+        if not isinstance(images, (list, tuple)):
+            raise TypeError("images must be a list or tuple")
+        if not images:
+            return []
+        if self.max_inflight == 1:
+            items = []
+            for index, image in enumerate(images):
+                try:
+                    items.append(item_type(index, result=operation(image)))
+                except Exception as error:  # noqa: BLE001 - per-item errors are part of the batch contract
+                    items.append(item_type(index, error=self._batch_error(error)))
+            return items
+        with ThreadPoolExecutor(max_workers=self.max_inflight) as pool:
+            futures = [pool.submit(operation, image) for image in images]
+            items = []
+            for index, future in enumerate(futures):
+                try:
+                    items.append(item_type(index, result=future.result()))
+                except Exception as error:  # noqa: BLE001 - per-item errors are part of the batch contract
+                    items.append(item_type(index, error=self._batch_error(error)))
+            return items
+
+    def _recognize(
+        self,
+        image: str | Path | Image.Image,
+        *,
+        script: str | None,
+        reading_order: str = "auto",
+        min_line_confidence: float = 0.0,
+    ) -> OcrResult:
         start = perf_counter()
+        self._validate_recognition_options(reading_order, min_line_confidence)
         if script and script not in self.characters:
             raise ValueError(f"unknown script {script!r}; available: {', '.join(self.characters)}")
         pil, rgb = _load_image(image)
@@ -388,6 +568,7 @@ class OneOcrEngine:
         quads = []
         angles = []
         unavailable = set()
+        filtered = 0
         regions = [_RegionRecognition() for _ in detections]
         for i, detection in enumerate(detections):
             if not compact_quad(detection.quad):
@@ -402,6 +583,13 @@ class OneOcrEngine:
                     unavailable.add(region.script)
                 continue
             lines.append(region.line)
+            if min_line_confidence > 0 and (
+                region.recognition.confidence is None
+                or region.recognition.confidence < min_line_confidence
+            ):
+                lines.pop()
+                filtered += 1
+                continue
             log_probability += region.recognition.log_probability
             tokens += region.recognition.tokens
             quads.append(detection.quad)
@@ -415,7 +603,17 @@ class OneOcrEngine:
         else:
             layout_quads = quads
         rtl = sum(line.script in ("Arabic", "Hebrew") for line in lines) > len(lines) / 2
-        ordered = [lines[i] for i in reading_order(layout_quads, rtl=rtl)]
+        if reading_order == "none":
+            order = list(range(len(lines)))
+        else:
+            order = reading_order_fn(layout_quads, rtl=rtl if reading_order == "auto" else reading_order == "rtl")
+        ordered = [lines[i] for i in order]
+        warnings = [
+            "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."
+        ]
+        warnings.extend(f"Skipped unavailable script: {name}" for name in sorted(unavailable))
+        if filtered:
+            warnings.append(f"Filtered {filtered} line(s) below min_line_confidence {min_line_confidence:.3f}.")
         return OcrResult(
             "\n".join(line.text for line in ordered),
             ordered,
@@ -423,11 +621,15 @@ class OneOcrEngine:
             pil.height,
             perf_counter() - start,
             self.prepared.manifest["source_sha256"],
-            [
-                "Experimental final quad fitting, normalization and reading order; original rejection/calibration are not applied."
-            ]
-            + [f"Skipped unavailable script: {name}" for name in sorted(unavailable)],
+            warnings,
             confidence=Recognition(
                 "\n".join(line.text for line in ordered), log_probability, tokens
             ).confidence,
         )
+
+    @staticmethod
+    def _validate_recognition_options(reading_order: str, min_line_confidence: float) -> None:
+        if reading_order not in {"auto", "ltr", "rtl", "none"}:
+            raise ValueError("reading_order must be auto, ltr, rtl or none")
+        if not math.isfinite(min_line_confidence) or not 0 <= min_line_confidence <= 1:
+            raise ValueError("min_line_confidence must be between 0 and 1")
